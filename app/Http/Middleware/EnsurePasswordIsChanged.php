@@ -18,14 +18,14 @@ class EnsurePasswordIsChanged
         if (Auth::check() && Auth::user()->must_change_password) {
 
             // Prevent redirect loop if the user is already on the change password route
-            if ($request->routeIs('password.change') || $request->routeIs('password.update.forced')) {
+            if ($request->routeIs('profile.edit') || $request->routeIs('profile.update')) {
                 return $next($request);
             }
 
             // Flash a message and redirect to a forced password change route
             session()->flash('warning', 'You must change your temporary password before continuing.');
 
-            return redirect()->route('password.change');
+            return redirect()->route('profile.edit');
         }
 
         return $next($request);

@@ -1,4 +1,4 @@
-<x-guest-layout>
+{{-- <x-guest-layout>
    
     <div class="flex flex-col lg:flex-row min-h-screen w-full">
         <!-- Left: Register Form -->
@@ -147,4 +147,4 @@
             button.disabled = true;
         });
     </script>
-</x-guest-layout>
+</x-guest-layout> --}}

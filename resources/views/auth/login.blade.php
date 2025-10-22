@@ -121,12 +121,9 @@
 
           @include('auth.google-button')
 
-        <p class="mt-4 text-sm text-center">
-          Dont have an Account?
-          <span class="text-green-600 underline">
-            <a href="{{ route("register") }}">Register Here</a>
-          </span>
-        </p>
+          
+
+      
       </div>
     </div>
 

@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
+use App\Http\Controllers\Controller;
 
 use App\Models\User;
 use App\Models\Member; // Assuming you have a Member model
@@ -24,7 +25,7 @@ class MemberController extends Controller
     public function index()
     {
         $members = Member::with('user')->latest()->paginate(50);
-        return view('members.index', compact('members'));
+        return view('admin.members.index', compact('members'));
     }
 
     /**
@@ -32,7 +33,7 @@ class MemberController extends Controller
      */
     public function create()
     {
-        return view('members.create');
+        return view('admin.members.create');
     }
 
     /**
@@ -62,8 +63,10 @@ class MemberController extends Controller
         // 2. DATABASE TRANSACTION (Ensures atomic operations)
         try {
             DB::transaction(function () use ($validated, $request) {
-                // 2.1. Generate Password
-                $plainPassword = Str::random(12);
+                
+               // 1. Generate a 6-digit numeric temporary password (OTP style)
+    $plainPassword = (string) random_int(100000, 999999);
+
 
                 // 2.2. Create User Record
                 $user = User::create([
@@ -133,7 +136,7 @@ class MemberController extends Controller
         }
 
         // 3. REDIRECTION
-        return redirect()->route('members.index')->with('success', 'Member created successfully. Temporary credentials have been emailed.');
+        return redirect()->route('admin.members.index')->with('success', 'Member created successfully. Temporary credentials have been emailed.');
     }
 
     /**

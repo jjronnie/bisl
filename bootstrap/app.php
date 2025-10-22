@@ -7,6 +7,9 @@ use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 use Spatie\Permission\Exceptions\UnauthorizedException;
+use App\Http\Middleware\EnsurePasswordIsChanged;
+use Spatie\Honeypot\ProtectAgainstSpam;
+use  App\Http\Middleware\BlockSuspendedUsers;
 
 
 
@@ -19,10 +22,12 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
 
 
-   $middleware->appendToGroup('web', [
-       \App\Http\Middleware\EnsurePasswordIsChanged::class,
-    ]);
-  
+        $middleware->appendToGroup('web', [
+               ProtectAgainstSpam::class,
+            BlockSuspendedUsers::class,
+
+        ]);
+
 
 
 
@@ -32,6 +37,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
+            'pwc' => EnsurePasswordIsChanged::class,
 
         ]);
     })

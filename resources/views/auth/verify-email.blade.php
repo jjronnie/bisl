@@ -5,11 +5,10 @@
             <div class="w-full max-w-sm mx-auto p-8 bg-white rounded-xl shadow-lg">
 
                 <div class="md:hidden mb-6 flex items-center justify-center">
-                     <x-application-logo/>
+                     <x-logo/>
                 </div>
 
                 <h1 class="font-bold text-2xl text-gray-800 text-center mb-2">Verify Your Email</h1>
-                <p class="text-sm text-gray-500 text-center mb-8">Just one more step to get started!</p>
 
                 @if (session('status') == 'verification-link-sent')
                 <div class="mb-4 p-4 font-medium text-sm text-green-700 bg-green-100 rounded-lg">
@@ -20,7 +19,7 @@
                 @endif
 
                 <div class="mb-6 text-sm text-gray-700 leading-relaxed">
-                    {{ __('Thanks for creating an account with TPOS! We need to verify your email address. Please click
+                    {{ __('We need to verify your email address. Please click
                     the link we just sent to you.') }}
                 </div>
 
@@ -28,7 +27,7 @@
                     <form method="POST" action="{{ route('verification.send') }}">
                         @csrf
                         <button type="submit"
-                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-200 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                            class="btn">
                             {{ __('Resend Verification Email') }}
                         </button>
                     </form>

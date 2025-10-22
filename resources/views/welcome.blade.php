@@ -229,10 +229,9 @@
             <div class="flex items-center space-x-4">
 
                 @guest
-                    <a href="{{ route('login') }}" class="text-gray-300 hover:text-green-400 transition">Login</a>
-                    <a href="{{ route('register') }}"
+                    <a href="{{ route('login') }}"
                         class="px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-full shadow-lg transition duration-300 transform hover:scale-105">
-                        Register
+                        Login
                     </a>
                 @else
                     <a href="{{ route('dashboard') }}"

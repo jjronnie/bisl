@@ -35,6 +35,7 @@ class RolePermissionSeeder extends Seeder
                 'password' => Hash::make('88928892'), 
                 'email_verified_at' => now(),
                 'must_change_password' => false,
+                'status' => 'active'
             ]
         );
 

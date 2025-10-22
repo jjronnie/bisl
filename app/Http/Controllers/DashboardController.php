@@ -11,18 +11,22 @@ class DashboardController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-            if ($user->hasRole('user')) {
-            // Redirect Admins to the admin dashboard route
-            return redirect()->route('member.dashboard');
-        }
-
-   
-       
-        return view('dashboard', );
+    if ($user->hasRole('admin')) {
+        // Redirect Admins to their dashboard
+        return redirect()->route('admin.dashboard');
     }
+
+    if ($user->hasRole('user')) {
+        // Redirect Members to their dashboard
+        return redirect()->route('member.dashboard');
+    }
+
+    // Default view for users without a specific role
+    return view('dashboard');
+}
 
     /**
      * Show the form for creating a new resource.
@@ -30,6 +34,11 @@ class DashboardController extends Controller
     public function memberDashboard()
     {
         return view('members.dashboard');
+    }
+
+       public function adminDashboard()
+    {
+        return view('admin.dashboard');
     }
 
     /**

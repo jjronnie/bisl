@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\Loan;
+use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 
-class LoanController extends Controller
+class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return view('admin.admins.index');
     }
 
     /**
@@ -20,7 +21,7 @@ class LoanController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.admins.create');
     }
 
     /**
@@ -34,7 +35,7 @@ class LoanController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Loan $loan)
+    public function show(User $user)
     {
         //
     }
@@ -42,7 +43,7 @@ class LoanController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Loan $loan)
+    public function edit(User $user)
     {
         //
     }
@@ -50,7 +51,7 @@ class LoanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Loan $loan)
+    public function update(Request $request, User $user)
     {
         //
     }
@@ -58,7 +59,7 @@ class LoanController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Loan $loan)
+    public function destroy(User $user)
     {
         //
     }

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
+use App\Http\Controllers\Controller;
 
-use App\Models\EmergencyContact;
+use App\Models\SavingsAccount;
 use Illuminate\Http\Request;
 
-class EmergencyContactController extends Controller
+class SavingsAccountController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +35,7 @@ class EmergencyContactController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(EmergencyContact $emergencyContact)
+    public function show(SavingsAccount $savingsAccount)
     {
         //
     }
@@ -42,7 +43,7 @@ class EmergencyContactController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(EmergencyContact $emergencyContact)
+    public function edit(SavingsAccount $savingsAccount)
     {
         //
     }
@@ -50,7 +51,7 @@ class EmergencyContactController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, EmergencyContact $emergencyContact)
+    public function update(Request $request, SavingsAccount $savingsAccount)
     {
         //
     }
@@ -58,7 +59,7 @@ class EmergencyContactController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(EmergencyContact $emergencyContact)
+    public function destroy(SavingsAccount $savingsAccount)
     {
         //
     }

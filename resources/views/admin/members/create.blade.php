@@ -2,7 +2,7 @@
     <x-page-title title="Add New Sacco Member" />
 
     <div class=" mx-auto bg-white p-6 rounded-xl shadow-sm mt-6">
-        <form method="POST" action="{{ route('members.store') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('admin.members.store') }}" enctype="multipart/form-data">
             @csrf
 
             {{-- Personal Info --}}
@@ -170,7 +170,7 @@
 
             {{-- Submit --}}
             <div class="mt-6 flex items-center justify-end space-x-3">
-                <a href="{{ route('members.index') }}"
+                <a href="{{ route('admin.members.index') }}"
                     class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Cancel</a>
 
                 <x-primary-button>

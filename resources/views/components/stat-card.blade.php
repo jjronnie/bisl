@@ -3,29 +3,38 @@
     'sub_title' => '',
     'value' => '',
     'icon' => '',
-    'color' => 'blue',
+    'color'=>'blue'
 ])
 
-<div {{ $attributes->merge(['class' => 'bg-white rounded-lg shadow p-6']) }}>
-    <div class="flex items-center justify-between mb-4">
-        {{-- Only display if title is provided --}}
-        @if ($title)
-            <p class="text-sm text-gray-600">{{ $title }}</p>
-        @endif
+<div {{ $attributes->merge(['class' => 'bg-white rounded-2xl shadow-sm  p-6 border border-gray-200']) }}>
+    <div class="flex items-center">
+          @if ($icon)
+        <div class="flex-shrink-0">
+            <div class="w-12 h-12 bg-blue-600 rounded-xl  flex items-center justify-center">
+                <i data-lucide="{{ $icon }}" class="w-5 h-5 text-white"></i>
+            </div>
 
-        {{-- Only display icon if provided --}}
-        @if ($icon)
-            <i data-lucide="{{ $icon }}" class="w-5 h-5 text-{{ $color }}-600"></i>
+             
+        </div>
         @endif
+        <div class="ml-4">
+                  {{-- Only display if value is provided --}}
+            @if ($value)
+                <p class="text-xl font-bold text-gray-900">{{ $value }}</p>
+            @endif
+
+            {{-- Only display if title is provided --}}
+            @if ($title)
+                <h3 class="text-1xl font-semibold text-gray-600">{{ $title }}</h3>
+                
+            @endif
+      
+            {{-- Only display if sub_title is provided --}}
+            @if ($sub_title)
+                <p class="text-sm text-muted text-gray-500">{{ $sub_title }}</p>
+            @endif
+        </div>
     </div>
 
-    {{-- Only display value if provided --}}
-    @if ($value)
-        <p class="text-3xl font-bold" style="color: hsl(222, 47%, 11%);">{{ $value }}</p>
-    @endif
 
-    {{-- Only display subtitle if provided --}}
-    @if ($sub_title)
-        <p class="text-sm text-gray-600 mt-2">{{ $sub_title }}</p>
-    @endif
 </div>
