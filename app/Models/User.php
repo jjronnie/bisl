@@ -22,6 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'member_id',
+        'google_id',
     ];
 
     /**
@@ -45,5 +47,18 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+ 
+
+    public function member()
+{
+    return $this->hasOne(Member::class);
+}
+
+    
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'transacted_by_user_id');
     }
 }

@@ -1,88 +1,71 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <title>
+        {{ ucfirst(Str::before(Route::currentRouteName() ?? 'Admin', '.')) }} | Bondemala Savings Group
+    </title>
+    <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap"
         rel="stylesheet">
 
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+
+
+
+    @vite('resources/css/app.css')
+
+
+    <!-- Favicon -->
+    <link rel="icon" href="{{ asset('favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
+
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#001529">
+
+    <meta name="mobile-web-app-capable" content="yes">
+
+
+
+
+
 </head>
 
-<body class="min-h-screen bg-gray-50">
 
-     <!-- Preloader-->
+<body class="font-sans  bg-[#F2F3F6]  m-0 p-0 flex flex-col min-h-screen ">
+
+    <!-- Preloader-->
     @if (!request()->routeIs(['login', 'register']))
     @include('layouts.preloader')
     @endif
 
 
+
+
+
     @yield('content')
 
 
+    @include('components.alerts')
 
-    <script>
-        // Mobile menu toggle
-        const sidebar = document.getElementById('sidebar');
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        
-        mobileMenuBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('-translate-x-full');
-        });
 
-        // Initialize Lucide icons
-        lucide.createIcons();
+    @vite('resources/js/app.js')
+    <script src="{{ asset('assets/js/main.js') }}"></script>
 
-        // Savings Chart
-        const savingsCtx = document.getElementById('savingsChart').getContext('2d');
-        new Chart(savingsCtx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Savings',
-                    data: [400000, 450000, 480000, 520000, 580000, 650000],
-                    borderColor: 'rgb(59, 130, 246)',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true
-            }
-        });
 
-        // Loans Chart
-        const loansCtx = document.getElementById('loansChart').getContext('2d');
-        new Chart(loansCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Loans Issued',
-                    data: [200000, 250000, 220000, 280000, 300000, 350000],
-                    backgroundColor: 'rgba(249, 115, 22, 0.8)'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true
-            }
-        });
-    </script>
+
 </body>
 
 </html>

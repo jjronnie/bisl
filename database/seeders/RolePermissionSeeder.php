@@ -34,6 +34,7 @@ class RolePermissionSeeder extends Seeder
                 'name' => ' Admin Account',
                 'password' => Hash::make('88928892'), 
                 'email_verified_at' => now(),
+                'must_change_password' => false,
             ]
         );
 
