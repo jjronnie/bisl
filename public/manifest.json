@@ -1,7 +1,7 @@
 {
-  "name": "Novas",
-  "short_name": "Novas",
-  "description": "An intelligent point of sale system for modern businesses.",
+  "name": "Bondemala Savings Group",
+  "short_name": "BISL Savings",
+  "description": "Gather to Grow.",
   "start_url": "/login",
   "display": "standalone",
   "orientation": "portrait",

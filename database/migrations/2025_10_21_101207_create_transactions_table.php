@@ -13,18 +13,21 @@ return new class extends Migration
     {
       Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('account_id')->constrained('savings_accounts')->onDelete('cascade');
-            $table->foreignId('loan_id')->nullable()->constrained('loans')->onDelete('set null'); // Loans not yet created, will need to be run after loans table
+             $table->foreignId('member_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('savings_account_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('loan_id')->nullable()->constrained('loans')->onDelete('set null'); 
             $table->foreignId('transacted_by_user_id')->nullable()->constrained('users')->onDelete('set null');
             
             $table->enum('transaction_type', [
                 'deposit', 'withdrawal', 'loan_disbursement', 'loan_repayment', 'fee', 'other'
             ]);
+              $table->string('method')->nullable();
 
-            $table->decimal('amount', 12, 2);
-            $table->boolean('is_debit'); // TRUE if it reduces the account balance (withdrawal, loan repayment)
-            $table->decimal('running_balance', 12, 2);
+            $table->decimal('amount', 15, 2);
+            $table->boolean('is_debit'); 
+            $table->decimal('running_balance', 15, 2);
             $table->string('description')->nullable();
+             $table->text('remarks')->nullable();
             $table->timestamp('transaction_date')->useCurrent();
 
             $table->timestamps();

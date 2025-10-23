@@ -12,6 +12,7 @@ class Member extends Model
     
    protected $fillable = [
         'user_id',
+         'tier',
         'member_no',
         'name',
         'date_of_birth',
@@ -24,15 +25,11 @@ class Member extends Model
         'phone1',
         'phone2',
         'address',
-        'has_existing_savings',
-        'existing_savings_details',
-        'is_currently_in_debt',
-        'debt_details',
+     
     ];
 
     protected $casts = [
-        'has_existing_savings' => 'boolean',
-        'is_currently_in_debt' => 'boolean',
+       
         'date_of_birth' => 'date',
     ];
 

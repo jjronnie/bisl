@@ -49,6 +49,13 @@
                     <span>Members</span>
                 </a>
 
+                   <a href="{{ route('admin.transactions.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.transactions.*') ? 'sidebar-link-active' : '' }}">
+
+                    <i data-lucide="receipt" class="w-5 h-5 text-white"></i>
+                    <span>Transactions</span>
+                </a>
+
 
                  <a href="{{ route('admin.admins.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.admins.*') ? 'sidebar-link-active' : '' }}">
@@ -58,12 +65,7 @@
                 </a>
 
 
-                  <a href="{{ route('admin.admins.index') }}"
-                    class="sidebar-link {{ request()->routeIs('admin.admins.*') ? 'sidebar-link-active' : '' }}">
-
-                    <i data-lucide="receipt" class="w-5 h-5 text-white"></i>
-                    <span>Transactions</span>
-                </a>
+               
 
 
                   <a href="{{ route('admin.admins.index') }}"

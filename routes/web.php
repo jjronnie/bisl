@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\MemberController;
@@ -22,6 +23,7 @@ Route::middleware(['auth', 'verified', 'pwc', 'role:admin'])
 
           Route::resource('members', MemberController::class);
           Route::resource('admins', AdminController::class);
+          Route::resource('transactions', TransactionController::class);
      });
 
 

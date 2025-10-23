@@ -7,12 +7,11 @@ self.addEventListener('install', function (e) {
         '/offline.html',
         'assets/css/main.css',
         '/assets/js/main.js',
-        '/favicon.webp',
-        '/assets/img/logo.png',
+        '/favicon.png',
+        '/assets/img/bonde-logo.png',
         '/banner.png',
-        '/landing/index.html',
-        '/landing/assets/index-B-JF9dM1.css',
-        '/landing/assets/index-OefAGoZ2.js'
+    
+     
       ];
       for (let file of files) {
         try {

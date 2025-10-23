@@ -1,13 +1,13 @@
 <x-mail::message>
 # Dear {{ $name }}, Welcome to {{ config('app.name') }}
 
-This email confirms that you have been registered as a member.
+This email informs you that you have been registered as a member.
 
 
 
 <x-mail::panel>
 
-Please use the email  {{ $email }} as **Username** and the Code below as **Password** to sign in to your Account:
+Please use the email  {{ $email }} as **Username** and the  **One Time Password** below to sign in to your Account:
 
 </x-mail::panel>
 

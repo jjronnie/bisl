@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('members', function (Blueprint $table) {
             $table->id();
             $table->foreignid('user_id')->constrained()->onDelete('cascade');
-            $table->string('member_no')->unique();
+            $table->enum('tier', ['silver', 'gold'])->default('silver');
 
             // Personal Info
             $table->string('name');
@@ -32,11 +32,7 @@ return new class extends Migration {
             // Residential Address
             $table->text('address')->nullable();
 
-            // Financial/Declaration
-            $table->boolean('has_existing_savings')->default(false);
-            $table->text('existing_savings_details')->nullable();
-            $table->boolean('is_currently_in_debt')->default(false);
-            $table->text('debt_details')->nullable();
+
 
             $table->timestamps();
             $table->softDeletes();
