@@ -10,6 +10,9 @@
         </div>
         <div class="text-center">
           <h1 class="mb-3 font-bold text-xl">Sign In to your account</h1>
+             <!-- Google Sign In Button -->
+
+          @include('auth.google-button')
 
         
        
@@ -117,9 +120,7 @@
           </button>
         </form>
 
-          <!-- Google Sign In Button -->
-
-          @include('auth.google-button')
+       
 
           
 

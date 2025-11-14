@@ -7,9 +7,14 @@ use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Support\Facades\Route;
 
+
+
 Route::get('/', function () {
-     return view('welcome');
-})->name('home');
+    // If user is logged in, send to dashboard. If not, send to login.
+    return auth()->check()
+        ? redirect()->route('dashboard')
+        : redirect()->route('login');
+});
 
 
 
