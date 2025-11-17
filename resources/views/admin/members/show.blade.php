@@ -8,12 +8,9 @@
         <div class="flex justify-between items-center mb-6 border-b pb-4">
             <h1 class="text-2xl font-bold text-indigo-700">{{ $member->name }}</h1>
             <a href="{{ route('admin.members.edit', $member) }}"
-                class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition duration-150 shadow-md flex items-center space-x-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path
-                        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zm-3.646 3.646l-4.55 4.55 2.828 2.828 4.55-4.55-2.828-2.828zM3.464 15.636l2.828-2.828-1.414-1.414-2.828 2.828 1.414 1.414z" />
-                </svg>
-                <span>Edit Member</span>
+                class="btn">
+                
+                Edit Member
             </a>
         </div>
 
@@ -28,8 +25,8 @@
                     <div class="grid grid-cols-2 gap-4 text-sm">
                         {{-- Replaced <x-detail-item> with standard HTML --}}
                         <div>
-                            <dt class="font-medium text-gray-500">Member Number</dt>
-                            <dd class="mt-1 text-gray-900">{{ $member->member_no ?? 'N/A' }}</dd>
+                            <dt class="font-medium text-gray-500">Account Number</dt>
+                            <dd class="mt-1 text-gray-900">{{ $member->savingsAccount->account_number ?? 'N/A' }}</dd>
                         </div>
                         <div>
                             <dt class="font-medium text-gray-500">Join Date</dt>
@@ -135,8 +132,8 @@
                                 triggerIcon="trash" />
                                 
             <a href="{{ route('admin.members.index') }}"
-                class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition duration-150">
-                &larr; Back to Members List
+                class="btn-gray">
+                 Back to Members List
             </a>
         </div>
     </div>

@@ -19,7 +19,7 @@
 
         <div class="flex gap-3">
 
-            <a class="btn" href="{{ route('admin.members.create') }}"> <i data-lucide="plus" class="w-4 h-4 "></i></a>
+            <a class="btn" href="{{ route('admin.transactions.create') }}"> <i data-lucide="plus" class="w-4 h-4 "></i></a>
 
             <!-- Export to PDF Button -->
             <button class="btn">

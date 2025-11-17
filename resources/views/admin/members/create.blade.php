@@ -47,7 +47,7 @@
                 <div>
                     <x-input-label for="gender" value="Gender" />
                     <select name="gender" id="gender" class="mt-1 block w-full border-gray-300 rounded-md">
-                        <option value="">Select</option>
+                        <option value="" selected disabled>Select</option>
                         <option value="male" {{ old('gender')=='male' ? 'selected' : '' }}>Male</option>
                         <option value="female" {{ old('gender')=='female' ? 'selected' : '' }}>Female</option>
                     </select>
@@ -59,7 +59,7 @@
                     <x-input-label for="marital_status" value="Marital Status" />
                     <select name="marital_status" id="marital_status"
                         class="mt-1 block w-full border-gray-300 rounded-md">
-                        <option value="">Select</option>
+                        <option value="" selected disabled>Select</option>
                         <option value="single" {{ old('marital_status')=='single' ? 'selected' : '' }}>Single</option>
                         <option value="married" {{ old('marital_status')=='married' ? 'selected' : '' }}>Married
                         </option>

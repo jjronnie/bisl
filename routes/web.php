@@ -10,11 +10,8 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', function () {
-    // If user is logged in, send to dashboard. If not, send to login.
-    return auth()->check()
-        ? redirect()->route('dashboard')
-        : redirect()->route('login');
-});
+     return redirect()->route('login');
+})->name('home');
 
 
 
@@ -28,7 +25,11 @@ Route::middleware(['auth', 'verified', 'pwc', 'role:admin'])
 
           Route::resource('members', MemberController::class);
           Route::resource('admins', AdminController::class);
-          Route::resource('transactions', TransactionController::class);
+          Route::resource('transactions', TransactionController::class)->only([
+        'index', 'create', 'store', 'show'
+    ]);
+    
+    Route::get('/members/search', [MemberController::class, 'search'])->name('members.search');
      });
 
 
