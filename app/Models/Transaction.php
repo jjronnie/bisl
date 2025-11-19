@@ -15,20 +15,20 @@ class Transaction extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'reference_id',
+   protected $fillable = [
         'member_id',
-        'savings_account_id',
+        'reference_number',
         'loan_id',
-        'transacted_by_user_id',
+        'creator',
         'transaction_type',
-        'method',
+        'side',
         'amount',
-        'is_debit',
-        'running_balance',
+        'balance_before',
+        'balance_after',
+        'method',
         'description',
         'remarks',
-        'transaction_date',
+        'transaction_date'
     ];
 
     /**
@@ -36,12 +36,7 @@ class Transaction extends Model
      *
      * @var array<string, string>
      */
-    protected $casts = [
-        'amount' => 'decimal:2',
-        'running_balance' => 'decimal:2',
-        'is_debit' => 'boolean',
-        'transaction_date' => 'datetime',
-    ];
+  
 
     // --- RELATIONSHIPS ---
 
@@ -60,11 +55,9 @@ class Transaction extends Model
         return $this->belongsTo(Loan::class);
     }
 
-    /**
-     * Get the user (staff) who posted the transaction.
-     */
-    public function transactedBy(): BelongsTo
+
+    public function creator(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'transacted_by_user_id');
+        return $this->belongsTo(User::class, 'creator');
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Member;
+use App\Models\SavingsAccount;
 
 class DashboardController extends Controller
 {
@@ -36,10 +38,16 @@ class DashboardController extends Controller
         return view('members.dashboard');
     }
 
-       public function adminDashboard()
-    {
-        return view('admin.dashboard');
-    }
+  public function adminDashboard()
+{
+    $totalMembers = Member::count();
+
+    // Sum all savings account balances
+    $totalBalance = SavingsAccount::sum('balance');
+
+    return view('admin.dashboard', compact('totalMembers', 'totalBalance'));
+}
+
 
     /**
      * Store a newly created resource in storage.

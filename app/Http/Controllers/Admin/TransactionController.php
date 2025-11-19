@@ -25,79 +25,50 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $transactions = Transaction::with('member:id,name,sacco_member_id')
+        $transactions = Transaction::with('member:id,name')
             ->latest()
-            ->paginate(20);
+            ->paginate(5);
 
-        return view('admin.transactions.index', compact('transactions'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-public function create(Request $request)
-    {
-        // Get all active members, ordered by name
-        // Eager load the savingsAccount and select only the columns we need
-        $members = Member::with('savingsAccount:id,member_id,account_number')
+              $members = Member::with('savingsAccount:id,member_id,account_number')
             ->whereNull('deleted_at')
             ->orderBy('name')
             ->get();
-        
-        return view('admin.transactions.create', compact('members'));
+
+        return view('admin.transactions.index', compact('transactions', 'members'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-  public function store(Request $request)
-    {
-        $request->validate([
-            'member_id' => 'required|exists:members,id',
-            'savings_account_id' => 'required|exists:savings_accounts,id',
-            'transaction_type' => 'required|in:deposit,withdrawal,loan_disbursement,loan_repayment,fee,other',
-            'amount' => 'required|numeric|min:0.01',
-            'is_debit' => 'required|boolean',
-        ]);
 
-        try {
-            $transaction = $this->transactionService->createTransaction($request->all());
-            return response()->json(['success' => true, 'transaction' => $transaction]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 400);
-        }
+public function store(Request $request, TransactionService $service)
+{
+   
+    $validated = $request->validate([
+        'member_id' => 'required|exists:members,id',
+        'transaction_type' => 'required|in:deposit,withdrawal',
+        'amount' => 'required|numeric|min:1',
+        'method' => 'nullable|string',
+        'description' => 'nullable|string|max:255',
+        'remarks' => 'nullable|string'
+    ]);
+
+    try {
+        $transaction = $service->create($validated);
+
+
+
+        return redirect()->back()->with('success', 'Transaction successful.');
+    } catch (\Exception $e) {
+        return redirect()->back()->withErrors($e->getMessage());
     }
+}
     /**
      * Display the specified resource.
      */
   public function show(Transaction $transaction)
     {
         // Eager load related data
-        $transaction->load(['member', 'savingsAccount', 'loan', 'transactedBy']);
+        $transaction->load(['member', 'savingsAccount','creator']);
         
-        return view('transactions.show', compact('transaction'));
-    }
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Transaction $transaction)
-    {
-        //
+        return view('admin.transactions.show', compact('transaction'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Transaction $transaction)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Transaction $transaction)
-    {
-        //
-    }
 }
