@@ -13,7 +13,8 @@ class AdminController extends Controller
      */
     public function index()
     {
-        return view('admin.admins.index');
+        $admins = User::role('admin')->latest()->get();
+        return view('admin.admins.index', compact('admins'));
     }
 
     /**
@@ -63,4 +64,30 @@ class AdminController extends Controller
     {
         //
     }
+
+    // Suspend user
+public function suspend(User $admin)
+{
+    // Prevent self-suspension if needed
+    if (auth()->id() === $admin->id) {
+        return back()->with('error', 'You cannot suspend your own account.');
+    }
+
+    $admin->update([
+        'status' => 'suspended',
+    ]);
+
+    return back()->with('success', 'User suspended successfully.');
+}
+
+// Unsuspend user
+public function unsuspend(User $admin)
+{
+    $admin->update([
+        'status' => 'active',
+    ]);
+
+    return back()->with('success', 'User restored successfully.');
+}
+
 }

@@ -2,6 +2,22 @@
 <x-page-title title="Settings" />
 <x-page-title />
 
+<x-breadcrumb 
+    :items="[
+        ['label' => 'Home', 'url' => route('home')],
+        ['label' => 'Our Services'],
+    ]" 
+    description="Explore our range of professional services."
+    background="{{ asset('/assets/img/services-bg.webp') }}"
+/>
+
+
+<x-breadcrumb :items="[
+    ['label' => 'Home', 'url' => route('home')],
+    ['label' => 'About Us'],
+]" />
+
+
 
 <x-logo /> <!-- default size -->
 
@@ -52,11 +68,11 @@ form
 confirmation Modal
 
 <x-confirm-modal :action="route('users.destroy', $user->id)"
-    warning="Are you sure you want to delete this user? This action cannot be undone." triggerText="Delete User" />
+    warning="Are you sure you want to delete this user? This action cannot be undone." method="" triggerText="Delete User" />
 
 <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
     <!-- card -->
-    <x-stat-card title="" value="" icon="" color="" />
+    <x-stat-card title="" value="" icon=""  />
 
 </div>
 
@@ -100,6 +116,18 @@ confirmation Modal
         <x-table.cell></x-table.cell>
     </x-table.row>
 </x-table>
+
+ <x-table.cell>
+                <div class="flex items-center space-x-2">
+                    @include('backend.categories.partials.edit')
+
+                    <x-confirm-modal :action="route('categories.destroy', $category->id)"
+                        warning="Are you sure you want to delete this Category? This action cannot be undone."
+                        triggerIcon="trash-2" />
+
+                </div>
+
+            </x-table.cell>
 
 //status badge
 
@@ -146,3 +174,25 @@ side form-select
 <x-confirmation-checkbox id="agree-terms" name="agree_terms" label="I agree to the Terms & Conditions" color="blue" />
 
 <x-empty-state message="No products found for this business." />
+
+
+  {{-- 1. Product Name --}}
+            <div>
+                <label for="name" class="label">Product Name <span class="text-red-600"> *</span></label>
+                <input type="text" name="name" id="name" value="{{ old('name') }}" required
+                    class="input @error('name') border-red-500 @enderror" />
+                @error('name')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
+                    {{-- Description --}}
+            <div class="mb-6">
+                <label for="description" class="label">Description (Simple)</label>
+                <textarea name="description" id="description" rows="3"
+                    class="input @error('description') border-red-500 @enderror"
+                    placeholder="A brief description of the product or service.">{{ old('description') }}</textarea>
+                @error('description')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>

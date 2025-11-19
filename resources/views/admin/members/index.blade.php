@@ -67,7 +67,7 @@
                     </x-table.cell>
                     <x-table.cell>UGX {{ number_format($member->savingsAccount->balance) }}</x-table.cell>
                     <x-table.cell>
-                        <x-status-badge :status="$member->savingsAccount->status" />
+                        <x-status-badge :status="$member->user->status" />
                     </x-table.cell>
 
                         <x-table.cell>

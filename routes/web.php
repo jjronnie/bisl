@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\LoanController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
@@ -25,11 +26,20 @@ Route::middleware(['auth', 'verified', 'pwc', 'role:admin'])
 
           Route::resource('members', MemberController::class);
           Route::resource('admins', AdminController::class);
+          Route::resource('loans', LoanController::class);
+
+          Route::patch('/admins/{admin}/suspend', [AdminController::class, 'suspend'])->name('suspend');
+          Route::patch('/admins/{admin}/unsuspend', [AdminController::class, 'unsuspend'])->name('unsuspend');
+
+
           Route::resource('transactions', TransactionController::class)->only([
-        'index', 'create', 'store', 'show'
-    ]);
-    
-    Route::get('/members/search', [MemberController::class, 'search'])->name('members.search');
+               'index',
+               'create',
+               'store',
+               'show'
+          ]);
+
+          Route::get('/members/search', [MemberController::class, 'search'])->name('members.search');
      });
 
 

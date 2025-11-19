@@ -25,9 +25,9 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $transactions = Transaction::with('member:id,name')
+        $transactions = Transaction::with('member',  'savingsAccount','creator')
             ->latest()
-            ->paginate(5);
+            ->paginate(50);
 
               $members = Member::with('savingsAccount:id,member_id,account_number')
             ->whereNull('deleted_at')

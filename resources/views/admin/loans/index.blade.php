@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-page-title title="Transactions" subtitle="Manage All Transactions" />
+    <x-page-title title="loans" subtitle="Manage All loans" />
 
     <div x-data="{ search: '' }" class="space-y-6">
         <!-- Controls -->
@@ -11,13 +11,13 @@
                     </div>
                     <input x-model="search" type="text"
                         class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                        placeholder="Search by member name or transaction type...">
+                        placeholder="Search by member name or loan type...">
                 </div>
             </div>
 
             <div class="flex gap-3">
 
-                @include('admin.transactions.create')
+                @include('admin.loans.create')
 
 
                 <!-- Export to PDF Button -->
@@ -31,21 +31,21 @@
             </div>
         </div>
 
-        @if($transactions->isEmpty())
-        <x-empty-state icon="receipt" message="No transactions found." />
+        @if($loans->isEmpty())
+        <x-empty-state icon="receipt" message="No loans found." />
         @else
         <div class="bg-white rounded-lg shadow overflow-hidden">
-            <x-table :headers="['Transaction ID','Date', 'Member', 'Type',  'Amount', ]" showActions="false">
-                @foreach($transactions as $transaction)
+            <x-table :headers="['loan ID','Date', 'Member', 'Type',  'Amount', ]" showActions="false">
+                @foreach($loans as $loan)
                 <template x-if="!search || 
-                                '{{ $transaction->member->name ?? 'N/A' }}'.toLowerCase().includes(search.toLowerCase()) || 
-                                '{{ $transaction->reference_number }}'.toLowerCase().includes(search.toLowerCase())
+                                '{{ $loan->member->name ?? 'N/A' }}'.toLowerCase().includes(search.toLowerCase()) || 
+                                '{{ $loan->reference_number }}'.toLowerCase().includes(search.toLowerCase())
                              ">
                     <x-table.row>
 
                         <x-table.cell>
                             <div class="text-sm text-gray-900">
-                                {{ $transaction->reference_number }}
+                                {{ $loan->reference_number }}
                             </div>
 
                         </x-table.cell>
@@ -54,7 +54,7 @@
                         {{-- Date --}}
                         <x-table.cell>
                             <div class="text-sm text-gray-900">
-                                {{ $transaction->created_at }}
+                                {{ $loan->created_at }}
                             </div>
 
                         </x-table.cell>
@@ -62,10 +62,10 @@
                         {{-- Member --}}
                         <x-table.cell>
                             <div class="text-sm font-medium text-gray-900">
-                                {{ $transaction->member->name ?? 'N/A' }}
+                                {{ $loan->member->name ?? 'N/A' }}
                             </div>
                             <div class="text-xs text-gray-500">
-                                A/C: {{ $transaction->member->savingsAccount->account_number }}
+                                A/C: {{ $loan->member->savingsAccount->account_number }}
 
 
                             </div>
@@ -76,7 +76,7 @@
                         <x-table.cell>
 
 
-                            <x-status-badge :status="ucfirst($transaction->transaction_type)" />
+                            <x-status-badge :status="ucfirst($loan->loan_type)" />
 
                         </x-table.cell>
 
@@ -86,7 +86,7 @@
                         <x-table.cell>
 
 
-                            UGX {{ number_format($transaction->amount) }}
+                            UGX {{ number_format($loan->amount) }}
 
                         </x-table.cell>
 
@@ -95,7 +95,7 @@
 
 
 
-                            @include('admin.transactions.show')
+                            @include('admin.loans.show')
 
 
 
@@ -110,9 +110,9 @@
             </x-table>
 
             {{-- Pagination --}}
-            @if($transactions->hasPages())
+            @if($loans->hasPages())
             <div class="px-6 py-4 border-t border-gray-200">
-                {{ $transactions->links() }}
+                {{ $loans->links() }}
             </div>
             @endif
         </div>
