@@ -17,7 +17,7 @@
 
             <div class="flex gap-3">
 
-                @include('admin.loans.create')
+                <a class="btn" href="{{ route('admin.loans.create') }}">Create New Loan</a>
 
 
                 <!-- Export to PDF Button -->
