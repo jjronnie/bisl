@@ -19,23 +19,12 @@ class StatusBadge extends Component
     {
         return match ($status) {
             'active' => 'bg-green-100 text-green-800',
-            'enabled' => 'bg-green-100 text-green-800',
             'silver' => 'bg-gray-100 text-gray-800 border border-gray-300',
             'gold' => 'bg-yellow-100 text-yellow-800 border border-yellow-300',
             'Deposit' => 'bg-green-100 text-green-800',
-            'Withdrawal' => 'bg-red-200 text-red-900',
-            'paid' => 'bg-green-100 text-green-800',
-            'partial' => 'bg-yellow-100 text-yellow-800',
-            'inactive' => 'bg-gray-100 text-gray-700',
+            'Withdrawal' => 'bg-blue-100 text-blue-900',
             'pending' => 'bg-yellow-100 text-yellow-700',
-            'expired' => 'bg-orange-100 text-orange-700',
-            'on-leave' => 'bg-yellow-100 text-yellow-800',
-            'suspended' => 'bg-orange-100 text-orange-800',
-            'terminated' => 'bg-red-100 text-red-800',
-            'dismissed' => 'bg-red-200 text-red-900',
-            'resigned' => 'bg-gray-100 text-gray-800',
-            'deserted' => 'bg-red-100 text-red-800',
-            'off-duty' => 'bg-blue-100 text-blue-800',
+            'suspended' => 'bg-orange-100 text-orange-800',       
             default => 'bg-gray-100 text-gray-700',
         };
     }
