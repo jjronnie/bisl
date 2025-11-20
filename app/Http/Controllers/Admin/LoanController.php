@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Loan;
 use Illuminate\Http\Request;
 use App\Models\Member;
+use App\Helpers\LoanHelper;
 
 
 use App\Services\LoanService;
@@ -51,8 +52,13 @@ class LoanController extends Controller
      */
     public function store(Request $request)
     {
+
+        
+
+
         $validated = $request->validate([
             'member_id' => 'required|exists:members,id',
+            'loan_number' => 'required|string|unique:loans,loan_number',
 
             'principal_amount' => 'required|numeric|min:1',
             'interest_rate' => 'required|numeric|min:0',
@@ -71,6 +77,9 @@ class LoanController extends Controller
         ]);
 
         $validated['created_by'] = Auth::id();
+
+       
+
 
         try {
             $loan = $this->service->create($validated);

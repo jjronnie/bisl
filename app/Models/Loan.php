@@ -39,4 +39,15 @@ class Loan extends Model
     'notes'
 ];
 
+
+
+  public function member()
+    {
+        return $this->belongsTo(Member::class);
+    }
+
+        public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }

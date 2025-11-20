@@ -12,11 +12,15 @@ class LoanService
     {
         return DB::transaction(function () use ($data) {
 
-            $data['loan_number'] = generateLoanId();
+
 
             $principal = $data['principal_amount'];
             $rate = $data['interest_rate'];
             $duration = $data['duration_months'];
+
+              $loanNumber = generateLoanId();
+
+         
 
             // Calculate interest and totals
             $totalInterest = $this->calculateTotalInterest(
@@ -36,8 +40,14 @@ class LoanService
             $data['monthly_repayment_amount'] = $monthlyRepayment;
             $data['outstanding_balance'] = $totalAmountDue;
 
+              $data['total_amount_due'] = $totalAmountDue;
+            $data['outstanding_balance'] = $totalAmountDue;
+
+            $data['loan_number'] =  $loanNumber;
 
 
+            
+          
 
 
             return Loan::create($data);

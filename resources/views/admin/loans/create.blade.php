@@ -26,6 +26,7 @@
             <x-input-error :messages="$errors->get('member_id')" class="mt-2" />
         </div>
 
+     
     
 
         {{-- Principal Amount --}}

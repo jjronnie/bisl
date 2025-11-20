@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-page-title title="loans" subtitle="Manage All loans" />
+    <x-page-title title="Loans" subtitle="Manage All loans" />
 
     <div x-data="{ search: '' }" class="space-y-6">
         <!-- Controls -->
@@ -35,7 +35,7 @@
         <x-empty-state icon="receipt" message="No loans found." />
         @else
         <div class="bg-white rounded-lg shadow overflow-hidden">
-            <x-table :headers="['Loan ID','Date', 'Member',  'Amount', ]" showActions="false">
+            <x-table :headers="['Loan ID','Borrower', 'STATUS', 'Principal','RATE', 'DUE' ,'DUE DATE']" showActions="false">
                 @foreach($loans as $loan)
                 <template x-if="!search || 
                                 '{{ $loan->member->name ?? 'N/A' }}'.toLowerCase().includes(search.toLowerCase()) || 
@@ -47,20 +47,6 @@
                             <div class="text-sm text-gray-900">
                                 {{ $loan->loan_number }}
                             </div>
-
-                        </x-table.cell>
-
-
-                        {{-- Date --}}
-                        <x-table.cell>
-                            <div class="text-sm text-gray-900">
-                                {{ $loan->created_at }}
-                            </div>
-                              <div class="text-xs text-gray-500">
-                    by {{ optional($loan->creator)->name ?? 'N/A' }}
-
-                </div>
-
                         </x-table.cell>
 
                         {{-- Member --}}
@@ -71,40 +57,45 @@
                             <div class="text-xs text-gray-500">
                                 A/C: {{ $loan->member->savingsAccount->account_number }}
 
-
                             </div>
 
                         </x-table.cell>
 
-                        {{-- Type --}}
+                           {{-- Type --}}
                         <x-table.cell>
-
-
-                         -
+                              <x-status-badge :status="$loan->status" />
 
                         </x-table.cell>
-
-
-
-                        {{-- Amount --}}
-                        <x-table.cell>
-
-
-                            UGX {{ number_format($loan->amount) }}
-
-                        </x-table.cell>
-
-
-                        <x-table.cell>
-
-
-
-                         
-
-
-                        </x-table.cell>
-
                        
+
+                           {{-- Amount --}}
+                        <x-table.cell>
+
+                            UGX {{ number_format($loan->principal_amount) }}
+
+                        </x-table.cell>
+
+                          <x-table.cell>
+
+                           {{ number_format($loan->interest_rate) }}%
+
+                        </x-table.cell>
+
+                            {{-- Amount --}}
+                        <x-table.cell>
+
+                            UGX {{ number_format($loan->total_amount_due) }}
+
+                        </x-table.cell>                  
+
+                        <x-table.cell>
+
+{{ $loan->due_date }}
+
+
+                        </x-table.cell>
+
+
 
 
 
