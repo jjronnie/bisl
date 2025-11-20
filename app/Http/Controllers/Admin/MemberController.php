@@ -56,6 +56,9 @@ class MemberController extends Controller
             'phone1' => 'required|string|max:20',
             'phone2' => 'nullable|string|max:20',
             'address' => 'nullable|string',
+            'opening_balance' => 'nullable|numeric',
+
+
 
         ]);
 
@@ -107,7 +110,8 @@ class MemberController extends Controller
                 SavingsAccount::create([
                     'member_id' => $member->id,
                     'account_number' => generateAccountNumber(),
-                    'balance' => 0,
+
+                    'balance' => $validated['opening_balance'] ?? 0,
                     'status' => 'active',
                 ]);
 
@@ -269,5 +273,5 @@ class MemberController extends Controller
     }
 
 
-    
+
 }

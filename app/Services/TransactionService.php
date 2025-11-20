@@ -52,7 +52,6 @@ class TransactionService
                 'balance_after' => $balanceAfter,
 
                 'method' => $data['method'] ?? null,
-                'description' => $data['description'] ?? null,
                 'remarks' => $data['remarks'] ?? null,
                
             ]);

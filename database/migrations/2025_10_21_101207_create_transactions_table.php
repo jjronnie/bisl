@@ -25,7 +25,6 @@ return new class extends Migration {
             $table->decimal('balance_before', 15, 2)->default(0);
             $table->decimal('balance_after', 15, 2)->default(0);
             $table->string('method')->nullable();
-            $table->string('description')->nullable();
             $table->text('remarks')->nullable();
             $table->timestamps();
         });

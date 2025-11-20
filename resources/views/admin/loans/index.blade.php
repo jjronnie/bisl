@@ -11,7 +11,7 @@
                     </div>
                     <input x-model="search" type="text"
                         class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                        placeholder="Search by member name or loan type...">
+                        placeholder="Search by member name or transaction type...">
                 </div>
             </div>
 
@@ -35,17 +35,17 @@
         <x-empty-state icon="receipt" message="No loans found." />
         @else
         <div class="bg-white rounded-lg shadow overflow-hidden">
-            <x-table :headers="['loan ID','Date', 'Member', 'Type',  'Amount', ]" showActions="false">
+            <x-table :headers="['Loan ID','Date', 'Member',  'Amount', ]" showActions="false">
                 @foreach($loans as $loan)
                 <template x-if="!search || 
                                 '{{ $loan->member->name ?? 'N/A' }}'.toLowerCase().includes(search.toLowerCase()) || 
-                                '{{ $loan->reference_number }}'.toLowerCase().includes(search.toLowerCase())
+                                '{{ $loan->loan_number }}'.toLowerCase().includes(search.toLowerCase())
                              ">
                     <x-table.row>
 
                         <x-table.cell>
                             <div class="text-sm text-gray-900">
-                                {{ $loan->reference_number }}
+                                {{ $loan->loan_number }}
                             </div>
 
                         </x-table.cell>
@@ -56,6 +56,10 @@
                             <div class="text-sm text-gray-900">
                                 {{ $loan->created_at }}
                             </div>
+                              <div class="text-xs text-gray-500">
+                    by {{ optional($loan->creator)->name ?? 'N/A' }}
+
+                </div>
 
                         </x-table.cell>
 
@@ -76,7 +80,7 @@
                         <x-table.cell>
 
 
-                            <x-status-badge :status="ucfirst($loan->loan_type)" />
+                         -
 
                         </x-table.cell>
 
@@ -95,11 +99,12 @@
 
 
 
-                            @include('admin.loans.show')
-
+                         
 
 
                         </x-table.cell>
+
+                       
 
 
 

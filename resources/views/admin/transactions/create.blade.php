@@ -56,13 +56,7 @@
             </div>
 
 
-            {{-- Description --}}
-            <div>
-                <x-input-label for="description" value="Description (optional)" />
-                <input type="text" name="description" id="description" value="{{ old('description') }}"
-                    class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base" />
-                <x-input-error :messages="$errors->get('description')" class="mt-2" />
-            </div>
+         
 
 
             {{-- Amount --}}

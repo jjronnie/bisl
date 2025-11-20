@@ -46,7 +46,6 @@ public function store(Request $request, TransactionService $service)
         'transaction_type' => 'required|in:deposit,withdrawal',
         'amount' => 'required|numeric|min:1',
         'method' => 'nullable|string',
-        'description' => 'nullable|string|max:255',
         'remarks' => 'nullable|string'
     ]);
 

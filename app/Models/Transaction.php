@@ -26,7 +26,6 @@ class Transaction extends Model
         'balance_before',
         'balance_after',
         'method',
-        'description',
         'remarks',
         'transaction_date'
     ];
@@ -60,4 +59,6 @@ class Transaction extends Model
     {
         return $this->belongsTo(User::class, 'creator');
     }
+
+    
 }

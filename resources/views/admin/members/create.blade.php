@@ -25,6 +25,20 @@
                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
                 </div>
 
+                     {{-- opening_balance --}}
+            <div>
+                <x-input-label for="opening_balance" value="Opening Balance" />
+                <div class="mt-1 relative rounded-lg shadow-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span class="text-gray-500 text-sm sm:text-base">UGX</span>
+                    </div>
+
+                    <input type="number" name="opening_balance" min="1"  placeholder="0.00" value="{{ old('opening_balance') }}"
+                        class="block w-full pl-12 pr-3 py-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base" />
+                </div>
+                <x-input-error :messages="$errors->get('opening_balance')" class="mt-2" />
+            </div>
+
 
 
                 <!-- Date of Birth -->

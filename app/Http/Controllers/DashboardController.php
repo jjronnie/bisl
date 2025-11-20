@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Member;
 use App\Models\SavingsAccount;
+use App\Models\Transaction;
+use App\Models\Loan;
+
 
 class DashboardController extends Controller
 {
@@ -13,22 +16,22 @@ class DashboardController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-{
-    $user = Auth::user();
+    {
+        $user = Auth::user();
 
-    if ($user->hasRole('admin')) {
-        // Redirect Admins to their dashboard
-        return redirect()->route('admin.dashboard');
+        if ($user->hasRole('admin')) {
+            // Redirect Admins to their dashboard
+            return redirect()->route('admin.dashboard');
+        }
+
+        if ($user->hasRole('user')) {
+            // Redirect Members to their dashboard
+            return redirect()->route('member.dashboard');
+        }
+
+        // Default view for users without a specific role
+        return view('dashboard');
     }
-
-    if ($user->hasRole('user')) {
-        // Redirect Members to their dashboard
-        return redirect()->route('member.dashboard');
-    }
-
-    // Default view for users without a specific role
-    return view('dashboard');
-}
 
     /**
      * Show the form for creating a new resource.
@@ -38,15 +41,34 @@ class DashboardController extends Controller
         return view('members.dashboard');
     }
 
-  public function adminDashboard()
-{
-    $totalMembers = Member::count();
+    public function adminDashboard()
+    {
+        $totalMembers = Member::count();
+        // Sum all savings account balances
+        $totalBalance = SavingsAccount::sum('balance');
 
-    // Sum all savings account balances
-    $totalBalance = SavingsAccount::sum('balance');
 
-    return view('admin.dashboard', compact('totalMembers', 'totalBalance'));
-}
+        // Total outstanding loans (active, disbursed, defaulted)
+        $outstandingLoans = Loan::whereIn('status', ['active', 'disbursed', 'defaulted']);
+
+        $totalOutstandingLoans = $outstandingLoans->count();
+
+        $totalOutstandingAmount = $outstandingLoans->sum('outstanding_balance');
+
+        $transactions = Transaction::with('member', 'savingsAccount', 'creator')
+            ->latest()
+            ->take(5)
+            ->get();
+
+
+        return view('admin.dashboard', compact(
+            'totalMembers',
+            'totalBalance',
+            'transactions',
+            'totalOutstandingLoans',
+            'totalOutstandingAmount'
+        ));
+    }
 
 
     /**

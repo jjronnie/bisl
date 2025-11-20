@@ -35,7 +35,8 @@
         },
         "files": [
             "app/Helpers/AccountNumberHelper.php",
-            "app/Helpers/TransactionHelper.php"
+            "app/Helpers/TransactionHelper.php",
+            "app/Helpers/LoanHelper.php"
         ]
     },
     "autoload-dev": {
