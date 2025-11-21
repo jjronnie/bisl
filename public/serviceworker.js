@@ -1,6 +1,6 @@
 self.addEventListener('install', function (e) {
   e.waitUntil(
-    caches.open('bislV1').then(async function (cache) {
+    caches.open('bislV2').then(async function (cache) {
       const files = [
         '/',
         'login',

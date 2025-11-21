@@ -39,6 +39,16 @@ class Member extends Model
     return $this->belongsTo(User::class);
 }
 
+public function savingsAccount()
+{
+    return $this->hasOne(SavingsAccount::class);
+}
+
+public function transactions()
+{
+    return $this->hasMany(Transaction::class);
+}
+
 
 
  
@@ -54,10 +64,7 @@ class Member extends Model
         return $this->hasOne(EmergencyContact::class);
     }
 
-    public function savingsAccount()
-    {
-        return $this->hasOne(SavingsAccount::class);
-    }
+
 
     public function loans()
     {

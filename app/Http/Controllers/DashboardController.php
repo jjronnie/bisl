@@ -38,8 +38,26 @@ class DashboardController extends Controller
      */
     public function memberDashboard()
     {
-        return view('members.dashboard');
+        $member = auth()->user()->member;
+
+        if (!$member) {
+            abort(404, 'Member account not found');
+        }
+
+        $savingsAccount = $member->savingsAccount;
+
+        // balance from savings account
+        $balance = $savingsAccount ? $savingsAccount->balance : 0;
+
+        // transactions from member
+        $transactions = $member->transactions()->latest()
+            ->take(5)
+            ->get();
+
+        return view('members.dashboard', compact('balance', 'transactions', 'member'));
     }
+
+
 
     public function adminDashboard()
     {

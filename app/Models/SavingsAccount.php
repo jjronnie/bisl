@@ -22,8 +22,12 @@ class SavingsAccount extends Model
         return $this->belongsTo(Member::class);
     }
 
-    public function transactions()
-    {
-        return $this->hasMany(Transaction::class);
-    }
+   public function transactions()
+{
+    return $this->member ? $this->member->transactions() : collect();
+}
+
+
+
+
 }

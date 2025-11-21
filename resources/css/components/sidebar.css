@@ -8,7 +8,7 @@
 }
 
 .sidebar-link {
-  @apply flex items-center space-x-3 px-2 py-1 rounded-full hover:bg-blue-600 text-white text-sm font-medium;
+  @apply flex items-center space-x-3 px-2 py-2 rounded-full hover:bg-blue-600 text-white text-sm font-medium;
 
   
 }

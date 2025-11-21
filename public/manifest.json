@@ -1,6 +1,6 @@
 {
   "name": "Bondemala Savings Group",
-  "short_name": "BISL Group",
+  "short_name": "BSG Online",
   "description": "Bondemala Savings Group",
   "start_url": "/login",
   "display": "standalone",
@@ -462,7 +462,7 @@
       "name": "Transactions",
       "short_name": "Transactions",
       "description": "Transactions ",
-      "url": "/Transactions",
+      "url": "/transactions",
       "icons": [
         {
           "src": "android/android-launchericon-96-96.png",

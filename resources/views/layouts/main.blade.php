@@ -58,7 +58,7 @@
     @yield('content')
 
 
-    @include('components.alerts')
+    <x-alerts/>
 
 
     @vite('resources/js/app.js')
