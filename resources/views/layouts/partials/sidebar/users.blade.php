@@ -1,81 +1,93 @@
-<div class="w-80 lg:w-64 bg-primary text-white flex flex-col fixed top-0 left-0 h-screen z-40 lg:z-[10000] transform transition-transform duration-300 -translate-x-full lg:translate-x-0"
+{{-- DESKTOP SIDEBAR --}}
+<div class="hidden lg:flex w-80 lg:w-64 bg-primary text-white flex-col fixed top-0 left-0 h-screen z-40 lg:z-[10000] transform transition-transform duration-300 -translate-x-full lg:translate-x-0"
     id="sidebar">
     <!-- Sidebar Header -->
-
-       <div class="sidebar-header p-4 border-b border-blue-900">
-
-        
+    <div class="sidebar-header p-4 border-b border-blue-900">
         <div class="flex items-center space-x-3">
-            <div class="w-14 h-14  rounded-lg flex items-center justify-center text-white font-bold text-lg">
+            <div class="w-14 h-14 rounded-lg flex items-center justify-center text-white font-bold text-lg">
                 <span>
                     <a href="{{ url('/') }}">
-                        <x-logo  />
+                        <x-logo />
                     </a>
                 </span>
             </div>
             <div class="flex flex-col">
                 <span class="text-center whitespace-nowrap text-white font-bold">Bondemala SG</span>
-
                 <span class="text-xs text-center">"Gather to Grow"</span>
             </div>
         </div>
         <button class="lg:hidden p-1 rounded-md hover:bg-blue-900 transition-colors" id="closeSidebar">
-
-            <i data-lucide="x" class="w-4 h-4  text-white"></i>
+            <i data-lucide="x" class="w-4 h-4 text-white"></i>
         </button>
     </div>
 
     <!-- Scrollable Navigation Area -->
-
-
-
     <div class="flex-1 overflow-y-auto no-scrollbar">
         <nav class="p-4 space-y-1">
-            {{-- Dashboard --}}
-
-            {{-- Dashboard --}}
             <a href="{{ route('member.dashboard') }}"
                 class="sidebar-link {{ request()->routeIs('member.dashboard') ? 'sidebar-link-active' : '' }}">
-                <i data-lucide="layout-dashboard" class="w-4 h-4 text-white"></i>
+                <i data-lucide="layout-dashboard" class="w-4 h-4 "></i>
                 <span>Dashboard</span>
             </a>
-            <div class="space-y-1">
 
-                {{-- <a href="{{ route('members.index') }}"
-                    class="sidebar-link {{ request()->routeIs('members.*') ? 'sidebar-link-active' : '' }}">
+               <a href="{{ route('member.dashboard') }}"
+                class="sidebar-link {{ request()->routeIs('member.dashboard') ? 'sidebar-link-active' : '' }}">
+                <i data-lucide="wallet" class="w-4 h-4 "></i>
+                <span>Wallet</span>
+            </a>
 
-                    <i data-lucide="users" class="w-4 h-4 text-white"></i>
-                    <span>Members</span>
-                </a> --}}
+               <a href="{{ route('member.transactions') }}"
+                class="sidebar-link {{ request()->routeIs('member.transactions') ? 'sidebar-link-active' : '' }}">
+                <i data-lucide="arrow-left-right" class="w-4 h-4 "></i>
+                <span>Transactions</span>
+            </a>
 
+               <a href="{{ route('profile.edit') }}"
+                class="sidebar-link {{ request()->routeIs('profile.edit') ? 'sidebar-link-active' : '' }}">
+                <i data-lucide="settings-2" class="w-4 h-4 "></i>
+                <span>Settings</span>
+            </a>
 
+        </nav>
 
-              
-
-
-
-
-              
-
-
-                
-
-
-
-
-
-
-                <!-- Sidebar Footer -->
-                <div class="p-4 border-t border-blue-900">
-                    <a href="/support.html"
-                        class="flex items-center space-x-3 bg-blue-700 hover:bg-blue-800 text-white rounded-lg px-3 py-2 transition-colors no-underline">
-                        <i data-lucide="ticket" class="w-4 h-4 text-white"></i>
-                        <span class="text-sm font-medium">Raise a Ticket</span>
-                    </a>
-                </div>
-
-            </div>
+        <!-- Sidebar Footer -->
+        <div class="p-4 border-t border-blue-900">
+            <a href="/support.html"
+                class="flex items-center space-x-3 bg-blue-700 hover:bg-blue-800 text-white rounded-lg px-3 py-2 transition-colors no-underline">
+                <i data-lucide="ticket" class="w-4 h-4 text-white"></i>
+                <span class="text-sm font-medium">Raise a Ticket</span>
+            </a>
+        </div>
     </div>
-    </nav>
-
 </div>
+
+{{-- MOBILE SIDEBAR --}}
+<nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-primary border-t border-gray-700 z-50">
+    <div class="flex justify-around items-center h-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <a href="{{ route('member.dashboard') }}" class="flex flex-col items-center justify-center w-full p-2 text-white transition-colors duration-200 
+                  {{ request()->routeIs('member.dashboard') ? 'text-yellow-400' : 'hover:text-yellow-200' }}">
+            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+            <span class="text-xs font-medium mt-1">Dashboard</span>
+        </a>
+
+               <a href="{{ route('member.dashboard') }}" class="flex flex-col items-center justify-center w-full p-2 text-white transition-colors duration-200 
+                  {{ request()->routeIs('member.dashboard') ? 'text-yellow-400' : 'hover:text-yellow-200' }}">
+            <i data-lucide="wallet" class="w-5 h-5"></i>
+            <span class="text-xs font-medium mt-1">Wallet</span>
+        </a>
+
+                <a href="{{ route('member.transactions') }}" class="flex flex-col items-center justify-center w-full p-2 text-white transition-colors duration-200 
+                  {{ request()->routeIs('member.transactions') ? 'text-yellow-400' : 'hover:text-yellow-200' }}">
+            <i data-lucide="arrow-left-right" class="w-5 h-5"></i>
+            <span class="text-xs font-medium mt-1">Transactions</span>
+        </a>
+
+        <a href="{{ route('profile.edit') }}" class="flex flex-col items-center justify-center w-full p-2 text-white transition-colors duration-200 
+                  {{ request()->routeIs('profile.*') ? 'text-yellow-400' : 'hover:text-yellow-200' }}">
+            <i data-lucide="settings-2" class="w-5 h-5"></i>
+            <span class="text-xs font-medium mt-1">Settings</span>
+        </a>
+
+    </div>
+</nav>

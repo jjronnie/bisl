@@ -21,7 +21,7 @@
         </div>
         <button class="lg:hidden p-1 rounded-md hover:bg-blue-900 transition-colors" id="closeSidebar">
 
-            <i data-lucide="x" class="w-4 h-4  text-white"></i>
+            <i data-lucide="x" class="w-4 h-4  "></i>
         </button>
     </div>
 
@@ -36,7 +36,7 @@
             {{-- Dashboard --}}
             <a href="{{ route('admin.dashboard') }}"
                 class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'sidebar-link-active' : '' }}">
-                <i data-lucide="layout-dashboard" class="w-4 h-4 text-white"></i>
+                <i data-lucide="layout-dashboard" class="w-4 h-4 "></i>
                 <span>Dashboard</span>
             </a>
             <div class="space-y-1">
@@ -45,14 +45,14 @@
                 <a href="{{ route('admin.members.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.members.*') ? 'sidebar-link-active' : '' }}">
 
-                    <i data-lucide="users" class="w-4 h-4 text-white"></i>
+                    <i data-lucide="users" class="w-4 h-4 "></i>
                     <span>Members</span>
                 </a>
 
                    <a href="{{ route('admin.transactions.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.transactions.*') ? 'sidebar-link-active' : '' }}">
 
-                    <i data-lucide="receipt" class="w-4 h-4 text-white"></i>
+                    <i data-lucide="receipt" class="w-4 h-4 "></i>
                     <span>Transactions</span>
                 </a>
 
@@ -60,7 +60,7 @@
                  <a href="{{ route('admin.loans.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.loans.*') ? 'sidebar-link-active' : '' }}">
 
-                    <i data-lucide="banknote" class="w-4 h-4 text-white"></i>
+                    <i data-lucide="banknote" class="w-4 h-4 "></i>
                     <span>Loans</span>
                 </a>
 
@@ -71,14 +71,14 @@
                   <a href="{{ route('admin.admins.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.admins.*') ? 'sidebar-link-active' : '' }}">
 
-                    <i data-lucide="bar-chart" class="w-4 h-4 text-white"></i>
+                    <i data-lucide="bar-chart" class="w-4 h-4 "></i>
                     <span>Reports</span>
                 </a>
 
                   <a href="{{ route('admin.admins.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.admins.*') ? 'sidebar-link-active' : '' }}">
 
-                    <i data-lucide="settings" class="w-4 h-4 text-white"></i>
+                    <i data-lucide="settings" class="w-4 h-4 "></i>
                     <span>Settings</span>
                 </a>
 
@@ -87,14 +87,14 @@
                  <a href="{{ route('admin.admins.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.admins.*') ? 'sidebar-link-active' : '' }}">
 
-                    <i data-lucide="shield-user" class="w-4 h-4 text-white"></i>
+                    <i data-lucide="shield-user" class="w-4 h-4 "></i>
                     <span>Admins</span>
                 </a>
 
                   <a href="{{ route('admin.admins.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.admins.*') ? 'sidebar-link-active' : '' }}">
 
-                    <i data-lucide="log-out" class="w-4 h-4 text-white"></i>
+                    <i data-lucide="log-out" class="w-4 h-4 "></i>
                     <span>Logout</span>
                 </a>
 
