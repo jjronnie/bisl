@@ -4,6 +4,9 @@ namespace App\Services;
 use App\Models\Transaction;
 use App\Models\SavingsAccount;
 use Illuminate\Support\Facades\DB;
+use App\Mail\TransactionAlert;
+use App\Models\Member; 
+use Illuminate\Support\Facades\Mail;
 
 class TransactionService
 {
@@ -55,6 +58,22 @@ class TransactionService
                 'remarks' => $data['remarks'] ?? null,
                
             ]);
+
+            // 2. Send Email AFTER the transaction is fully committed
+        // We wrap this in try-catch so email failure doesn't crash the HTTP response
+        try {
+            // Retrieve the member and their user account
+            $member = Member::with('user')->find($data['member_id']);
+            
+
+            if ($member && $member->user && $member->user->email) {
+                Mail::to($member->user->email)->send(new TransactionAlert($transaction));
+            }
+        } catch (\Exception $e) {
+            // Log email failure, but allow the request to succeed effectively
+            // because the money has already been moved.
+            \Illuminate\Support\Facades\Log::error('Transaction Email Failed: ' . $e->getMessage());
+        }
 
             return $transaction;
         });

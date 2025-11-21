@@ -9,44 +9,44 @@ class Loan extends Model
 {
     use HasFactory;
     protected $fillable = [
-    'member_id',
-    'loan_number',
+        'member_id',
+        'loan_number',
 
-    'principal_amount',
-    'interest_rate',
-    'interest_type',
-    'duration_months',
+        'principal_amount',
+        'interest_rate',
+        'interest_type',
+        'duration_months',
 
-    'total_interest_due',
-    'total_amount_due',
-    'monthly_repayment_amount',
+        'total_interest_due',
+        'total_amount_due',
+        'monthly_repayment_amount',
 
-    'amount_paid_to_date',
-    'outstanding_balance',
+        'amount_paid_to_date',
+        'outstanding_balance',
 
-    'penalty_rate',
-    'status',
-    'purpose',
+        'penalty_rate',
+        'status',
+        'purpose',
 
-    'application_date',
-    'approval_date',
-    'disbursement_date',
-    'due_date',
+        'application_date',
+        'approval_date',
+        'disbursement_date',
+        'due_date',
 
-    'created_by',
-    'approved_by',
+        'created_by',
+        'approved_by',
 
-    'notes'
-];
+        'notes'
+    ];
 
 
 
-  public function member()
+    public function member()
     {
         return $this->belongsTo(Member::class);
     }
 
-        public function creator()
+    public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
     }

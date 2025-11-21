@@ -56,10 +56,10 @@
                             <div class="text-sm text-gray-900">
                                 {{ $transaction->created_at }}
                             </div>
-                              <div class="text-xs text-gray-500">
-                    by {{ optional($transaction->creator)->name ?? 'N/A' }}
+                            <div class="text-xs text-gray-500">
+                                by: {{ $transaction->creator->name ?? 'Unknown' }}
 
-                </div>
+                            </div>
 
                         </x-table.cell>
 
@@ -105,7 +105,7 @@
 
                         </x-table.cell>
 
-                       
+
 
 
 

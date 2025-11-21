@@ -55,10 +55,9 @@ class Transaction extends Model
     }
 
 
-    public function creator(): BelongsTo
+        public function creator()
     {
         return $this->belongsTo(User::class, 'creator');
     }
-
     
 }
