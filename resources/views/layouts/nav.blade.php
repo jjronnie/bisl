@@ -28,13 +28,26 @@
                     <h3 class="text-sm font-medium text-gray-900 mb-3">Quick Access</h3>
                     <div class="space-y-2">
                         
-                        @include('admin.transactions.create')
-
-
-                        <a href="{{ route('admin.loans.create') }}" class="quick-access-item btn">
+                        
+                        <a href="{{ route('admin.transactions.index') }}" class="quick-access-item ">
                             <i data-lucide="user-plus" class="w-4 h-4"></i>
-                            <span class="text-sm">New Loan</span>
+                            <span class="text-sm">Transactions</span>
                         </a>
+
+                               <a href="{{ route('admin.loans.index') }}" class="quick-access-item ">
+                            <i data-lucide="user-plus" class="w-4 h-4"></i>
+                            <span class="text-sm">Loans</span>
+                        </a>
+
+                               <a href="{{ route('admin.members.index') }}" class="quick-access-item ">
+                            <i data-lucide="user-plus" class="w-4 h-4"></i>
+                            <span class="text-sm">Members</span>
+                        </a>
+
+
+
+
+                        
 
                         
 
