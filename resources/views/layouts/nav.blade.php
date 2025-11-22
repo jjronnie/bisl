@@ -1,31 +1,43 @@
 <header class="nav" x-data="{ sidebarOpen: false, quickAccessOpen: false, notificationOpen: false }"
     @resize.window="if (window.innerWidth >= 1024) sidebarOpen = true">
 
-
+ @php
+            $member = auth()->user()?->member;
+            @endphp
 
 
     <!-- Profile -->
     <div x-data="{ open: false, showLogoutModal: false }" class="relative lg:hidden" id="menuBtn">
         <!-- Trigger -->
-        <button @click="open = !open" class="flex items-center space-x-3 pl-2 focus:outline-none">
+         <button @click="open = !open" class="flex items-center space-x-3 pl-2 focus:outline-none">
 
-            <!-- Fallback icon -->
-            <div class="p-2 rounded-lg text-blue-700 hover:bg-gray-100 transition-colors">
-                <i data-lucide="circle-user-round"></i>
-            </div>
+                <div class="p-2 rounded-lg text-blue-700 bg-gray-100 transition-colors">
 
+                    @if ($member && $member->avatar)
+                    <img src="{{ asset('storage/' . $member->avatar) }}" alt="Member Avatar"
+                        class="w-8 h-8 object-cover rounded-full">
+                    @else
+                    <img src="{{ asset('default-avatar.png') }}" class="w-8 h-8 rounded-full" alt="profile">
+                    @endif
 
-        </button>
+                </div>
+
+            </button>
 
 
         <!-- Profile Dropdown -->
         <div x-show="open" @click.away="open = false" x-transition x-cloak
-            class="absolute right-0 mt-4 w-72 bg-white text-gray-800 rounded-lg shadow-xl z-30">
+            class="absolute left-0 mt-4 w-72 bg-white text-gray-800 rounded-lg shadow-xl z-30">
 
             <!-- Account Info -->
             <div class="flex items-center space-x-3 p-4 border-b">
                 <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-600">
-                    <i data-lucide="circle-user-round" class="w-8 h-8"></i>
+                        @if ($member && $member->avatar)
+                    <img src="{{ asset('storage/' . $member->avatar) }}" alt="Member Avatar"
+                        class="w-8 h-8 object-cover rounded-full">
+                    @else
+                    <img src="{{ asset('default-avatar.png') }}" class="w-8 h-8 rounded-full" alt="profile">
+                    @endif
                 </div>
                 <div>
                     <p class="font-semibold">{{ ucfirst(auth()->user()->name) ?? '' }}</p>
@@ -158,17 +170,28 @@
             </div>
         </div>
 
-        <!-- Profile -->
+        <!-- Profile desktop -->
         <div x-data="{ open: false, showLogoutModal: false }" class="relative hidden lg:flex">
             <!-- Trigger -->
+            @php
+            $member = auth()->user()?->member;
+            @endphp
+
             <button @click="open = !open" class="flex items-center space-x-3 pl-2 focus:outline-none">
 
-                <!-- Fallback icon -->
-                <div class="p-2 rounded-lg text-blue-700 hover:bg-gray-100 transition-colors">
-                    <i data-lucide="circle-user-round"></i>
+                <div class="p-2 rounded-lg text-blue-700 bg-gray-100 transition-colors">
+
+                    @if ($member && $member->avatar)
+                    <img src="{{ asset('storage/' . $member->avatar) }}" alt="Member Avatar"
+                        class="w-8 h-8 object-cover rounded-full">
+                    @else
+                    <img src="{{ asset('default-avatar.png') }}" class="w-8 h-8 rounded-full" alt="profile">
+                    @endif
+
                 </div>
 
             </button>
+
 
 
             <!-- Profile Dropdown -->
@@ -178,7 +201,12 @@
                 <!-- Account Info -->
                 <div class="flex items-center space-x-3 p-4 border-b">
                     <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-600">
-                        <i data-lucide="circle-user-round" class="w-8 h-8"></i>
+                            @if ($member && $member->avatar)
+                    <img src="{{ asset('storage/' . $member->avatar) }}" alt="Member Avatar"
+                        class="w-8 h-8 object-cover rounded-full">
+                    @else
+                    <img src="{{ asset('default-avatar.png') }}" class="w-8 h-8 rounded-full" alt="profile">
+                    @endif
                     </div>
                     <div>
                         <p class="font-semibold">{{ ucfirst(auth()->user()->name) ?? '' }}</p>
