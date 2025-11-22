@@ -7,7 +7,7 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="googlebot" content="noindex, nofollow">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
+
 
 
     <title>
@@ -44,7 +44,7 @@
 </head>
 
 
-<body class="font-sans  bg-[#F2F3F6]  m-0 p-0 flex flex-col min-h-screen ">
+<body class="font-sans  bg-blue-100  m-0 p-0 flex flex-col min-h-screen ">
 
     <!-- Preloader-->
     @if (!request()->routeIs(['login', 'register']))
@@ -58,7 +58,7 @@
     @yield('content')
 
 
-    <x-alerts/>
+    <x-alerts />
 
 
     @vite('resources/js/app.js')

@@ -13,15 +13,15 @@
 @endphp
 
 <section class="mb-8 p-4">
-    <div class="bg-primary rounded-2xl p-6 shadow-lg text-white w-full mx-auto">
+    <div class="bg-blue-700 rounded-2xl p-6 shadow-lg text-white w-full mx-auto">
 
         <!-- Greeting -->
         <div class="flex items-center space-x-3 mb-4">
-            <i data-lucide="{{ $greetIcon }}" class="w-6 h-6"></i>
             <div>
                 <p class="text-sm opacity-80">{{ $greeting }}</p>
                 <p class="text-lg font-semibold">{{ auth()->user()->name }}</p>
             </div>
+            
         </div>
 
         <div class="border-t border-white/20 my-4"></div>
@@ -37,7 +37,7 @@
         </div>
 
         <!-- Balance Amount (Hidden by default) -->
-        <p id="balanceAmount" class="text-4xl font-bold mt-2 tracking-wide" data-hidden="yes">
+        <p id="balanceAmount" class="text-2xl font-bold mt-2 tracking-wide" data-hidden="yes">
             ••• ••• •
         </p>
 

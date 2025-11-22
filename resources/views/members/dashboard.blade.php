@@ -7,8 +7,6 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
         <!-- card -->
-        <x-stat-card title="Tier" value="{{ ucfirst($member->tier )}}" icon="award" />
-        <x-stat-card title="Account Balance" value="{{ $balance }}" icon="credit-card" />
         <x-stat-card title="Loan Protection Fund" value="" icon="shield" />
         <x-stat-card title="Accessible Balance" value="" icon="dollar-sign" />
     </div>
