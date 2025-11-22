@@ -91,12 +91,25 @@
                     <span>Admins</span>
                 </a>
 
-                  <a href="{{ route('admin.admins.index') }}"
-                    class="sidebar-link {{ request()->routeIs('admin.admins.*') ? 'sidebar-link-active' : '' }}">
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+    @csrf
+</form>
 
-                    <i data-lucide="log-out" class="w-4 h-4 "></i>
-                    <span>Logout</span>
-                </a>
+<a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+   class="sidebar-link {{ request()->routeIs('logout') ? 'sidebar-link-active' : '' }}">
+
+    <i data-lucide="log-out" class="w-4 h-4"></i>
+    <span>Logout</span>
+</a>
+
+
+
+
+
+
+                
+
+          
 
 
             </div>
