@@ -24,7 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->appendToGroup('web', [
                ProtectAgainstSpam::class,
-            // BlockSuspendedUsers::class,
+            BlockSuspendedUsers::class,
 
         ]);
 

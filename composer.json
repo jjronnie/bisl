@@ -10,6 +10,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "consoletvs/charts": "^6.8",
         "laravel/framework": "^12.0",
         "laravel/socialite": "^5.23",
         "laravel/tinker": "^2.10.1",
@@ -36,7 +37,8 @@
         "files": [
             "app/Helpers/AccountNumberHelper.php",
             "app/Helpers/TransactionHelper.php",
-            "app/Helpers/LoanHelper.php"
+            "app/Helpers/LoanHelper.php",
+            "app/Helpers/TierHelper.php"
         ]
     },
     "autoload-dev": {

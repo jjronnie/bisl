@@ -57,6 +57,8 @@ class MemberController extends Controller
             'phone2' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'opening_balance' => 'nullable|numeric',
+            'interest_rate' => 'nullable|numeric',
+            'loan_protection_fund' => 'nullable|numeric',
 
 
 
@@ -110,13 +112,15 @@ class MemberController extends Controller
                 SavingsAccount::create([
                     'member_id' => $member->id,
                     'account_number' => generateAccountNumber(),
-
                     'balance' => $validated['opening_balance'] ?? 0,
+                    'interest_rate' => $validated['interest_rate'] ?? 0,
+                    'loan_protection_fund' => $validated['loan_protection_fund'] ?? 0,
                     'status' => 'active',
                 ]);
 
-                // 2.7. Send Temporary Password Email (NO QUEUEING - immediate send)
-                // We send it here, at the end of the transaction, so it only goes out if DB commit is successful.
+               
+
+                
                 Mail::to($user->email)->send(new TemporaryPasswordMail($user, $plainPassword));
 
             });

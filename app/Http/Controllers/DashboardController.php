@@ -10,6 +10,7 @@ use App\Models\Transaction;
 use App\Models\Loan;
 
 
+
 class DashboardController extends Controller
 {
     /**
@@ -73,10 +74,14 @@ class DashboardController extends Controller
 
         $totalOutstandingAmount = $outstandingLoans->sum('outstanding_balance');
 
-        $transactions = Transaction::with('member', 'savingsAccount', 'creator')
+        $transactions = Transaction::with('member', 'savingsAccount', )
             ->latest()
             ->take(5)
             ->get();
+
+
+        
+
 
 
         return view('admin.dashboard', compact(
@@ -84,7 +89,8 @@ class DashboardController extends Controller
             'totalBalance',
             'transactions',
             'totalOutstandingLoans',
-            'totalOutstandingAmount'
+            'totalOutstandingAmount',
+          
         ));
     }
 

@@ -57,7 +57,7 @@
                              {{ $transaction->created_at->format('d M Y H:i') }}
                             </div>
                             <div class="text-xs text-gray-500">
-                                by: {{ $transaction->creator->name ?? 'Unknown' }}
+                                by: {{ $transaction->createdBy->name ?? 'Unknown' }}
 
                             </div>
 

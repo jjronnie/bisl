@@ -25,7 +25,7 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $transactions = Transaction::with('member',  'savingsAccount','creator')
+        $transactions = Transaction::with('member',  'savingsAccount')
             ->latest()
             ->paginate(50);
 
@@ -65,7 +65,7 @@ public function store(Request $request, TransactionService $service)
   public function show(Transaction $transaction)
     {
         // Eager load related data
-        $transaction->load(['member', 'savingsAccount','creator']);
+        $transaction->load(['member', 'savingsAccount']);
         
         return view('admin.transactions.show', compact('transaction'));
     }

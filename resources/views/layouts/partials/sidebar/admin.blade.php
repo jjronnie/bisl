@@ -2,14 +2,14 @@
     id="sidebar">
     <!-- Sidebar Header -->
 
-       <div class="sidebar-header p-4 border-b border-blue-900">
+    <div class="sidebar-header p-4 border-b border-blue-900">
 
-        
+
         <div class="flex items-center space-x-3">
             <div class="w-14 h-14  rounded-lg flex items-center justify-center text-white font-bold text-lg">
                 <span>
                     <a href="{{ url('/') }}">
-                        <x-logo  />
+                        <x-logo />
                     </a>
                 </span>
             </div>
@@ -49,34 +49,34 @@
                     <span>Members</span>
                 </a>
 
-                   <a href="{{ route('admin.transactions.index') }}"
+                <a href="{{ route('admin.transactions.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.transactions.*') ? 'sidebar-link-active' : '' }}">
 
-                    <i data-lucide="receipt" class="w-4 h-4 "></i>
+                    <i data-lucide="file-stack" class="w-4 h-4 "></i>
                     <span>Transactions</span>
                 </a>
 
 
-                 <a href="{{ route('admin.loans.index') }}"
+                <a href="{{ route('admin.loans.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.loans.*') ? 'sidebar-link-active' : '' }}">
 
-                    <i data-lucide="banknote" class="w-4 h-4 "></i>
+                    <i data-lucide="clipboard-clock" class="w-4 h-4 "></i>
                     <span>Loans</span>
                 </a>
 
 
-               
 
 
-                  <a href="{{ route('admin.admins.index') }}"
-                    class="sidebar-link {{ request()->routeIs('admin.admins.*') ? 'sidebar-link-active' : '' }}">
+
+                <a href="{{ route('admin.reports.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.reports.*') ? 'sidebar-link-active' : '' }}">
 
                     <i data-lucide="bar-chart" class="w-4 h-4 "></i>
                     <span>Reports</span>
                 </a>
 
-                  <a href="{{ route('admin.admins.index') }}"
-                    class="sidebar-link {{ request()->routeIs('admin.admins.*') ? 'sidebar-link-active' : '' }}">
+                <a href="{{ route('profile.edit') }}"
+                    class="sidebar-link {{ request()->routeIs('profile.*') ? 'sidebar-link-active' : '' }}">
 
                     <i data-lucide="settings" class="w-4 h-4 "></i>
                     <span>Settings</span>
@@ -84,33 +84,27 @@
 
 
 
-                 <a href="{{ route('admin.admins.index') }}"
+                <a href="{{ route('admin.admins.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.admins.*') ? 'sidebar-link-active' : '' }}">
 
                     <i data-lucide="shield-user" class="w-4 h-4 "></i>
                     <span>Admins</span>
                 </a>
 
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
-    @csrf
-</form>
 
-<a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-   class="sidebar-link {{ request()->routeIs('logout') ? 'sidebar-link-active' : '' }}">
+                <div class="p-4 border-t border-blue-900">
 
-    <i data-lucide="log-out" class="w-4 h-4"></i>
-    <span>Logout</span>
-</a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                        @csrf
+                    </form>
 
+                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                        class="flex items-center space-x-3 bg-blue-700 hover:bg-blue-800 text-white rounded-lg px-3 py-2 transition-colors no-underline">
 
-
-
-
-
-                
-
-          
-
+                        <i data-lucide="log-out" class="w-4 h-4 text-white"></i>
+                        <span class="text-sm  font-medium">Logout</span>
+                    </a>
+                </div>
 
             </div>
     </div>

@@ -28,7 +28,7 @@
 
         <!-- Balance Header -->
         <div class="flex items-center justify-between">
-            <span class="text-sm opacity-80">Account Balance</span>
+            <span class="text-sm opacity-80">Savings Account Balance</span>
 
             <button id="toggleBalance" class="flex items-center text-xs font-medium bg-white/20 px-3 py-1 rounded-full">
                 <i data-lucide="eye-off" id="balanceIcon" class="w-4 h-4 mr-1"></i>

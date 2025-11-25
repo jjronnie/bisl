@@ -5,8 +5,9 @@ use App\Models\Transaction;
 use App\Models\SavingsAccount;
 use Illuminate\Support\Facades\DB;
 use App\Mail\TransactionAlert;
-use App\Models\Member; 
+use App\Models\Member;
 use Illuminate\Support\Facades\Mail;
+use   App\Helpers\TierHelper;
 
 class TransactionService
 {
@@ -20,7 +21,7 @@ class TransactionService
             $amount = $data['amount'];
 
             // Determine debit or credit
-            if ($data['transaction_type'] === 'deposit' ) {
+            if ($data['transaction_type'] === 'deposit') {
                 $side = 'credit';
                 $balanceAfter = $balanceBefore + $amount;
             } else {
@@ -37,6 +38,11 @@ class TransactionService
             $account->update([
                 'balance' => $balanceAfter
             ]);
+
+
+            // Immediately update tier
+            $member = $account->member; // assuming Member has 'savingsAccount' inverse relation
+            TierHelper::updateTier($member);
 
             // Generate reference number
             $reference = generateTransactionId();
@@ -56,24 +62,24 @@ class TransactionService
 
                 'method' => $data['method'] ?? null,
                 'remarks' => $data['remarks'] ?? null,
-               
+
             ]);
 
             // 2. Send Email AFTER the transaction is fully committed
-        // We wrap this in try-catch so email failure doesn't crash the HTTP response
-        try {
-            // Retrieve the member and their user account
-            $member = Member::with('user')->find($data['member_id']);
-            
+            // We wrap this in try-catch so email failure doesn't crash the HTTP response
+            try {
+                // Retrieve the member and their user account
+                $member = Member::with('user')->find($data['member_id']);
 
-            if ($member && $member->user && $member->user->email) {
-                Mail::to($member->user->email)->send(new TransactionAlert($transaction));
+
+                if ($member && $member->user && $member->user->email) {
+                    Mail::to($member->user->email)->send(new TransactionAlert($transaction));
+                }
+            } catch (\Exception $e) {
+                // Log email failure, but allow the request to succeed effectively
+                // because the money has already been moved.
+                \Illuminate\Support\Facades\Log::error('Transaction Email Failed: ' . $e->getMessage());
             }
-        } catch (\Exception $e) {
-            // Log email failure, but allow the request to succeed effectively
-            // because the money has already been moved.
-            \Illuminate\Support\Facades\Log::error('Transaction Email Failed: ' . $e->getMessage());
-        }
 
             return $transaction;
         });

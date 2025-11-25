@@ -19,8 +19,8 @@ class StatusBadge extends Component
     {
         return match ($status) {
             'active' => 'bg-green-100 text-green-800',
-            'silver' => 'bg-gray-100 text-gray-800 border border-gray-300',
-            'gold' => 'bg-yellow-100 text-yellow-800 border border-yellow-300',
+            'silver' => 'bg-gray-100 text-gray-800',
+            'gold' => 'bg-orange-100 text-orange-800',
             'Deposit' => 'bg-green-100 text-green-800',
             'Withdrawal' => 'bg-blue-100 text-blue-900',
             'pending' => 'bg-yellow-100 text-yellow-700',

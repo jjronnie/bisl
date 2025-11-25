@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\LoanController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Member\MemberController as Member;
 use App\Http\Controllers\Admin\AdminController;
@@ -40,7 +41,7 @@ Route::middleware(['auth', 'verified', 'pwc', 'role:admin'])
                'show'
           ]);
 
-          Route::get('/members/search', [MemberController::class, 'search'])->name('members.search');
+          Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
      });
 
 

@@ -18,7 +18,7 @@
         <!-- card -->
         <x-stat-card title="Total Members" value="{{ $totalMembers }}" icon="users" />
         <x-stat-card title="Total Savings" value="UGX {{ number_format($totalBalance) }}" icon="coins" />
-        <x-stat-card title="Outstanding Loans" value="{{ $totalOutstandingLoans ?? '-' }}" icon="clipboard-list" />       
+        <x-stat-card title="Outstanding Loans" value="{{ $totalOutstandingLoans ?? '-' }}" icon="clipboard-clock" />       
         <x-stat-card title="Loan Portfolio" value="UGX {{ number_format($totalOutstandingAmount) }}" icon="wallet" />
 
     </div>
@@ -44,7 +44,7 @@
                     {{ $transaction->created_at }}
                 </div>
                    <div class="text-xs text-gray-500">
-                    by {{ optional($transaction->creator)->name ?? 'N/A' }}
+                    by {{ optional($transaction->createdBy)->name ?? 'N/A' }}
 
                 </div>
 
@@ -89,23 +89,6 @@
 
 
 
-    <!-- Charts -->
- <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-5 mb-8">
-        <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-semibold mb-4">Savings Trend</h3>
-            <canvas id="savingsChart"></canvas>
-        </div>
-
-        <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-semibold mb-4">Loans Overview</h3>
-            <canvas id="loansChart"></canvas>
-        </div>
-
-         <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-semibold mb-4">Loans Overview</h3>
-            <canvas id="loansChart"></canvas>
-        </div>
-    </div>
 
     
 

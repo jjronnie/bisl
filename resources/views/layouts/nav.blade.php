@@ -1,28 +1,38 @@
 <header class="nav" x-data="{ sidebarOpen: false, quickAccessOpen: false, notificationOpen: false }"
     @resize.window="if (window.innerWidth >= 1024) sidebarOpen = true">
 
- @php
-            $member = auth()->user()?->member;
-            @endphp
+    @php
+    $member = auth()->user()?->member;
+    @endphp
+
+    @if(auth()->check() && auth()->user()->hasRole('admin'))
+
+
+ <!-- Mobile Menu Button -->
+    <button class="menu-btn" id="menuBtn">
+        <i data-lucide="menu"></i>
+    </button>
+
+    @elseif(auth()->check() && auth()->user()->hasRole('user'))
 
 
     <!-- Profile -->
-    <div x-data="{ open: false, showLogoutModal: false }" class="relative lg:hidden" id="menuBtn">
+    <div x-data="{ open: false, showLogoutModal: false }" class="relative lg:hidden">
         <!-- Trigger -->
-         <button @click="open = !open" class="flex items-center space-x-3 pl-2 focus:outline-none">
+        <button @click="open = !open" class="flex items-center space-x-3 pl-2 focus:outline-none">
 
-                <div class="p-2 rounded-lg text-blue-700 bg-gray-100 transition-colors">
+            <div class="p-2 rounded-lg text-blue-700 bg-gray-100 transition-colors">
 
-                    @if ($member && $member->avatar)
-                    <img src="{{ asset('storage/' . $member->avatar) }}" alt="Member Avatar"
-                        class="w-8 h-8 object-cover rounded-full">
-                    @else
-                    <img src="{{ asset('default-avatar.png') }}" class="w-8 h-8 rounded-full" alt="profile">
-                    @endif
+                @if ($member && $member->avatar)
+                <img src="{{ asset('storage/' . $member->avatar) }}" alt="Member Avatar"
+                    class="w-8 h-8 object-cover rounded-full">
+                @else
+                <img src="{{ asset('default-avatar.png') }}" class="w-8 h-8 rounded-full" alt="profile">
+                @endif
 
-                </div>
+            </div>
 
-            </button>
+        </button>
 
 
         <!-- Profile Dropdown -->
@@ -32,7 +42,7 @@
             <!-- Account Info -->
             <div class="flex items-center space-x-3 p-4 border-b">
                 <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-600">
-                        @if ($member && $member->avatar)
+                    @if ($member && $member->avatar)
                     <img src="{{ asset('storage/' . $member->avatar) }}" alt="Member Avatar"
                         class="w-8 h-8 object-cover rounded-full">
                     @else
@@ -78,6 +88,9 @@
             </div>
         </div>
     </div>
+
+@endif
+
 
 
 
@@ -201,12 +214,12 @@
                 <!-- Account Info -->
                 <div class="flex items-center space-x-3 p-4 border-b">
                     <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-600">
-                            @if ($member && $member->avatar)
-                    <img src="{{ asset('storage/' . $member->avatar) }}" alt="Member Avatar"
-                        class="w-8 h-8 object-cover rounded-full">
-                    @else
-                    <img src="{{ asset('default-avatar.png') }}" class="w-8 h-8 rounded-full" alt="profile">
-                    @endif
+                        @if ($member && $member->avatar)
+                        <img src="{{ asset('storage/' . $member->avatar) }}" alt="Member Avatar"
+                            class="w-8 h-8 object-cover rounded-full">
+                        @else
+                        <img src="{{ asset('default-avatar.png') }}" class="w-8 h-8 rounded-full" alt="profile">
+                        @endif
                     </div>
                     <div>
                         <p class="font-semibold">{{ ucfirst(auth()->user()->name) ?? '' }}</p>

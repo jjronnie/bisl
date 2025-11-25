@@ -8,7 +8,9 @@
     <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
         <!-- card -->
         <x-stat-card title="Loan Protection Fund" value="" icon="shield" />
-        <x-stat-card title="Accessible Balance" value="" icon="dollar-sign" />
+        <x-stat-card title="Total Accessible Balance" value="" icon="dollar-sign" />
+        <x-stat-card title="Outstanding Loan" value="" icon="clipboard-clock" />
+        <x-stat-card title="Interest Rate" value="" icon="percent" />
     </div>
 
 

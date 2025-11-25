@@ -17,8 +17,7 @@
 
         <div class="flex gap-3">
 
-
-
+            @include('admin.admins.create')
 
             <!-- Export to PDF Button -->
             <button class="btn">
@@ -36,7 +35,7 @@
     @else
 
 
-    <x-table :headers="['#', 'Admin' ,'Role','Status', 'Created' ]" showActions="false">
+    <x-table :headers="['#', 'Admin' ,'Role','Account Status', 'Created' ]" showActions="false">
 
         @foreach ($admins as $index => $admin)
 
@@ -51,9 +50,9 @@
                 </div>
             </x-table.cell>
 
-             <x-table.cell>
-    {{ ucfirst($admin->getRoleNames()->implode(', ') )}}
-</x-table.cell>
+            <x-table.cell>
+                {{ ucfirst($admin->getRoleNames()->implode(', ') )}}
+            </x-table.cell>
 
 
             <x-table.cell>
@@ -64,7 +63,7 @@
             <x-table.cell>
 
                 <div class="text-sm font-medium text-gray-900">
-                    {{ $admin->created_at ?? 'N/A' }}
+                    {{ $admin->created_at->format('d M Y H:i') }}
                 </div>
                 <div class="text-xs text-gray-500">
                     by: {{ $admin->creator->name ?? 'System' }}
@@ -75,7 +74,7 @@
             <x-table.cell>
                 <div class="flex items-center space-x-2">
                     @include('admin.admins.show')
-                    
+
                 </div>
 
             </x-table.cell>

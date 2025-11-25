@@ -6,9 +6,9 @@ Dear **{{ $transaction->member->user->name ?? 'Valued Member' }}**,
 
 {{-- Logic for Debit vs Credit Wording --}}
 @if($transaction->transaction_type === 'deposit')
-We are writing to inform you that your account has been **credited** with UGX**{{ number_format($transaction->amount, 2) }}**.
+This email is to inform you that Your account has been **credited** with UGX**{{ number_format($transaction->amount, 2) }}**.
 @else
-We are writing to inform you that your account has been **debited** with **{{ number_format($transaction->amount, 2) }}**.
+This email is to inform you that Your account has been **debited** with **{{ number_format($transaction->amount, 2) }}**.
 @endif
 
 Please find the details of this transaction below:
@@ -34,6 +34,11 @@ _Remarks: {{ $transaction->remarks }}_
 Thanks for saving with **{{ config('app.name') }}**.
 
 <br>
+
+<x-mail::button :url="route('login')">
+Sign In To  View Details
+</x-mail::button>
+
 <hr>
 
 {{-- Official Banking Footer / Disclaimer --}}

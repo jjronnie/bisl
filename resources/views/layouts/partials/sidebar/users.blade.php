@@ -30,19 +30,19 @@
                 <span>Dashboard</span>
             </a>
 
-               <a href="{{ route('member.dashboard') }}"
+            <a href="{{ route('member.dashboard') }}"
                 class="sidebar-link {{ request()->routeIs('member.dashboard') ? 'sidebar-link-active' : '' }}">
                 <i data-lucide="wallet" class="w-4 h-4 "></i>
                 <span>Wallet</span>
             </a>
 
-               <a href="{{ route('member.transactions') }}"
+            <a href="{{ route('member.transactions') }}"
                 class="sidebar-link {{ request()->routeIs('member.transactions') ? 'sidebar-link-active' : '' }}">
                 <i data-lucide="arrow-left-right" class="w-4 h-4 "></i>
                 <span>Transactions</span>
             </a>
 
-               <a href="{{ route('profile.edit') }}"
+            <a href="{{ route('profile.edit') }}"
                 class="sidebar-link {{ request()->routeIs('profile.edit') ? 'sidebar-link-active' : '' }}">
                 <i data-lucide="settings-2" class="w-4 h-4 "></i>
                 <span>Settings</span>
@@ -65,29 +65,33 @@
 <nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200  z-50">
     <div class="flex justify-around items-center h-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <a href="{{ route('member.dashboard') }}" class="flex flex-col items-center justify-center w-full p-2 text-gray-500 transition-colors duration-200 
-                  {{ request()->routeIs('member.dashboard') ? 'text-blue-800 ' : 'hover:text-gray-700' }}">
+
+
+        <a href="{{ route('member.dashboard') }}" class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
+   {{ request()->routeIs('member.dashboard') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
             <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
             <span class="text-xs font-medium mt-1">Dashboard</span>
         </a>
 
-               <a href="{{ route('member.dashboard') }}" class="flex flex-col items-center justify-center w-full p-2 text-gray-500 transition-colors duration-200 
-                  {{ request()->routeIs('member') ? 'text-blue-800' : 'hover:text-gray-700' }}">
+
+        <a href="{{ route('member.dashboard') }}" class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
+   {{ request()->routeIs('member') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
             <i data-lucide="wallet" class="w-5 h-5"></i>
             <span class="text-xs font-medium mt-1">Wallet</span>
         </a>
 
-                <a href="{{ route('member.transactions') }}" class="flex flex-col items-center justify-center w-full p-2 text-gray-500 transition-colors duration-200 
-                  {{ request()->routeIs('member.transactions') ? 'text-blue-800  ' : 'hover:text-gray-700' }}">
+        <a href="{{ route('member.transactions') }}" class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
+   {{ request()->routeIs('member.transactions') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
             <i data-lucide="arrow-left-right" class="w-5 h-5"></i>
             <span class="text-xs font-medium mt-1">Transactions</span>
         </a>
 
-        <a href="{{ route('profile.edit') }}" class="flex flex-col items-center justify-center w-full p-2 text-gray-500 transition-colors duration-200 
-                  {{ request()->routeIs('profile.*') ? 'text-blue-800  ' : 'hover:text-gray-700' }}">
+        <a href="{{ route('profile.edit') }}" class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
+   {{ request()->routeIs('profile.*') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
             <i data-lucide="settings-2" class="w-5 h-5"></i>
             <span class="text-xs font-medium mt-1">Settings</span>
         </a>
+
 
     </div>
 </nav>

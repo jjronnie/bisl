@@ -3,8 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AdminInviteMail;
 use App\Models\User;
 use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
+
 
 class AdminController extends Controller
 {
@@ -14,6 +24,8 @@ class AdminController extends Controller
     public function index()
     {
         $admins = User::role('admin')->latest()->get();
+
+        
         return view('admin.admins.index', compact('admins'));
     }
 
@@ -28,9 +40,51 @@ class AdminController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+
+        ]);
+
+        // 2. DATABASE TRANSACTION (Ensures atomic operations)
+        try {
+            DB::transaction(function () use ($validated, $request) {
+
+                // 1. Generate a 6-digit numeric temporary password (OTP style)
+                $plainPassword = (string) random_int(100000, 999999);
+
+
+                // 2.2. Create User Record
+                $user = User::create([
+                    'name' => $validated['name'],
+                    'email' => $validated['email'],
+           
+                    'status' => 'active',
+                    'password' => Hash::make($plainPassword),
+                    'must_change_password' => true,
+                    'created_by' => Auth::user()->id,
+                ]);
+
+                  // 2.3. Assign Role (Ensure the 'user' role exists)
+                $adminRole = Role::where('name', 'admin')->firstOrFail();
+                $user->assignRole($adminRole);
+
+                Mail::to($user->email)->send(new AdminInviteMail($user, $plainPassword));
+
+            });
+        } catch (\Exception $e) {
+
+            // Log the error for debugging
+            Log::error('User creation transaction failed: ' . $e->getMessage());
+
+            // A generic, user-friendly error response
+            return back()->with('error', 'Invite failed due to a system error. Please check logs.')->withInput();
+        }
+
+        // 3. REDIRECTION
+        return redirect()->route('admin.admins.index')->with('success', 'Admin Invited successfully. Temporary credentials have been emailed.');
     }
 
     /**

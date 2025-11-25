@@ -28,7 +28,7 @@
                         @csrf
                         <button type="submit"
                             class="btn">
-                            {{ __('Resend Verification Email') }}
+                            {{ __('Send Verification Email') }}
                         </button>
                     </form>
 

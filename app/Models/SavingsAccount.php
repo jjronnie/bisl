@@ -10,22 +10,24 @@ class SavingsAccount extends Model
     use HasFactory;
 
     protected $fillable = [
-        'member_id',        // foreign key to members table
-        'account_number',   // unique identifier for the account
-        'balance',          // current balance
-        'status',           // active, suspended, closed
+        'member_id',
+        'account_number',
+        'balance',
+        'loan_protection_fund',
+        'interest_rate',
+        'status',
+
     ];
 
-    // Relationships
     public function member()
     {
         return $this->belongsTo(Member::class);
     }
 
-   public function transactions()
-{
-    return $this->member ? $this->member->transactions() : collect();
-}
+    public function transactions()
+    {
+        return $this->member ? $this->member->transactions() : collect();
+    }
 
 
 

@@ -25,19 +25,46 @@
                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
                 </div>
 
-                     {{-- opening_balance --}}
-            <div>
-                <x-input-label for="opening_balance" value="Opening Balance" />
-                <div class="mt-1 relative rounded-lg shadow-sm">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <span class="text-gray-500 text-sm sm:text-base">UGX</span>
-                    </div>
+                {{-- opening_balance --}}
+                <div>
+                    <x-input-label for="opening_balance" value="Opening Balance" />
+                    <div class="mt-1 relative rounded-lg shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 text-sm sm:text-base">UGX</span>
+                        </div>
 
-                    <input type="number" name="opening_balance" min="1"  placeholder="0.00" value="{{ old('opening_balance') }}"
-                        class="block w-full pl-12 pr-3 py-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base" />
+                        <input type="number" name="opening_balance" min="1" placeholder="0.00"
+                            value="{{ old('opening_balance') }}"
+                            class="block w-full pl-12 pr-3 py-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base" />
+                    </div>
+                    <x-input-error :messages="$errors->get('opening_balance')" class="mt-2" />
                 </div>
-                <x-input-error :messages="$errors->get('opening_balance')" class="mt-2" />
-            </div>
+
+
+                <div>
+                    <x-input-label for="loan_protection_fund" value="Loan Protection Fund" />
+                    <div class="mt-1 relative rounded-lg shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 text-sm sm:text-base">UGX</span>
+                        </div>
+
+                        <input type="number" name="loan_protection_fund" min="1" placeholder="0.00"
+                            value="{{ old('loan_protection_fund') }}"
+                            class="block w-full pl-12 pr-3 py-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base" />
+                    </div>
+                    <x-input-error :messages="$errors->get('loan_protection_fund')" class="mt-2" />
+                </div>
+
+
+                {{-- Interest Rate --}}
+                <div>
+                    <x-input-label for="interest_rate" value="Interest Rate (%)" />
+                    <input type="number" step="0.01" min="0" id="interest_rate" name="interest_rate"
+                        value="{{ old('interest_rate') }}"
+                        class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base">
+
+                    <x-input-error :messages="$errors->get('interest_rate')" class="mt-2" />
+                </div>
 
 
 
@@ -131,25 +158,50 @@
                         class="mt-1 block w-full border-gray-300 rounded-md">{{ old('address') }}</textarea>
                     <x-input-error :messages="$errors->get('address')" class="mt-2" />
                 </div>
-                <!-- Avatar -->
-                <div>
-                    <x-input-label for="avatar" value="Profile Photo (optional)" />
-                    <input id="avatar" name="avatar" type="file" accept="image/*"
-                        class="mt-1 block w-full border-gray-300 rounded-md" />
-                    <x-input-error :messages="$errors->get('avatar')" class="mt-2" />
-                </div>
+
+             <!-- Avatar -->
+<div>
+    <x-input-label for="avatar" value="Profile Photo (optional)" />
+    <input id="avatar" name="avatar" type="file" accept="image/*"
+           class="mt-1 block w-full border-gray-300 rounded-md" 
+           onchange="previewAvatar(event)" />
+
+    <!-- Preview -->
+    <div class="mt-2">
+        <img id="avatarPreview" src="#" alt="Avatar Preview" class="hidden w-24 h-24 object-cover rounded-full border" />
+    </div>
+
+    <x-input-error :messages="$errors->get('avatar')" class="mt-2" />
+</div>
+
+<script>
+function previewAvatar(event) {
+    const input = event.target;
+    const preview = document.getElementById('avatarPreview');
+
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.classList.remove('hidden');
+        }
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.src = '#';
+        preview.classList.add('hidden');
+    }
+}
+</script>
+
 
             </div>
 
 
             {{-- Submit --}}
             <div class="mt-6 flex items-center justify-end space-x-3">
-                <a href="{{ route('admin.members.index') }}"
-                    class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Cancel</a>
 
-                <x-primary-button>
-                    Create Member
-                </x-primary-button>
+                <x-confirmation-checkbox />
+                <button class="btn" type="submit">Create Member</button>
             </div>
         </form>
     </div>
