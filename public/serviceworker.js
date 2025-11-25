@@ -9,7 +9,10 @@ self.addEventListener('install', function (e) {
         '/assets/js/main.js',
         '/favicon.png',
         '/assets/img/bonde-logo.png',
-        '/banner.png',
+        '/assets/img/afternoon.webp',
+        '/assets/img/evening.webp',
+        '/assets/img/morning.webp',
+        '/assets/img/google.png',
     
      
       ];
