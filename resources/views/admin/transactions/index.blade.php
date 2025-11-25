@@ -54,7 +54,7 @@
                         {{-- Date --}}
                         <x-table.cell>
                             <div class="text-sm text-gray-900">
-                                {{ $transaction->created_at }}
+                             {{ $transaction->created_at->format('d M Y H:i') }}
                             </div>
                             <div class="text-xs text-gray-500">
                                 by: {{ $transaction->creator->name ?? 'Unknown' }}
