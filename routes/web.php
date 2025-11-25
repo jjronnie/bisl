@@ -49,6 +49,7 @@ Route::middleware(['auth', 'verified', 'pwc', 'role:admin'])
 Route::middleware(['auth', 'verified', 'pwc', 'role:user'])->group(function () {
      Route::get('member/dashboard', [DashboardController::class, 'memberDashboard'])->name('member.dashboard');
      Route::get('/transactions', [Member::class, 'index'])->name('member.transactions');
+     Route::get('/notifications', [Member::class, 'notifications'])->name('member.notifications');
 
 });
 

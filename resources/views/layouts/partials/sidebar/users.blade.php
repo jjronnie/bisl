@@ -30,16 +30,18 @@
                 <span>Dashboard</span>
             </a>
 
-            <a href="{{ route('member.dashboard') }}"
-                class="sidebar-link {{ request()->routeIs('member.dashboard') ? 'sidebar-link-active' : '' }}">
-                <i data-lucide="wallet" class="w-4 h-4 "></i>
-                <span>Wallet</span>
-            </a>
+        
 
             <a href="{{ route('member.transactions') }}"
                 class="sidebar-link {{ request()->routeIs('member.transactions') ? 'sidebar-link-active' : '' }}">
                 <i data-lucide="arrow-left-right" class="w-4 h-4 "></i>
                 <span>Transactions</span>
+            </a>
+
+                <a href="{{ route('member.notifications') }}"
+                class="sidebar-link {{ request()->routeIs('member.notifications') ? 'sidebar-link-active' : '' }}">
+                <i data-lucide="bell" class="w-4 h-4 "></i>
+                <span>Notifications</span>
             </a>
 
             <a href="{{ route('profile.edit') }}"
@@ -74,11 +76,7 @@
         </a>
 
 
-        <a href="{{ route('member.dashboard') }}" class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
-   {{ request()->routeIs('member') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
-            <i data-lucide="wallet" class="w-5 h-5"></i>
-            <span class="text-xs font-medium mt-1">Wallet</span>
-        </a>
+
 
         <a href="{{ route('member.transactions') }}" class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
    {{ request()->routeIs('member.transactions') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
@@ -86,11 +84,30 @@
             <span class="text-xs font-medium mt-1">Transactions</span>
         </a>
 
+        
+
+        <a href="{{ route('member.notifications') }}" class="relative flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
+   {{ request()->routeIs('member.notifications') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
+
+            <i data-lucide="bell" class="w-5 h-5"></i>
+
+            <!-- Badge -->
+            <span
+                class="absolute top-1 right-3 bg-red-600 text-white text-[10px] font-semibold px-1.5 py-[1px] rounded-full">
+                0
+            </span>
+
+            <span class="text-xs font-medium mt-1">Notifications</span>
+        </a>
+
+
         <a href="{{ route('profile.edit') }}" class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
    {{ request()->routeIs('profile.*') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
             <i data-lucide="settings-2" class="w-5 h-5"></i>
             <span class="text-xs font-medium mt-1">Settings</span>
         </a>
+
+
 
 
     </div>
