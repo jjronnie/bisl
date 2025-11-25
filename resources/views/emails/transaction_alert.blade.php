@@ -8,7 +8,7 @@ Dear **{{ $transaction->member->user->name ?? 'Valued Member' }}**,
 @if($transaction->transaction_type === 'deposit')
 This email is to inform you that Your account has been **credited** with UGX**{{ number_format($transaction->amount, 2) }}**.
 @else
-This email is to inform you that Your account has been **debited** with **{{ number_format($transaction->amount, 2) }}**.
+This email is to inform you that Your account has been **debited** with UGX**{{ number_format($transaction->amount, 2) }}**.
 @endif
 
 Please find the details of this transaction below:
@@ -18,10 +18,10 @@ Please find the details of this transaction below:
 | Description | Details |
 | :--- | :--- |
 | **Transaction Date** | {{ $transaction->created_at->format('d M Y, h:i A') }} |
-| **Reference No** | {{ $transaction->reference_number }} |
+| **Transaction  ID** | {{ $transaction->reference_number }} |
 | **Transaction Type** | {{ ucfirst($transaction->transaction_type) }} |
-| **Amount** | {{ number_format($transaction->amount, 2) }} |
-| **Available Balance** | **{{ number_format($transaction->balance_after, 2) }}** |
+| **Amount** |UGX {{ number_format($transaction->amount, 2) }} |
+| **Available Balance** | **UGX {{ number_format($transaction->balance_after, 2) }}** |
 </x-mail::table>
 
 {{-- Optional Remarks Section --}}

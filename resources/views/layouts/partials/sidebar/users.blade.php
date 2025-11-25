@@ -46,8 +46,8 @@
 
             <a href="{{ route('profile.edit') }}"
                 class="sidebar-link {{ request()->routeIs('profile.edit') ? 'sidebar-link-active' : '' }}">
-                <i data-lucide="settings-2" class="w-4 h-4 "></i>
-                <span>Settings</span>
+                <i data-lucide="user" class="w-4 h-4 "></i>
+                <span>Profile</span>
             </a>
 
         </nav>
@@ -103,8 +103,8 @@
 
         <a href="{{ route('profile.edit') }}" class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
    {{ request()->routeIs('profile.*') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
-            <i data-lucide="settings-2" class="w-5 h-5"></i>
-            <span class="text-xs font-medium mt-1">Settings</span>
+            <i data-lucide="user-round" class="w-5 h-5"></i>
+            <span class="text-xs font-medium mt-1">Profile</span>
         </a>
 
 
