@@ -30,7 +30,7 @@
                 <span>Dashboard</span>
             </a>
 
-        
+
 
             <a href="{{ route('member.transactions') }}"
                 class="sidebar-link {{ request()->routeIs('member.transactions') ? 'sidebar-link-active' : '' }}">
@@ -38,7 +38,7 @@
                 <span>Transactions</span>
             </a>
 
-                <a href="{{ route('member.notifications') }}"
+            <a href="{{ route('member.notifications') }}"
                 class="sidebar-link {{ request()->routeIs('member.notifications') ? 'sidebar-link-active' : '' }}">
                 <i data-lucide="bell" class="w-4 h-4 "></i>
                 <span>Notifications</span>
@@ -84,7 +84,7 @@
             <span class="text-xs font-medium mt-1">Transactions</span>
         </a>
 
-        
+
 
         <a href="{{ route('member.notifications') }}" class="relative flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
    {{ request()->routeIs('member.notifications') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
@@ -103,9 +103,16 @@
 
         <a href="{{ route('profile.edit') }}" class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
    {{ request()->routeIs('profile.*') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
+            <i data-lucide="hand-coins" class="w-5 h-5"></i>
+            <span class="text-xs font-medium mt-1">Loans</span>
+        </a>
+
+         <a href="{{ route('profile.edit') }}" class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
+   {{ request()->routeIs('profile.*') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
             <i data-lucide="user-round" class="w-5 h-5"></i>
             <span class="text-xs font-medium mt-1">Profile</span>
         </a>
+
 
 
 

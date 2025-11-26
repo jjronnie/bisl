@@ -47,15 +47,23 @@ class DashboardController extends Controller
 
         $savingsAccount = $member->savingsAccount;
 
+       
+
+
         // balance from savings account
-        $balance = $savingsAccount ? $savingsAccount->balance : 0;
+$balance = $savingsAccount?->balance ?? 0;
+$loanProtection = $savingsAccount?->loan_protection_fund ?? 0;
+
+// accessible amount
+$accessible = (float) $balance + (float) $loanProtection;
+
 
         // transactions from member
         $transactions = $member->transactions()->latest()
             ->take(5)
             ->get();
 
-        return view('members.dashboard', compact('balance', 'transactions', 'member'));
+        return view('members.dashboard', compact('balance', 'transactions', 'member', 'accessible', 'loanProtection'));
     }
 
 
