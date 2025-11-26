@@ -87,7 +87,7 @@
 
 
         <a href="{{ route('member.loans') }}" class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
-   {{ request()->routeIs('member.loans.*') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
+   {{ request()->routeIs('member.loans') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
             <i data-lucide="hand-coins" class="w-5 h-5"></i>
             <span class="text-xs font-medium mt-1">Loans</span>
         </a>
