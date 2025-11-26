@@ -35,6 +35,11 @@ class MemberController extends Controller
          return view('members.notifications');
     }
 
+      public function loans()
+    {
+         return view('members.loans');
+    }
+
     /**
      * Store a newly created resource in storage.
      */

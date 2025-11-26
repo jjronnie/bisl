@@ -38,10 +38,10 @@
                 <span>Transactions</span>
             </a>
 
-            <a href="{{ route('member.notifications') }}"
-                class="sidebar-link {{ request()->routeIs('member.notifications') ? 'sidebar-link-active' : '' }}">
-                <i data-lucide="bell" class="w-4 h-4 "></i>
-                <span>Notifications</span>
+            <a href="{{ route('member.loans') }}"
+                class="sidebar-link {{ request()->routeIs('member.loans') ? 'sidebar-link-active' : '' }}">
+                <i data-lucide="hand-coins" class="w-4 h-4 "></i>
+                <span>Loans</span>
             </a>
 
             <a href="{{ route('profile.edit') }}"
@@ -86,11 +86,8 @@
 
 
 
-     
-
-
-        <a href="{{ route('profile.edit') }}" class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
-   {{ request()->routeIs('profile.*') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
+        <a href="{{ route('member.loans') }}" class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
+   {{ request()->routeIs('member.loans.*') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
             <i data-lucide="hand-coins" class="w-5 h-5"></i>
             <span class="text-xs font-medium mt-1">Loans</span>
         </a>

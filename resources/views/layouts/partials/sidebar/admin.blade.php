@@ -60,7 +60,7 @@
                 <a href="{{ route('admin.loans.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.loans.*') ? 'sidebar-link-active' : '' }}">
 
-                    <i data-lucide="clipboard-clock" class="w-4 h-4 "></i>
+                    <i data-lucide="hand-coins" class="w-4 h-4 "></i>
                     <span>Loans</span>
                 </a>
 
