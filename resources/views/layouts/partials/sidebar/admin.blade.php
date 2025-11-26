@@ -52,7 +52,7 @@
                 <a href="{{ route('admin.transactions.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.transactions.*') ? 'sidebar-link-active' : '' }}">
 
-                    <i data-lucide="file-stack" class="w-4 h-4 "></i>
+                    <i data-lucide="arrow-left-right" class="w-4 h-4 "></i>
                     <span>Transactions</span>
                 </a>
 

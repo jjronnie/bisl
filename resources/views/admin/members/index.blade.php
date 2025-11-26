@@ -84,6 +84,9 @@
                             <a class="btn" href="{{ route('admin.members.edit', $member->id) }}"><i data-lucide="edit"
                                     class="w-4 h-4 "></i></a>
 
+                                      <a class="btn" href="{{ route('admin.members.transactions.index', $member->id) }}"><i data-lucide="arrow-left-right"
+                                    class="w-4 h-4 "></i></a>
+
                         
 
                         </div>
@@ -93,6 +96,13 @@
             </template>
             @endforeach
         </x-table>
+
+          {{-- Pagination --}}
+            @if($members->hasPages())
+            <div class="px-6 py-4 border-t border-gray-200">
+                {{ $members->links() }}
+            </div>
+            @endif
 
         @endif
 
