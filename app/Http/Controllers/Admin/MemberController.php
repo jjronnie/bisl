@@ -26,7 +26,7 @@ class MemberController extends Controller
      */
     public function index()
     {
-        $members = Member::with('user')->latest()->paginate(2);
+        $members = Member::with('user')->latest()->paginate(50);
         return view('admin.members.index', compact('members'));
     }
 
