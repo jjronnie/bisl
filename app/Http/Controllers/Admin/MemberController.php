@@ -166,7 +166,7 @@ class MemberController extends Controller
 
        
         $transactions = $member->transactions()->latest()
-            ->paginate(20);
+            ->paginate(2);
 
         return view('admin.members.transactions', compact('transactions', 'member'));
     }
