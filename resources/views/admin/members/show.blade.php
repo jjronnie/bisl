@@ -1,5 +1,4 @@
 <x-app-layout>
-    <x-page-title title="Member Details: {{ $member->name }}" />
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
@@ -41,13 +40,7 @@
                     </div>
                 </div>
 
-                {{-- Actions --}}
-                <div class="flex gap-2">
-                    <a href="{{ route('admin.members.edit', $member) }}"
-                        class="px-4 py-2 bg-white text-indigo-700 rounded-lg font-medium hover:bg-indigo-50 transition shadow-md text-sm sm:text-base">
-                        Edit Member
-                    </a>
-                </div>
+           
             </div>
         </div>
 
