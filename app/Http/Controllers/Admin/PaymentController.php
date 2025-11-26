@@ -31,10 +31,24 @@ class PaymentController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-   public function create(Request $request)
+
+
+        public function create(Request $request)
     {
         // Load the loan based on the loan_id query parameter from the 'Log Payment' button
         $loan = Loan::findOrFail($request->query('loan_id'));
+
+        // ----------------------------------------------------------------------
+        // VALIDATION CHECK: Only allow payments on active/defaulted loans
+        // ----------------------------------------------------------------------
+        $validStatuses = ['disbursed', 'active', 'defaulted', 'default_pending'];
+
+        if (!in_array($loan->status, $validStatuses)) {
+            // Redirect back to the loan detail page with an error
+            return redirect()
+                ->route('admin.loans.show', $loan)
+                ->with('error', "Cannot log a payment for a loan with status: " . ucfirst($loan->status) . ". Payments can only be logged for active or defaulted loans.");
+        }
 
         // Find the next expected installment to show the amount due
         $installment = $loan->installments()
@@ -42,10 +56,12 @@ class PaymentController extends Controller
             ->orderBy('due_date', 'asc')
             ->first();
 
-        $amountDue = $installment 
-            ? $installment->principal_amount + $installment->interest_amount + $installment->penalty_amount 
+        // Calculate the total amount due for the installment
+        $amountDue = $installment
+            ? $installment->principal_amount + $installment->interest_amount + $installment->penalty_amount
             : 0;
 
+        // Note: The view 'admin.loans.payments' is assumed to exist for this context
         return view('admin.loans.payments', compact('loan', 'installment', 'amountDue'));
     }
 
