@@ -47,15 +47,15 @@ class DashboardController extends Controller
 
         $savingsAccount = $member->savingsAccount;
 
-       
+
 
 
         // balance from savings account
-$balance = $savingsAccount?->balance ?? 0;
-$loanProtection = $savingsAccount?->loan_protection_fund ?? 0;
+        $balance = $savingsAccount?->balance ?? 0;
+        $loanProtection = $savingsAccount?->loan_protection_fund ?? 0;
 
-// accessible amount
-$accessible = (float) $balance + (float) $loanProtection;
+        // accessible amount
+        $accessible = (float) $balance + (float) $loanProtection;
 
 
         // transactions from member
@@ -88,7 +88,7 @@ $accessible = (float) $balance + (float) $loanProtection;
             ->get();
 
 
-        
+
 
 
 
@@ -98,7 +98,7 @@ $accessible = (float) $balance + (float) $loanProtection;
             'transactions',
             'totalOutstandingLoans',
             'totalOutstandingAmount',
-          
+
         ));
     }
 

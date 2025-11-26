@@ -118,9 +118,9 @@ class MemberController extends Controller
                     'status' => 'active',
                 ]);
 
-               
 
-                
+
+
                 Mail::to($user->email)->send(new TemporaryPasswordMail($user, $plainPassword));
 
             });
@@ -147,8 +147,35 @@ class MemberController extends Controller
      */
     public function show(Member $member)
     {
-        return view('admin.members.show', compact('member'));
+
+        $savingsAccount = $member->savingsAccount;
+
+        // balance from savings account
+        $balance = $savingsAccount?->balance ?? 0;
+        $loanProtection = $savingsAccount?->loan_protection_fund ?? 0;
+
+        // accessible amount
+        $accessible = (float) $balance + (float) $loanProtection;
+
+        return view('admin.members.show', compact('member', 'balance', 'loanProtection', 'accessible'));
     }
+
+
+    public function transactions(Member $member)
+    {
+
+       
+        $transactions = $member->transactions()->latest()
+            ->paginate(20);
+
+        return view('admin.members.transactions', compact('transactions', 'member'));
+    }
+
+
+
+
+
+
 
     /**
      * Show the form for editing the specified resource.

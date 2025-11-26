@@ -27,6 +27,9 @@ Route::middleware(['auth', 'verified', 'pwc', 'role:admin'])
                ->name('dashboard');
 
           Route::resource('members', MemberController::class);
+          Route::get('/members/{member}/transactions', [MemberController::class, 'transactions'])->name('members.transactions.index');
+
+
           Route::resource('admins', AdminController::class);
           Route::resource('loans', LoanController::class);
 
