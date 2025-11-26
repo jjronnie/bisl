@@ -4,57 +4,72 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-Schema::create('loans', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('member_id')->constrained()->onDelete('cascade');
-    $table->string('loan_number')->unique();
+        Schema::create('loans', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('member_id')->constrained()->cascadeOnDelete(); // Assuming you have a members table
+            $table->foreignId('created_by')->constrained('users')->nullable();
+            $table->foreignId('approved_by')->constrained('users')->nullable();
+            $table->foreignId('rejected_by')->constrained('users')->nullable();
 
-    $table->decimal('principal_amount', 15, 2);
-    $table->decimal('interest_rate', 5, 2);
-    $table->enum('interest_type', ['flat', 'reducing_balance'])->default('reducing_balance');
+            $table->string('loan_number')->unique();
+            $table->string('loan_type'); // e.g., 'personal', 'priority', 'business'
+            $table->enum('status', [
+                'pending',
+                'approved',
+                'disbursed',
+                'active',
+                'completed',
+                'defaulted',
+                'rejected',
+                'default_pending'
+            ])->default('pending');
 
-    $table->unsignedSmallInteger('duration_months');
+            // Financials
+            $table->decimal('amount', 15, 2); // Principal
+            $table->decimal('interest_rate', 5, 2); // Annual % (e.g., 18.00)
+            $table->integer('duration_months');
 
-    $table->decimal('total_interest_due', 15, 2)->default(0);
-    $table->decimal('total_amount_due', 15, 2)->default(0);
-    $table->decimal('monthly_repayment_amount', 15, 2)->default(0);
+            // Dates
+            $table->date('application_date');
+            $table->date('approval_date')->nullable();
+            $table->date('disbursement_date')->nullable();
+            $table->date('due_date')->nullable(); // Final maturity date
 
-    $table->decimal('amount_paid_to_date', 15, 2)->default(0);
-    $table->decimal('outstanding_balance', 15, 2)->default(0);
+            $table->text('purpose')->nullable();
+            $table->text('notes')->nullable();
 
-    $table->decimal('penalty_rate', 5, 2)->nullable();
+            $table->timestamps();
+        });
 
-    $table->enum('status', [
-        'pending',
-        'approved',
-        'disbursed',
-        'active',
-        'completed',
-        'rejected',
-        'defaulted'
-    ])->default('pending');
+        // 2. The Amortization Schedule (Installments)
+        Schema::create('loan_installments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('loan_id')->constrained()->cascadeOnDelete();
 
-    $table->string('purpose')->nullable();
+            $table->integer('installment_number');
+            $table->date('due_date'); // Calculated monthly date
 
-    $table->date('application_date');
-    $table->date('approval_date')->nullable();
-    $table->date('disbursement_date')->nullable();
-    $table->date('due_date')->nullable();
+            // Financial Breakdown (Reducing Balance)
+            $table->decimal('starting_balance', 15, 2);
+            $table->decimal('principal_amount', 15, 2); // The part of payment reducing the loan
+            $table->decimal('interest_amount', 15, 2);  // The profit part
+            $table->decimal('total_amount', 15, 2);     // Principal + Interest (EMI)
+            $table->decimal('ending_balance', 15, 2);
 
-    $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
-    $table->foreignId('approved_by')->nullable()->constrained('users')->nullOnDelete();
+            // Penalties
+            $table->decimal('penalty_amount', 15, 2)->default(0.00);
 
-    $table->text('notes')->nullable();
+            $table->date('paid_at')->nullable();
+            $table->enum('status', ['pending', 'paid', 'partial', 'defaulted'])->default('pending');
 
-    $table->timestamps();
-});
+            $table->timestamps();
+        });
 
     }
 
@@ -63,6 +78,7 @@ Schema::create('loans', function (Blueprint $table) {
      */
     public function down(): void
     {
+        Schema::dropIfExists('loan_installments');
         Schema::dropIfExists('loans');
     }
 };

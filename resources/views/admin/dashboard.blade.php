@@ -18,8 +18,8 @@
         <!-- card -->
         <x-stat-card title="Total Members" value="{{ $totalMembers }}" icon="users" />
         <x-stat-card title="Total Savings" value="UGX {{ number_format($totalBalance) }}" icon="coins" />
-        <x-stat-card title="Outstanding Loans" value="{{ $totalOutstandingLoans ?? '-' }}" icon="clipboard-clock" />       
-        <x-stat-card title="Loan Portfolio" value="UGX {{ number_format($totalOutstandingAmount) }}" icon="wallet" />
+        {{-- <x-stat-card title="Outstanding Loans" value="{{ $totalOutstandingLoans ?? '-' }}" icon="clipboard-clock" />       
+        <x-stat-card title="Loan Portfolio" value="UGX {{ number_format($totalOutstandingAmount) }}" icon="wallet" /> --}}
 
     </div>
 

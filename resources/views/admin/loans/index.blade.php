@@ -1,6 +1,76 @@
 <x-app-layout>
     <x-page-title title="Loans" subtitle="Manage All loans" />
 
+ <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    {{-- 2. Outstanding Loans (Count) --}}
+<x-stat-card 
+    title="Outstanding Loans " 
+    value="{{ number_format($stats['total_outstanding_count']) }}" 
+    icon="list-checks" 
+/>
+
+{{-- 1. Total Outstanding Principal (Amount) --}}
+<x-stat-card 
+    title="Outstanding Principal" 
+    value="UGX {{ number_format($stats['total_outstanding_amount'], 0) }}" 
+    icon="banknote" 
+/>
+
+{{-- 4. Pending Applications (Count) --}}
+<x-stat-card 
+    title="Pending  Applications" 
+    value="{{ number_format($stats['total_pending_count']) }}" 
+    icon="clipboard-list" 
+/>
+
+
+
+
+
+{{-- 3. Pending Applications Value (Amount) --}}
+<x-stat-card 
+    title="Pending Value" 
+    value="UGX {{ number_format($stats['total_pending_amount'], 2) }}" 
+    icon="clock" 
+/>
+
+
+
+
+
+{{-- 6. Completed Loans (Count) --}}
+<x-stat-card 
+    title="Completed Loans " 
+    value="{{ number_format($stats['total_completed_count']) }}" 
+    icon="archive" 
+/>
+
+{{-- 5. Completed Loans Value (Amount) --}}
+<x-stat-card 
+    title="Completed Loans" 
+    value="UGX {{ number_format($stats['total_completed_amount'], 2) }}" 
+    icon="check-circle" 
+/>
+
+{{-- 8. Rejected Applications (Count) --}}
+<x-stat-card 
+    title="Rejected Applications" 
+    value="{{ number_format($stats['total_rejected_count']) }}" 
+    icon="x-circle" 
+/>
+
+
+{{-- 7. Total Loans Managed (Overall Count) --}}
+<x-stat-card 
+    title="Total Loans" 
+    value="{{ number_format($stats['total_loan_count']) }}" 
+    icon="receipt" 
+/>
+
+
+
+</div>
+
     <div x-data="{ search: '' }" class="space-y-6">
         <!-- Controls -->
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
@@ -35,7 +105,8 @@
         <x-empty-state icon="receipt" message="No loans found." />
         @else
         <div class="bg-white rounded-lg shadow overflow-hidden">
-            <x-table :headers="['Loan ID','Borrower', 'STATUS', 'Principal','RATE', 'DUE' ,'DUE DATE']" showActions="false">
+            <x-table :headers="['Loan ID','Borrower', 'STATUS', 'Amount','RATE','DURATION' ,'DUE DATE']"
+                showActions="false">
                 @foreach($loans as $loan)
                 <template x-if="!search || 
                                 '{{ $loan->member->name ?? 'N/A' }}'.toLowerCase().includes(search.toLowerCase()) || 
@@ -61,42 +132,58 @@
 
                         </x-table.cell>
 
-                           {{-- Type --}}
+                        {{-- Type --}}
                         <x-table.cell>
-                              <x-status-badge :status="$loan->status" />
+                            <x-status-badge :status="$loan->status" />
 
                         </x-table.cell>
-                       
 
-                           {{-- Amount --}}
+
+                        {{-- Amount --}}
                         <x-table.cell>
 
-                            UGX {{ number_format($loan->principal_amount) }}
+                            UGX {{ number_format($loan->amount) }}
+
+                        </x-table.cell>
+
+                        <x-table.cell>
+
+                            {{ number_format($loan->interest_rate) }}%
 
                         </x-table.cell>
 
                           <x-table.cell>
+                {{ $loan->duration_months }} Months
+            </x-table.cell>
 
-                           {{ number_format($loan->interest_rate) }}%
-
-                        </x-table.cell>
-
-                            {{-- Amount --}}
-                        <x-table.cell>
-
-                            UGX {{ number_format($loan->total_amount_due) }}
-
-                        </x-table.cell>                  
+                      
 
                         <x-table.cell>
 
-{{ $loan->due_date }}
+                            @if ($loan->due_date)
+                             {{ $loan->due_date->format('M d, Y')  }}
+                          
+                                 
+                             @else
+                                 
+                            N/A
+                                
+                            @endif
+
+                           
 
 
                         </x-table.cell>
 
 
+                        <x-table.cell>
 
+                            <a class="btn" href="{{ route('admin.loans.show', $loan) }}">
+                                <i data-lucide="eye" class="w-4 h-4 "></i>
+                            </a>
+
+
+                        </x-table.cell>
 
 
 

@@ -75,12 +75,12 @@ class DashboardController extends Controller
         $totalBalance = SavingsAccount::sum('balance');
 
 
-        // Total outstanding loans (active, disbursed, defaulted)
-        $outstandingLoans = Loan::whereIn('status', ['active', 'disbursed', 'defaulted']);
+        // // Total outstanding loans (active, disbursed, defaulted)
+        // $outstandingLoans = Loan::whereIn('status', ['active', 'disbursed', 'defaulted']);
 
-        $totalOutstandingLoans = $outstandingLoans->count();
+        // $totalOutstandingLoans = $outstandingLoans->count();
 
-        $totalOutstandingAmount = $outstandingLoans->sum('outstanding_balance');
+        // $totalOutstandingAmount = $outstandingLoans->sum('');
 
         $transactions = Transaction::with('member', 'savingsAccount', )
             ->latest()
@@ -96,8 +96,7 @@ class DashboardController extends Controller
             'totalMembers',
             'totalBalance',
             'transactions',
-            'totalOutstandingLoans',
-            'totalOutstandingAmount',
+        
 
         ));
     }
