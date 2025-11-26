@@ -67,6 +67,11 @@ class GoogleLoginController extends Controller
                     $user->save();
                 }
 
+                     // force email verification
+                    if (is_null($user->email_verified_at)) {
+                        $user->forceFill(['email_verified_at' => now()])->save();
+                    }
+
                 // Log the user in
                 Auth::login($user);
 

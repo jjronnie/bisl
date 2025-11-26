@@ -20,18 +20,17 @@ class RolePermissionSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         // 1. Create Roles
+        $superadminRole = Role::firstOrCreate(['name' => 'superadmin']);
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $userRole = Role::firstOrCreate(['name' => 'user']);
 
-        // You can define permissions here if needed globally, 
-        // but for now, we focus on roles.
-        // Example: Permission::firstOrCreate(['name' => 'view_reports']);
+
 
         // 2. Create a Super Admin User
         $superAdmin = User::firstOrCreate(
             ['email' => 'ronaldjjuuko7@gmail.com'],
             [
-                'name' => ' Admin Account',
+                'name' => 'JRonnie Kclich',
                 'password' => Hash::make('88928892'),
                 'email_verified_at' => now(),
                 'must_change_password' => false,
@@ -40,6 +39,6 @@ class RolePermissionSeeder extends Seeder
         );
 
         // 3. Assign the superadmin role
-        $superAdmin->assignRole('admin');
+        $superAdmin->assignRole('admin', 'superadmin');
     }
 }

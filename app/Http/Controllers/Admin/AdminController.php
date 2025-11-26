@@ -122,11 +122,17 @@ class AdminController extends Controller
     // Suspend user
 public function suspend(User $admin)
 {
-    // Prevent self-suspension if needed
+    // Block suspending superadmins
+    if ($admin->hasRole('superadmin')) {
+        return back()->with('error', 'Superadmin accounts cannot be suspended.');
+    }
+
+    // Block suspending yourself
     if (auth()->id() === $admin->id) {
         return back()->with('error', 'You cannot suspend your own account.');
     }
 
+    // Update status safely
     $admin->update([
         'status' => 'suspended',
     ]);
@@ -134,14 +140,19 @@ public function suspend(User $admin)
     return back()->with('success', 'User suspended successfully.');
 }
 
-// Unsuspend user
 public function unsuspend(User $admin)
 {
+    // Optional: also block unsuspending superadmins if status logic should never touch them
+    if ($admin->hasRole('superadmin')) {
+        return back()->with('error', 'Superadmin accounts cannot be modified.');
+    }
+
     $admin->update([
         'status' => 'active',
     ]);
 
     return back()->with('success', 'User restored successfully.');
 }
+
 
 }
