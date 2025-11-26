@@ -44,6 +44,6 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (UnauthorizedException $e, $request) {
             return redirect()->back()
-                ->with('error', 'You are not authorized to perform this action. Please Contact Admin for authorization.');
+                ->with('error', 'You are not authorized to perform this action.');
         });
     })->create();

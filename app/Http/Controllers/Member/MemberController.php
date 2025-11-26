@@ -35,10 +35,33 @@ class MemberController extends Controller
          return view('members.notifications');
     }
 
-      public function loans()
-    {
-         return view('members.loans');
+ public function loans()
+{
+    $member = auth()->user()->member;
+
+    if (!$member) {
+        abort(404, 'Member account not found');
     }
+
+    $loans = $member->loans()
+        ->latest()
+        ->paginate(10);
+
+    $loanCount =  $member->loans()->count();
+
+    $pendingCount = $member->loans()->where('status', 'pending')->count();
+    $rejectedCount = $member->loans()->where('status', 'rejected')->count();
+    $completedCount = $member->loans()->where('status', 'completed')->count();
+
+    return view('members.loans', compact(
+        'loans',
+        'loanCount',
+        'pendingCount',
+        'rejectedCount',
+        'completedCount'
+    ));
+}
+
 
     /**
      * Store a newly created resource in storage.
