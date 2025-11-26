@@ -86,19 +86,7 @@
 
 
 
-        <a href="{{ route('member.notifications') }}" class="relative flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
-   {{ request()->routeIs('member.notifications') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
-
-            <i data-lucide="bell" class="w-5 h-5"></i>
-
-            <!-- Badge -->
-            <span
-                class="absolute top-1 right-3 bg-red-600 text-white text-[10px] font-semibold px-1.5 py-[1px] rounded-full">
-                0
-            </span>
-
-            <span class="text-xs font-medium mt-1">Notifications</span>
-        </a>
+     
 
 
         <a href="{{ route('profile.edit') }}" class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
