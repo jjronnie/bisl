@@ -56,14 +56,19 @@
                 </div>
 
 
-                {{-- Interest Rate --}}
+            
                 <div>
-                    <x-input-label for="interest_rate" value="Interest Rate (%)" />
-                    <input type="number" step="0.01" min="0" id="interest_rate" name="interest_rate"
-                        value="{{ old('interest_rate') }}"
-                        class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base">
+                    <x-input-label for="membership_fee" value="Membership Fee" />
+                    <div class="mt-1 relative rounded-lg shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 text-sm sm:text-base">UGX</span>
+                        </div>
 
-                    <x-input-error :messages="$errors->get('interest_rate')" class="mt-2" />
+                        <input type="number" name="membership_fee" min="1" placeholder="0.00"
+                            value="{{ old('membership_fee') }}"
+                            class="block w-full pl-12 pr-3 py-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base" />
+                    </div>
+                    <x-input-error :messages="$errors->get('membership_fee')" class="mt-2" />
                 </div>
 
 

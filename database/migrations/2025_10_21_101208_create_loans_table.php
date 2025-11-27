@@ -12,10 +12,12 @@ return new class extends Migration {
     {
         Schema::create('loans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('member_id')->constrained()->cascadeOnDelete(); // Assuming you have a members table
-            $table->foreignId('created_by')->constrained('users')->nullable();
-            $table->foreignId('approved_by')->constrained('users')->nullable();
-            $table->foreignId('rejected_by')->constrained('users')->nullable();
+            $table->foreignId('member_id')->constrained()->cascadeOnDelete();
+
+
+            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('approved_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('rejected_by')->nullable()->constrained('users')->nullOnDelete();
 
             $table->string('loan_number')->unique();
             $table->string('loan_type'); // e.g., 'personal', 'priority', 'business'

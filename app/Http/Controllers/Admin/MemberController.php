@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Member;
 use App\Models\SavingsAccount;
+use App\Models\SaccoAccount;
 use App\Mail\TemporaryPasswordMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,7 @@ use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\TierHelper;
 
 
 
@@ -56,9 +58,12 @@ class MemberController extends Controller
             'phone1' => 'required|string|max:20',
             'phone2' => 'nullable|string|max:20',
             'address' => 'nullable|string',
-            'opening_balance' => 'nullable|numeric',
-            'interest_rate' => 'nullable|numeric',
-            'loan_protection_fund' => 'nullable|numeric',
+           
+
+            'opening_balance' => 'nullable|numeric|min:0',
+'membership_fee' => 'nullable|numeric|min:0',
+'loan_protection_fund' => 'nullable|numeric|min:0',
+
 
 
 
@@ -108,16 +113,28 @@ class MemberController extends Controller
                     'address' => $validated['address'] ?? null,
                 ]);
 
+             
+
                 // 2.6. Create Default Savings Account
                 SavingsAccount::create([
                     'member_id' => $member->id,
                     'account_number' => generateAccountNumber(),
                     'balance' => $validated['opening_balance'] ?? 0,
-                    'interest_rate' => $validated['interest_rate'] ?? 0,
+                    'membership_fee' => $validated['membership_fee'] ?? 0,
                     'loan_protection_fund' => $validated['loan_protection_fund'] ?? 0,
                     'status' => 'active',
                 ]);
 
+                   TierHelper::updateTier($member);
+
+                $saccoAccount = SaccoAccount::first();
+                if (!$saccoAccount) {
+                    return back()->with('error', "SACCO operational account not found. Cannot log payment.");
+                }
+                $saccoAccount->member_savings += $validated['opening_balance'];
+                $saccoAccount->loan_protection_fund += $validated['loan_protection_fund'];
+                $saccoAccount->operational += $validated['membership_fee'];
+                $saccoAccount->save();
 
 
 
@@ -164,7 +181,7 @@ class MemberController extends Controller
     public function transactions(Member $member)
     {
 
-       
+
         $transactions = $member->transactions()->latest()
             ->paginate(20);
 

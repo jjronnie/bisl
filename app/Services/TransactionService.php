@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Mail\TransactionAlert;
 use App\Models\Member;
 use Illuminate\Support\Facades\Mail;
-use   App\Helpers\TierHelper;
+use App\Helpers\TierHelper;
 
 class TransactionService
 {

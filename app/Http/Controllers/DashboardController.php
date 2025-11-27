@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Member;
 use App\Models\SavingsAccount;
 use App\Models\Transaction;
-use App\Models\Loan;
+use App\Models\SaccoAccount;
 
 
 
@@ -71,16 +71,10 @@ class DashboardController extends Controller
     public function adminDashboard()
     {
         $totalMembers = Member::count();
-        // Sum all savings account balances
-        $totalBalance = SavingsAccount::sum('balance');
+       
 
-
-        // // Total outstanding loans (active, disbursed, defaulted)
-        // $outstandingLoans = Loan::whereIn('status', ['active', 'disbursed', 'defaulted']);
-
-        // $totalOutstandingLoans = $outstandingLoans->count();
-
-        // $totalOutstandingAmount = $outstandingLoans->sum('');
+        $saccoAccount = SaccoAccount::first();
+   
 
         $transactions = Transaction::with('member', 'savingsAccount', )
             ->latest()
@@ -88,14 +82,10 @@ class DashboardController extends Controller
             ->get();
 
 
-
-
-
-
         return view('admin.dashboard', compact(
             'totalMembers',
-            'totalBalance',
             'transactions',
+            'saccoAccount'
         
 
         ));

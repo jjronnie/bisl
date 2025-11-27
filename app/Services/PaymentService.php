@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Loan;
 use App\Models\LoanInstallment;
 use Illuminate\Support\Facades\DB;
+use App\Models\SaccoAccount; 
 use Exception;
 
 class PaymentService
@@ -23,6 +24,17 @@ class PaymentService
         return DB::transaction(function () use ($loan, $data) {
 
             $paymentAmount = $data['payment_amount'];
+            $paymentMethod = $data['payment_method'] ?? 'cash'; // Default if not provided
+            $reference = $data['reference'] ?? 'N/A';             // Default if not provided
+            
+            // Fetch the single Sacco Account record
+            $saccoAccount = SaccoAccount::first();
+            if (!$saccoAccount) {
+                 throw new Exception("SACCO operational account not found. Cannot log payment.");
+            }
+
+            // NOTE: In a complete application, a separate 'Payment' model would be created here 
+            // to log the transaction (amount, method, reference, loan_id, user_id).
 
             // Find the oldest pending or partially paid installment
             $installment = $loan->installments()
@@ -35,43 +47,56 @@ class PaymentService
                 if ($loan->status !== 'completed') {
                     $loan->update(['status' => 'completed']);
                 }
-                throw new Exception("No outstanding installments found. Loan #{$loan->loan_number} is already paid off.");
+                throw new Exception("No outstanding installments found. Loan #{$loan->loan_number} is already paid off. Overpayment not handled.");
             }
 
             // Calculate the total amount due for this installment (Principal + Interest + Penalty)
             $amountDue = $installment->principal_amount + $installment->interest_amount + $installment->penalty_amount;
             
-            // If the installment was partial, determine the remaining due amount
-            // NOTE: In a more complex system, 'paid_amount' would track payments.
-            // For simplicity here, we assume if status is 'partial', the full amount due is needed
-            // unless we track the exact partial payment amount in the installment table itself.
-            // We'll proceed assuming 'amountDue' is the full required amount.
-
             if ($paymentAmount >= $amountDue) {
                 // 1. Payment is FULL or OVER
+                
+                // --- ACCOUNTING ALLOCATION (Applies to the full amount due) ---
+                $principalPaid = $installment->principal_amount;
+                $interestPaid = $installment->interest_amount;
+                $penaltyPaid = $installment->penalty_amount;
+                
+                // 1.1. Adjust SACCO Balances
+                // Principal portion returns to the lending pool
+                $saccoAccount->member_savings += $principalPaid; 
+                // Interest portion is recorded as revenue
+                $saccoAccount->loan_interest += $interestPaid;
+                // Penalty portion is recorded as operational income
+                $saccoAccount->operational += $penaltyPaid;
+                
+                $saccoAccount->save();
+                // -----------------------------------------------------------------
+
                 $installment->update([
                     'status' => 'paid',
                     'paid_at' => now(),
-                    // Optionally update the loan's status if this was the final installment
+                    // This is where you might link to the created Payment transaction ID
                 ]);
 
                 // Recursive call or loop to handle overpayment against the NEXT installment
                 $remainingPayment = $paymentAmount - $amountDue;
                 if ($remainingPayment > 0) {
-                    // Recalculate data for recursion (use the remainder as the new payment amount)
+                    // Recalculate data for recursion (only need the remainder amount)
                     $data['payment_amount'] = $remainingPayment;
+                    // Note: We use the *same* payment method/reference for the remainder payment allocation
                     $this->logPayment($loan, $data); // Apply remainder to the next installment
                 }
 
             } else {
                 // 2. Payment is PARTIAL
+                // Note: Partial payments introduce complexity. For simplicity here, we assume only
+                // full payments adjust the amortization schedule, but you must track what was paid.
+                
                 $newStatus = ($paymentAmount > 0) ? 'partial' : 'pending';
 
                 $installment->update([
                     'status' => $newStatus,
-                    // In a simple model, we just log the transaction externally. 
-                    // In a complex model, we would update a 'paid_amount' column here.
-                    // For this simple example, we'll mark it as 'partial' and rely on the next payment to cover the rest.
+                    // If complex tracking is needed, update a 'paid_amount' column here.
                 ]);
 
                 throw new Exception(
@@ -91,7 +116,4 @@ class PaymentService
 
         });
     }
-
-    // A separate method could handle payment creation/transaction logging if needed
-    // ...
 }

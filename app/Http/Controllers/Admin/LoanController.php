@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Loan;
 use Illuminate\Http\Request;
 use App\Models\Member;
+use App\Models\SaccoAccount;
 use App\Helpers\LoanHelper;
 use App\Services\LoanService;
 use Illuminate\Support\Facades\Auth;
@@ -32,9 +33,9 @@ class LoanController extends Controller
         // 1. Fetch Paginated Loans (for the table)
         // Ensure necessary relationships are loaded
         $loans = Loan::with(['member', 'member.savingsAccount'])
-                      ->latest()
-                      ->paginate(10);
-                      
+            ->latest()
+            ->paginate(10);
+
 
         // Define status groups for outstanding loans (loans actively being repaid or due)
         $activeStatuses = ['approved', 'disbursed', 'active', 'defaulted', 'default_pending'];
@@ -44,20 +45,20 @@ class LoanController extends Controller
             // Pending Applications
             'total_pending_count' => Loan::where('status', 'pending')->count(),
             'total_pending_amount' => Loan::where('status', 'pending')->sum('amount'),
-            
+
             // Loans Outstanding (Active, Disbursed, Defaulted)
             // This is the total principal amount currently owed or awaiting disbursement
             'total_outstanding_count' => Loan::whereIn('status', $activeStatuses)->count(),
             'total_outstanding_amount' => Loan::whereIn('status', $activeStatuses)->sum('amount'),
-            
+
             // Completed Loans (Lifetime)
             'total_completed_count' => Loan::where('status', 'completed')->count(),
             'total_completed_amount' => Loan::where('status', 'completed')->sum('amount'),
-            
+
             // Rejected Loans
             'total_rejected_count' => Loan::where('status', 'rejected')->count(),
         ];
-        
+
         // Add overall totals
         $stats['total_loan_count'] = Loan::count();
         // You might also want total disbursed amount lifetime:
@@ -108,7 +109,7 @@ class LoanController extends Controller
             'loan_type' => 'required|string', // e.g., 'standard', 'priority'
             'purpose' => 'required|string|max:255',
             'application_date' => 'required|date',
-                 'notes' => 'nullable|string'
+            'notes' => 'nullable|string'
         ]);
 
         try {
@@ -148,7 +149,7 @@ class LoanController extends Controller
 
 
 
-     public function approve(Loan $loan)
+    public function approve(Loan $loan)
     {
         try {
             $this->loanService->approve($loan);
