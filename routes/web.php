@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Member\MemberController as Member;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\TransferController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -31,6 +32,10 @@ Route::middleware(['auth', 'verified', 'pwc', 'role:admin'])
           Route::resource('members', MemberController::class);
           Route::get('/members/{member}/transactions', [MemberController::class, 'transactions'])->name('members.transactions.index');
 
+          Route::post('/interest/update', [MemberController::class, 'updateMonthlyInterest'])->name('interest.update');
+          Route::get('/interest/ledger', [MemberController::class, 'interest'])->name('interest.ledger');
+
+
           //Admins
           Route::resource('admins', AdminController::class);
           Route::patch('/admins/{admin}/suspend', [AdminController::class, 'suspend'])->name('suspend');
@@ -43,10 +48,10 @@ Route::middleware(['auth', 'verified', 'pwc', 'role:admin'])
           Route::post('/loans/{loan}/disburse', [LoanController::class, 'disburse'])->name('loans.disburse');
           Route::post('/payments', [LoanController::class, 'disburse'])->name('payments.create');
 
-           Route::get('/payments/create', [PaymentController::class, 'create'])->name('payments.create');
-    
-    // Route to handle the submission of the payment form
-    Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
+          Route::get('/payments/create', [PaymentController::class, 'create'])->name('payments.create');
+
+          // Route to handle the submission of the payment form
+          Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
 
 
 
@@ -57,8 +62,12 @@ Route::middleware(['auth', 'verified', 'pwc', 'role:admin'])
                'store',
                'show'
           ]);
+          Route::resource('transfers', TransferController::class);
+
 
           Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
+
+
      });
 
 

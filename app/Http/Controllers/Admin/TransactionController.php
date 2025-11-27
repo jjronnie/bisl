@@ -59,6 +59,8 @@ public function store(Request $request, TransactionService $service)
         return redirect()->back()->withErrors($e->getMessage());
     }
 }
+
+
     /**
      * Display the specified resource.
      */

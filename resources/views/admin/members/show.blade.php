@@ -47,10 +47,13 @@
 
   <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
         <!-- card -->
+        <x-stat-card title="Savings Account" value="UGX {{ number_format($balance) }}" icon="coins" />
         <x-stat-card title="Loan Protection Fund" value="UGX {{ number_format($loanProtection) }}" icon="shield" />
         <x-stat-card title="Accessible Balance" value="UGX {{ number_format($accessible) }}" icon="dollar-sign" />
+        <x-stat-card title="Accumulated Interest " value="{{ $member->savingsAccount->interest_earned ?? 'O' }}" icon="percent" />
+
         <x-stat-card title="Outstanding Loan" value="" icon="clipboard-clock" />
-        <x-stat-card title="Interest Rate" value="{{ $member->savingsAccount->interest_rate }}%" icon="percent" />
+
     </div>
 
 
@@ -141,12 +144,7 @@
                             number_format($accessible ?? 'N/A') }}</dd>
                     </div>
 
-                      <div class="flex justify-between py-2 border-b border-gray-100">
-                        <dt class="text-sm font-medium text-gray-600">Loan Interest Rate</dt>
-                        <dd class="text-sm text-gray-900 font-mono">
-                            {{$member->savingsAccount->interest_rate  }}%
-                        </dd>
-                    </div>
+                    
 
 
 

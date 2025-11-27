@@ -71,10 +71,14 @@ class DashboardController extends Controller
     public function adminDashboard()
     {
         $totalMembers = Member::count();
-       
+
+        $goldMembers = Member::where('tier', 'gold')->count();
+        $silverMembers = Member::where('tier', 'silver')->count();
+
+
 
         $saccoAccount = SaccoAccount::first();
-   
+
 
         $transactions = Transaction::with('member', 'savingsAccount', )
             ->latest()
@@ -85,8 +89,10 @@ class DashboardController extends Controller
         return view('admin.dashboard', compact(
             'totalMembers',
             'transactions',
-            'saccoAccount'
-        
+            'saccoAccount',
+            'goldMembers',
+            'silverMembers'
+
 
         ));
     }

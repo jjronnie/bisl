@@ -64,8 +64,20 @@
                     <span>Loans</span>
                 </a>
 
+                {{-- <a href="{{ route('admin.transfers.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.transfers.*') ? 'sidebar-link-active' : '' }}">
+
+                    <i data-lucide="repeat-2" class="w-4 h-4 "></i>
+                    <span>Transfers</span>
+                </a>
 
 
+                <a href="{{ route('admin.reports.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.reports.*') ? 'sidebar-link-active' : '' }}">
+
+                    <i data-lucide="wallet" class="w-4 h-4 "></i>
+                    <span>Accounts</span>
+                </a> --}}
 
 
                 <a href="{{ route('admin.reports.index') }}"

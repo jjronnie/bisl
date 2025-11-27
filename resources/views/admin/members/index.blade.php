@@ -23,16 +23,13 @@
                 <a class="btn" href="{{ route('admin.members.create') }}"> <i data-lucide="plus"
                         class="w-4 h-4 "></i></a>
 
-                <!-- Export to PDF Button -->
-                <button class="btn">
-                    <i data-lucide="file-text" class="w-4 h-4 "></i>
-                </button>
+                                <a class="btn" href="{{ route('admin.interest.ledger') }}"> <i data-lucide="sheet"
+                        class="w-4 h-4 "></i></a>
+          
 
 
-                <!-- Export to Excel Button -->
-                <button class="btn">
-                    <i data-lucide="sheet" class="w-4 h-4 "></i>
-                </button>
+
+               
             </div>
 
         </div>
@@ -70,7 +67,7 @@
                         <x-status-badge :status="$member->user->status" />
                     </x-table.cell>
 
-                        <x-table.cell>
+                    <x-table.cell>
                         <x-status-badge :status="$member->tier" />
                     </x-table.cell>
 
@@ -84,10 +81,10 @@
                             <a class="btn" href="{{ route('admin.members.edit', $member->id) }}"><i data-lucide="edit"
                                     class="w-4 h-4 "></i></a>
 
-                                      <a class="btn" href="{{ route('admin.members.transactions.index', $member->id) }}"><i data-lucide="arrow-left-right"
-                                    class="w-4 h-4 "></i></a>
+                            <a class="btn" href="{{ route('admin.members.transactions.index', $member->id) }}"><i
+                                    data-lucide="arrow-left-right" class="w-4 h-4 "></i></a>
 
-                        
+
 
                         </div>
                     </x-table.cell>
@@ -97,12 +94,12 @@
             @endforeach
         </x-table>
 
-          {{-- Pagination --}}
-            @if($members->hasPages())
-            <div class="px-6 py-4 border-t border-gray-200">
-                {{ $members->links() }}
-            </div>
-            @endif
+        {{-- Pagination --}}
+        @if($members->hasPages())
+        <div class="px-6 py-4 border-t border-gray-200">
+            {{ $members->links() }}
+        </div>
+        @endif
 
         @endif
 

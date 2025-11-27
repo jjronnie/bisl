@@ -15,6 +15,7 @@ class SavingsAccount extends Model
         'balance',
         'loan_protection_fund',
         'membership_fee',
+        'interest_earned',
         'status',
 
     ];

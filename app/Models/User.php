@@ -70,4 +70,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Transaction::class, 'creator');
     }
+
+    public function transfersMade()
+{
+    return $this->hasMany(Transfer::class, 'transferred_by');
+}
+
 }

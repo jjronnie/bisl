@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Member;
 use App\Models\SavingsAccount;
+use App\Models\InterestLedger;
 use App\Models\SaccoAccount;
 use App\Mail\TemporaryPasswordMail;
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\TierHelper;
+
 
 
 
@@ -58,11 +60,11 @@ class MemberController extends Controller
             'phone1' => 'required|string|max:20',
             'phone2' => 'nullable|string|max:20',
             'address' => 'nullable|string',
-           
+
 
             'opening_balance' => 'nullable|numeric|min:0',
-'membership_fee' => 'nullable|numeric|min:0',
-'loan_protection_fund' => 'nullable|numeric|min:0',
+            'membership_fee' => 'nullable|numeric|min:0',
+            'loan_protection_fund' => 'nullable|numeric|min:0',
 
 
 
@@ -113,7 +115,7 @@ class MemberController extends Controller
                     'address' => $validated['address'] ?? null,
                 ]);
 
-             
+
 
                 // 2.6. Create Default Savings Account
                 SavingsAccount::create([
@@ -125,7 +127,7 @@ class MemberController extends Controller
                     'status' => 'active',
                 ]);
 
-                   TierHelper::updateTier($member);
+                TierHelper::updateTier($member);
 
                 $saccoAccount = SaccoAccount::first();
                 if (!$saccoAccount) {
@@ -320,6 +322,86 @@ class MemberController extends Controller
         return redirect()->route('admin.members.index')->with('success', 'Member deleted successfully.');
     }
 
+
+
+    public function interest()
+    {
+        // Paginate interest ledger, latest first
+        $ledgers = InterestLedger::with('member')->latest()->paginate(25);
+
+        return view('admin.members.interest', compact('ledgers'));
+    }
+
+
+
+
+public function updateMonthlyInterest()
+{
+    // Define interest rates
+    $goldRate = 0.10;   // 10% monthly
+    $silverRate = 0.01; // 1% monthly
+    $goldThreshold = 1_000_000; // 1 million UGX
+
+    // Get current month and year to prevent duplicates
+    $currentMonth = now()->format('Y-m');
+
+    $members = Member::with('savingsAccount')->get();
+
+    DB::transaction(function () use ($members, $goldRate, $silverRate, $goldThreshold, $currentMonth) {
+        foreach ($members as $member) {
+            // Check if interest already calculated this month
+            $existingRecord = DB::table('interest_ledger')
+                ->where('member_id', $member->id)
+                ->whereRaw("DATE_FORMAT(created_at, '%Y-%m') = ?", [$currentMonth])
+                ->exists();
+
+            if ($existingRecord) {
+                continue; // Skip this member, already processed this month
+            }
+
+            $savings = $member->savingsAccount;
+            $balance = $savings->balance;
+            $oldInterestEarned = $savings->interest_earned;
+
+            // Determine tier based on balance
+            $tier = $balance >= $goldThreshold ? 'gold' : 'silver';
+            $rate = $tier === 'gold' ? $goldRate : $silverRate;
+
+            // Calculate interest on CURRENT BALANCE only
+            $interest = $balance * $rate;
+            $newInterestEarned = $oldInterestEarned + $interest;
+
+            // Update the accumulated interest
+            $savings->update([
+                'interest_earned' => $newInterestEarned,
+            ]);
+
+            // Record in ledger
+            DB::table('interest_ledger')->insert([
+                'member_id' => $member->id,
+                'balance_before' => $balance, // This should be the savings balance, not old interest
+                'interest_amount' => $interest,
+                'balance_after' => $balance, // Balance doesn't change, only interest accumulates
+                'tier' => $tier,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        // Update SACCO total interest ONCE after all members
+        $sacco = saccoAccount::first();
+        if ($sacco) {
+            $totalInterest = DB::table('interest_ledger')
+                ->sum('interest_amount');
+
+            $sacco->update([
+                'member_interest' => $totalInterest,
+            ]);
+        }
+    });
+
+    return back()->with('success', 'Interest updated for all members based on current balances.');
+}
 
 
 }

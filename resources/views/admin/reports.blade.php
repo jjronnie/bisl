@@ -2,18 +2,7 @@
     <x-page-title title="Reports"
         subtitle="Here you can view Summarized reports of how the Institution is performing" />
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-        <!-- card -->
-        <x-stat-card title="Total Members" value="{{ $totalMembers }}" icon="users" />
-        <x-stat-card title="Total Savings" value="UGX {{ number_format($totalBalance) }}" icon="coins" />
-        <x-stat-card title="Loan Protection Fund" value="" icon="shield" />
-        <x-stat-card title="Total Accessible Balance" value="" icon="dollar-sign" />
-
-        <x-stat-card title="Outstanding Loans" value="{{ $totalOutstandingLoans ?? '-' }}" icon="clipboard-clock" />
-        <x-stat-card title="Loan Portfolio" value="UGX {{ number_format($totalOutstandingAmount) }}" icon="wallet" />
-        <x-stat-card title="Average Savings" value="UGX {{ $averageBalanceFormatted }}" icon="slash" />
-
-    </div>
+  
 
 
 

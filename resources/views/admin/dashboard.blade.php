@@ -16,15 +16,18 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
         <!-- card -->
-        <x-stat-card title="Total Members" value="{{ $totalMembers }}" icon="users" />
-        <x-stat-card title="Operational Account" value="UGX {{ number_format($saccoAccount ->operational) }}" icon="coins" />
+        <x-stat-card title="Total Members" value="{{ $totalMembers ?? 'O' }}" icon="users" />
+        <x-stat-card title="Gold Tier" value="{{ $goldMembers ?? 'O' }}" icon="users" />
+        <x-stat-card title="Silver Tier" value="{{ $silverMembers ?? 'O' }}" icon="users" />
+
         <x-stat-card title="Savings Account" value="UGX {{ number_format($saccoAccount ->member_savings) }}" icon="coins" />
+        <x-stat-card title="Loan Protection Fund" value="UGX {{ number_format($saccoAccount ->loan_protection_fund) }}" icon="shield" />
+
+        <x-stat-card title="Operational Account" value="UGX {{ number_format($saccoAccount ->operational) }}" icon="coins" />
+
         <x-stat-card title="Accumulated Interest" value="UGX {{ number_format($saccoAccount ->member_interest) }}" icon="coins" />
         <x-stat-card title="Interest on Loans" value="UGX {{ number_format($saccoAccount ->loan_interest) }}" icon="coins" />
-        <x-stat-card title="Loan Protection Fund" value="UGX {{ number_format($saccoAccount ->loan_protection_fund) }}" icon="shield" />
-        {{-- <x-stat-card title="Outstanding Loans" value="{{ $totalOutstandingLoans ?? '-' }}" icon="clipboard-clock" />       
-        <x-stat-card title="Loan Portfolio" value="UGX {{ number_format($totalOutstandingAmount) }}" icon="wallet" /> --}}
-
+  
     </div>
 
     <x-page-title title="Recent Transactions" />

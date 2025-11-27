@@ -27,7 +27,7 @@ class ReportsController extends Controller
 
         $totalOutstandingLoans = $outstandingLoans->count();
 
-        $totalOutstandingAmount = $outstandingLoans->sum('outstanding_balance');
+     
 
 
 
@@ -62,7 +62,6 @@ class ReportsController extends Controller
             'totalMembers',
             'totalBalance',
             'totalOutstandingLoans',
-            'totalOutstandingAmount',
             'averageBalanceFormatted'
         ));
     }
