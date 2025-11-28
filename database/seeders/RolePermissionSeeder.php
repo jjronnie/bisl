@@ -30,7 +30,7 @@ class RolePermissionSeeder extends Seeder
         $superAdmin = User::firstOrCreate(
             ['email' => 'ronaldjjuuko7@gmail.com'],
             [
-                'name' => 'JRonnie Kclich',
+                'name' => 'Admin',
                 'password' => Hash::make('88928892'),
                 'email_verified_at' => now(),
                 'must_change_password' => false,
