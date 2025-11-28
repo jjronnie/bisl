@@ -1,75 +1,50 @@
 <x-app-layout>
     <x-page-title title="Loans" subtitle="Manage All loans" />
 
- <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    {{-- 2. Outstanding Loans (Count) --}}
-<x-stat-card 
-    title="Outstanding Loans " 
-    value="{{ number_format($stats['total_outstanding_count']) }}" 
-    icon="list-checks" 
-/>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {{-- 2. Outstanding Loans (Count) --}}
+        <x-stat-card title="Outstanding Loans " value="{{ number_format($stats['total_outstanding_count']) }}"
+            icon="list-checks" />
 
-{{-- 1. Total Outstanding Principal (Amount) --}}
-<x-stat-card 
-    title="Outstanding Principal" 
-    value="UGX {{ number_format($stats['total_outstanding_amount'], 0) }}" 
-    icon="banknote" 
-/>
+        {{-- 1. Total Outstanding Principal (Amount) --}}
+        <x-stat-card title="Outstanding Principal"
+            value="UGX {{ number_format($stats['total_outstanding_amount'], 0) }}" icon="banknote" />
 
-{{-- 4. Pending Applications (Count) --}}
-<x-stat-card 
-    title="Pending  Applications" 
-    value="{{ number_format($stats['total_pending_count']) }}" 
-    icon="clipboard-list" 
-/>
+        {{-- 4. Pending Applications (Count) --}}
+        <x-stat-card title="Pending  Applications" value="{{ number_format($stats['total_pending_count']) }}"
+            icon="clipboard-list" />
 
 
 
 
 
-{{-- 3. Pending Applications Value (Amount) --}}
-<x-stat-card 
-    title="Pending Value" 
-    value="UGX {{ number_format($stats['total_pending_amount'], 2) }}" 
-    icon="clock" 
-/>
+        {{-- 3. Pending Applications Value (Amount) --}}
+        <x-stat-card title="Pending Value" value="UGX {{ number_format($stats['total_pending_amount'], 2) }}"
+            icon="clock" />
 
 
 
 
 
-{{-- 6. Completed Loans (Count) --}}
-<x-stat-card 
-    title="Completed Loans " 
-    value="{{ number_format($stats['total_completed_count']) }}" 
-    icon="archive" 
-/>
+        {{-- 6. Completed Loans (Count) --}}
+        <x-stat-card title="Completed Loans " value="{{ number_format($stats['total_completed_count']) }}"
+            icon="archive" />
 
-{{-- 5. Completed Loans Value (Amount) --}}
-<x-stat-card 
-    title="Completed Loans" 
-    value="UGX {{ number_format($stats['total_completed_amount'], 2) }}" 
-    icon="check-circle" 
-/>
+        {{-- 5. Completed Loans Value (Amount) --}}
+        <x-stat-card title="Completed Loans" value="UGX {{ number_format($stats['total_completed_amount'], 2) }}"
+            icon="check-circle" />
 
-{{-- 8. Rejected Applications (Count) --}}
-<x-stat-card 
-    title="Rejected Applications" 
-    value="{{ number_format($stats['total_rejected_count']) }}" 
-    icon="x-circle" 
-/>
+        {{-- 8. Rejected Applications (Count) --}}
+        <x-stat-card title="Rejected Applications" value="{{ number_format($stats['total_rejected_count']) }}"
+            icon="x-circle" />
 
 
-{{-- 7. Total Loans Managed (Overall Count) --}}
-<x-stat-card 
-    title="Total Loans" 
-    value="{{ number_format($stats['total_loan_count']) }}" 
-    icon="receipt" 
-/>
+        {{-- 7. Total Loans Managed (Overall Count) --}}
+        <x-stat-card title="Total Loans" value="{{ number_format($stats['total_loan_count']) }}" icon="receipt" />
 
 
 
-</div>
+    </div>
 
     <div x-data="{ search: '' }" class="space-y-6">
         <!-- Controls -->
@@ -152,25 +127,25 @@
 
                         </x-table.cell>
 
-                          <x-table.cell>
-                {{ $loan->duration_months }} Months
-            </x-table.cell>
+                        <x-table.cell>
+                            {{ $loan->duration_months }} Months
+                        </x-table.cell>
 
-                      
+
 
                         <x-table.cell>
 
                             @if ($loan->due_date)
-                             {{ $loan->due_date->format('M d, Y')  }}
-                          
-                                 
-                             @else
-                                 
+                            {{ $loan->due_date->format('M d, Y') }}
+
+
+                            @else
+
                             N/A
-                                
+
                             @endif
 
-                           
+
 
 
                         </x-table.cell>

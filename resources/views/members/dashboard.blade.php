@@ -5,12 +5,13 @@
 
 
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4 mb-8">
         <!-- card -->
         <x-stat-card title="Loan Protection Fund" value="UGX {{ number_format($loanProtection) }}" icon="shield" />
-        <x-stat-card title="Accessible Balance" value="UGX {{ number_format($accessible) }}" icon="dollar-sign" />
-        <x-stat-card title="Outstanding Loan" value="" icon="clipboard-clock" />
-        <x-stat-card title="Interest Rate" value="{{ $member->savingsAccount->interest_rate }}%" icon="percent" />
+        <x-stat-card title=" Accessible Balance" value="UGX {{ number_format($accessible) }}" icon="dollar-sign" />
+        <x-stat-card title="Interest Earned" value="{{ $member->savingsAccount->interest_earned }}" icon="percent" />
+        {{-- <x-stat-card title="Outstanding Loan" value="" icon="clipboard-clock" /> --}}
+
     </div>
 
 

@@ -53,7 +53,7 @@ class MemberController extends Controller
     $rejectedCount = $member->loans()->where('status', 'rejected')->count();
     $completedCount = $member->loans()->where('status', 'completed')->count();
 
-    return view('members.loans', compact(
+    return view('members.loans.index', compact(
         'loans',
         'loanCount',
         'pendingCount',

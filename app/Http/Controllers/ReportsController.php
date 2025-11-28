@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Charts\LoanStatusChart;
+use App\Charts\LoanTierChart;
 use Illuminate\Http\Request;
 use App\Charts\MembersTierChart;
 use App\Charts\TransactionsMethodChart;
@@ -52,6 +54,8 @@ class ReportsController extends Controller
         $transactionsMethodChart = new TransactionsMethodChart();
         $genderChart = new MembersGenderChart();
         $transactionsChart = new TransactionsByMonthChart();
+        $loanStatusChart = new LoanStatusChart();
+        $loanTierChart = new LoanTierChart();
 
 
         return view('admin.reports', compact(
@@ -59,6 +63,8 @@ class ReportsController extends Controller
             'transactionsMethodChart',
             'genderChart',
             'transactionsChart',
+            'loanStatusChart',
+            'loanTierChart',
             'totalMembers',
             'totalBalance',
             'totalOutstandingLoans',

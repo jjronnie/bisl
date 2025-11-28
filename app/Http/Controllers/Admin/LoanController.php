@@ -11,6 +11,8 @@ use App\Services\LoanService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Exception;
+use App\Mail\LoanStatusUpdate; // The Mailable class
+use Illuminate\Support\Facades\Mail; // The Mail Facade
 
 class LoanController extends Controller
 {
@@ -116,6 +118,8 @@ class LoanController extends Controller
             // 2. Call Service
             $loan = $this->loanService->createLoan($validated, Auth::id());
 
+            $this->sendLoanStatusEmail($loan);
+
             // 3. Success Response (Redirect to show page to see amortization)
             return redirect()
                 ->route('admin.loans.show', $loan->id)
@@ -153,6 +157,7 @@ class LoanController extends Controller
     {
         try {
             $this->loanService->approve($loan);
+            $this->sendLoanStatusEmail($loan);
             return redirect()
                 ->route('admin.loans.show', $loan)
                 ->with('success', "Loan #{$loan->loan_number} approved successfully. Ready for disbursement.");
@@ -168,6 +173,9 @@ class LoanController extends Controller
     {
         try {
             $this->loanService->reject($loan);
+
+            $this->sendLoanStatusEmail($loan);
+
             return redirect()
                 ->route('admin.loans.show', $loan)
                 ->with('success', "Loan #{$loan->loan_number} rejected.");
@@ -184,6 +192,9 @@ class LoanController extends Controller
     {
         try {
             $this->loanService->disburse($loan);
+
+            $this->sendLoanStatusEmail($loan);
+
             return redirect()
                 ->route('admin.loans.show', $loan)
                 ->with('success', "Loan #{$loan->loan_number} disbursed and is now ACTIVE. Installment due dates have been adjusted.");
@@ -192,6 +203,22 @@ class LoanController extends Controller
         }
     }
 
+
+   
+ 
+private function sendLoanStatusEmail(Loan $loan): void
+{
+    // Ensure the loan is loaded with the member and user data
+    $loan->load('member.user');
+
+    $recipient = $loan->member->user;
+
+    // Check if a user record exists and has an email
+    if ($recipient && $recipient->email) {
+        // Mail::send() sends the email immediately, as requested.
+        Mail::to($recipient->email)->send(new LoanStatusUpdate($loan));
+    }
+}
 
     /**
      * Remove the specified resource from storage.

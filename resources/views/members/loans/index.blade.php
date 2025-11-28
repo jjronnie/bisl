@@ -78,9 +78,7 @@
 
                 <x-table.cell>
 
-                    <a class="btn" href="{{ route('admin.loans.show', $loan) }}">
-                        <i data-lucide="eye" class="w-4 h-4 "></i>
-                    </a>
+                  @include('members.loans.show')
 
 
                 </x-table.cell>

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Loan;
 use App\Services\PaymentService;
 use Exception;
+use App\Mail\PaymentReceived;
+use Illuminate\Support\Facades\Mail;
 
 
 class PaymentController extends Controller
@@ -82,6 +84,8 @@ class PaymentController extends Controller
         try {
             // Log the payment using the service
             $updatedLoan = $this->paymentService->logPayment($loan, $validated);
+            
+              $this->sendPaymentConfirmationEmail($updatedLoan, $validated['payment_amount']);
 
             return redirect()
                 ->route('admin.loans.show', $updatedLoan->id)
@@ -93,6 +97,23 @@ class PaymentController extends Controller
                 ->with('error', "Payment processing failed: " . $e->getMessage());
         }
     }
+
+
+      private function sendPaymentConfirmationEmail(Loan $loan, float $amountPaid): void
+    {
+        // Ensure the loan is loaded with the member and user data
+        $loan->loadMissing('member.user');
+
+        $recipient = $loan->member->user;
+
+        // Check if a user record exists and has an email
+        if ($recipient && $recipient->email) {
+            // Mail::send() sends the email immediately, as requested.
+            Mail::to($recipient->email)->send(new PaymentReceived($loan, $amountPaid));
+        }
+    }
+
+
 
     /**
      * Display the specified resource.

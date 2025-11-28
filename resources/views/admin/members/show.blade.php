@@ -52,7 +52,6 @@
         <x-stat-card title="Accessible Balance" value="UGX {{ number_format($accessible) }}" icon="dollar-sign" />
         <x-stat-card title="Accumulated Interest " value="{{ $member->savingsAccount->interest_earned ?? 'O' }}" icon="percent" />
 
-        <x-stat-card title="Outstanding Loan" value="" icon="clipboard-clock" />
 
     </div>
 

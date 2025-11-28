@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Loan;
 use App\Models\LoanInstallment;
 use Illuminate\Support\Facades\DB;
-use App\Models\SaccoAccount; 
+use App\Models\SaccoAccount;
 use Exception;
 
 class PaymentService
@@ -15,7 +15,7 @@ class PaymentService
      *
      * @param Loan $loan The loan receiving the payment.
      * @param array $data Contains ['payment_amount']
-     * @return LoanInstallment|null The installment that was fully or partially paid.
+     * @return Loan The updated loan model.
      * @throws Exception
      */
     public function logPayment(Loan $loan, array $data): ?Loan
@@ -24,17 +24,14 @@ class PaymentService
         return DB::transaction(function () use ($loan, $data) {
 
             $paymentAmount = $data['payment_amount'];
-            $paymentMethod = $data['payment_method'] ?? 'cash'; // Default if not provided
-            $reference = $data['reference'] ?? 'N/A';             // Default if not provided
+            // $paymentMethod = $data['payment_method'] ?? 'cash'; 
+            // $reference = $data['reference'] ?? 'N/A'; 
             
             // Fetch the single Sacco Account record
             $saccoAccount = SaccoAccount::first();
             if (!$saccoAccount) {
                  throw new Exception("SACCO operational account not found. Cannot log payment.");
             }
-
-            // NOTE: In a complete application, a separate 'Payment' model would be created here 
-            // to log the transaction (amount, method, reference, loan_id, user_id).
 
             // Find the oldest pending or partially paid installment
             $installment = $loan->installments()
@@ -51,7 +48,10 @@ class PaymentService
             }
 
             // Calculate the total amount due for this installment (Principal + Interest + Penalty)
-            $amountDue = $installment->principal_amount + $installment->interest_amount + $installment->penalty_amount;
+            // FIX: Round to 2 decimal places to avoid floating point precision errors
+            // (e.g. 13645.64 vs 13645.640000001)
+            $amountDue = round($installment->principal_amount + $installment->interest_amount + $installment->penalty_amount, 2);
+            $paymentAmount = round($paymentAmount, 2);
             
             if ($paymentAmount >= $amountDue) {
                 // 1. Payment is FULL or OVER
@@ -79,7 +79,7 @@ class PaymentService
                 ]);
 
                 // Recursive call or loop to handle overpayment against the NEXT installment
-                $remainingPayment = $paymentAmount - $amountDue;
+                $remainingPayment = round($paymentAmount - $amountDue, 2);
                 if ($remainingPayment > 0) {
                     // Recalculate data for recursion (only need the remainder amount)
                     $data['payment_amount'] = $remainingPayment;
@@ -89,19 +89,12 @@ class PaymentService
 
             } else {
                 // 2. Payment is PARTIAL
-                // Note: Partial payments introduce complexity. For simplicity here, we assume only
-                // full payments adjust the amortization schedule, but you must track what was paid.
-                
-                $newStatus = ($paymentAmount > 0) ? 'partial' : 'pending';
-
-                $installment->update([
-                    'status' => $newStatus,
-                    // If complex tracking is needed, update a 'paid_amount' column here.
-                ]);
+                // FIX: Since you explicitly don't want to accept partial payments, we don't update status to 'partial'.
+                // We strictly throw the error.
 
                 throw new Exception(
                     "Payment of UGX " . number_format($paymentAmount, 2) . " is only partial. " .
-                    "UGX " . number_format($amountDue, 2) . " was due. Installment marked as PARTIAL."
+                    "UGX " . number_format($amountDue, 2) . " should be paid."
                 );
             }
             

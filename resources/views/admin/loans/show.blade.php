@@ -103,7 +103,7 @@
         '#', 
         'Due Date', 
         'Starting Balance', 
-        'EMI (Total)', 
+        'Monthly Installment', 
         'Principal', 
         'Interest', 
         'Penalty', 

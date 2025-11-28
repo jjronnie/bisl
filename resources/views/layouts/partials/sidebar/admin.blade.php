@@ -87,12 +87,7 @@
                     <span>Reports</span>
                 </a>
 
-                <a href="{{ route('profile.edit') }}"
-                    class="sidebar-link {{ request()->routeIs('profile.*') ? 'sidebar-link-active' : '' }}">
-
-                    <i data-lucide="settings" class="w-4 h-4 "></i>
-                    <span>Settings</span>
-                </a>
+            
 
 
 
