@@ -55,7 +55,7 @@ class DashboardController extends Controller
         $loanProtection = $savingsAccount?->loan_protection_fund ?? 0;
 
         // accessible amount
-        $accessible = (float) $balance + (float) $loanProtection;
+        $accessible = $balance 
 
 
         // transactions from member

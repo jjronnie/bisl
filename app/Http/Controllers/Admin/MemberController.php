@@ -174,7 +174,7 @@ class MemberController extends Controller
         $loanProtection = $savingsAccount?->loan_protection_fund ?? 0;
 
         // accessible amount
-        $accessible = (float) $balance + (float) $loanProtection;
+        $accessible = $balance;
 
         return view('admin.members.show', compact('member', 'balance', 'loanProtection', 'accessible'));
     }
