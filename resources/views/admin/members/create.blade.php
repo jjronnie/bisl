@@ -33,7 +33,7 @@
                             <span class="text-gray-500 text-sm sm:text-base">UGX</span>
                         </div>
 
-                        <input type="number" name="opening_balance" min="1" placeholder="0.00"
+                        <input type="number" name="opening_balance" placeholder="0.00"
                             value="{{ old('opening_balance') }}"
                             class="block w-full pl-12 pr-3 py-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base" />
                     </div>
@@ -48,7 +48,7 @@
                             <span class="text-gray-500 text-sm sm:text-base">UGX</span>
                         </div>
 
-                        <input type="number" name="loan_protection_fund" min="1" placeholder="0.00"
+                        <input type="number" name="loan_protection_fund" placeholder="0.00"
                             value="{{ old('loan_protection_fund') }}"
                             class="block w-full pl-12 pr-3 py-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base" />
                     </div>
@@ -64,7 +64,7 @@
                             <span class="text-gray-500 text-sm sm:text-base">UGX</span>
                         </div>
 
-                        <input type="number" name="membership_fee" min="1" placeholder="0.00"
+                        <input type="number" name="membership_fee" placeholder="0.00"
                             value="{{ old('membership_fee') }}"
                             class="block w-full pl-12 pr-3 py-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base" />
                     </div>
