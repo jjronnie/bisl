@@ -28,32 +28,32 @@
                     <p class="text-indigo-100 text-sm sm:text-base">Account: {{ $member->savingsAccount->account_number
                         ?? 'N/A' }}</p>
                     <div class="flex flex-wrap gap-2 justify-center sm:justify-start mt-3">
-                        <span
-                            class="">
-                            <x-status-badge :status="$member->user->status" />
-                            
-                           </span>
                         <span class="">
-                           <x-status-badge :status="$member->tier" />
+                            <x-status-badge :status="$member->user->status" />
+
+                        </span>
+                        <span class="">
+                            <x-status-badge :status="$member->tier" />
 
                         </span>
                     </div>
                 </div>
 
-           
+
             </div>
         </div>
 
 
-  <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-        <!-- card -->
-        <x-stat-card title="Savings Account" value="UGX {{ number_format($balance) }}" icon="coins" />
-        <x-stat-card title="Loan Protection Fund" value="UGX {{ number_format($loanProtection) }}" icon="shield" />
-        <x-stat-card title="Accessible Balance" value="UGX {{ number_format($accessible) }}" icon="dollar-sign" />
-        <x-stat-card title="Accumulated Interest " value="{{ $member->savingsAccount->interest_earned ?? 'O' }}" icon="percent" />
+        <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+            <!-- card -->
+            <x-stat-card title="Savings Account" value="UGX {{ number_format($balance) }}" icon="coins" />
+            <x-stat-card title="Loan Protection Fund" value="UGX {{ number_format($loanProtection) }}" icon="shield" />
+            <x-stat-card title="Accessible Balance" value="UGX {{ number_format($accessible) }}" icon="dollar-sign" />
+            <x-stat-card title="Accumulated Interest "
+                value="{{ number_format( $member->savingsAccount->interest_earned) }}" icon="percent" />
 
 
-    </div>
+        </div>
 
 
 
@@ -117,11 +117,11 @@
                             }}</dd>
                     </div>
 
-                          <div class="flex justify-between py-2 border-b border-gray-100">
+                    <div class="flex justify-between py-2 border-b border-gray-100">
                         <dt class="text-sm font-medium text-gray-600">Account Status</dt>
                         <dd class="text-sm text-gray-900 font-mono">
-                                                    <x-status-badge :status="$member->savingsAccount->status" />
-    
+                            <x-status-badge :status="$member->savingsAccount->status" />
+
                         </dd>
                     </div>
 
@@ -137,18 +137,18 @@
                             number_format($loanProtection ?? 'N/A') }}</dd>
                     </div>
 
-                      <div class="flex justify-between py-2 border-b border-gray-100">
+                    <div class="flex justify-between py-2 border-b border-gray-100">
                         <dt class="text-sm font-medium text-gray-600">Total Accessible Balance</dt>
                         <dd class="text-sm text-gray-900 font-mono">UGX {{
                             number_format($accessible ?? 'N/A') }}</dd>
                     </div>
 
-                    
 
 
 
 
-                 
+
+
                 </dl>
             </div>
 
@@ -189,35 +189,31 @@
             </div>
         </div>
 
-                 {{-- Action Buttons --}}
+        {{-- Action Buttons --}}
         <div class="flex flex-col sm:flex-row gap-3 justify-between bg-white rounded-xl shadow-md mb-6 p-6">
-            <a href="{{ route('admin.members.index') }}"
-                class="btn-gray">
+            <a href="{{ route('admin.members.index') }}" class="btn-gray">
                 ← Back to Members
             </a>
 
-             <a href="{{  route('admin.members.edit', $member) }}"
-                class="btn">
-                 Edit Member
+            <a href="{{  route('admin.members.edit', $member) }}" class="btn">
+                Edit Member
             </a>
 
-             <a href="{{  route('admin.members.transactions.index', $member) }}"
-                class="btn">
+            <a href="{{  route('admin.members.transactions.index', $member) }}" class="btn">
                 View Transactions
             </a>
 
-             <a href="{{  route('admin.members.transactions.index', $member) }}"
-                class="btn">
+            <a href="{{  route('admin.members.transactions.index', $member) }}" class="btn">
                 Loan Portfolio
             </a>
 
 
             <x-confirm-modal :action="route('admin.members.destroy', $member->id)"
                 warning="Are you sure you want to delete this Member? This action cannot be undone."
-                 triggerText="Delete Member"/>
+                triggerText="Delete Member" />
         </div>
 
-   
+
 
     </div>
 </x-app-layout>

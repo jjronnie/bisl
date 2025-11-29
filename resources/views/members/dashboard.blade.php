@@ -9,7 +9,7 @@
         <!-- card -->
         <x-stat-card title="Loan Protection Fund" value="UGX {{ number_format($loanProtection) }}" icon="shield" />
         <x-stat-card title=" Accessible Balance" value="UGX {{ number_format($accessible) }}" icon="dollar-sign" />
-        <x-stat-card title="Interest Earned" value="{{ $member->savingsAccount->interest_earned }}" icon="percent" />
+        <x-stat-card title="Interest Earned" value="{{ number_format($member->savingsAccount->interest_earned) }}" icon="percent" />
         {{-- <x-stat-card title="Outstanding Loan" value="" icon="clipboard-clock" /> --}}
 
     </div>
