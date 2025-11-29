@@ -48,17 +48,14 @@ class DashboardController extends Controller
         $savingsAccount = $member->savingsAccount;
 
 
-
-
         // balance from savings account
         $balance = $savingsAccount?->balance ?? 0;
         $loanProtection = $savingsAccount?->loan_protection_fund ?? 0;
 
         // accessible amount
-        $accessible = $balance 
+        $accessible = $savingsAccount?->balance ?? 0;
 
 
-        // transactions from member
         $transactions = $member->transactions()->latest()
             ->take(5)
             ->get();
