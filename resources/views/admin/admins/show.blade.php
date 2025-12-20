@@ -27,6 +27,8 @@
             </dl>
       </div>
 
+      @role('superadmin')
+
 
       @if($admin->status === 'active')
       <x-confirm-modal :action="route('admin.suspend', $admin)"
@@ -37,5 +39,7 @@
             warning="Are you sure you want to unsuspend this user? They will regain access to the system."
             method="PATCH" triggerText="UnSuspend" triggerClass="btn-gray" />
       @endif
+
+      @endrole
 
 </x-slide-form>

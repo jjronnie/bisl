@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\TransferController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LoanDocumentController;
+
 
 
 
@@ -47,6 +49,16 @@ Route::middleware(['auth', 'verified', 'pwc', 'role:admin'])
           Route::post('/loans/{loan}/reject', [LoanController::class, 'reject'])->name('loans.reject');
           Route::post('/loans/{loan}/disburse', [LoanController::class, 'disburse'])->name('loans.disburse');
           Route::post('/payments', [LoanController::class, 'disburse'])->name('payments.create');
+
+
+          Route::prefix('loans/{loan}')->group(function () {
+               Route::post('/documents', [LoanDocumentController::class, 'store'])->name('loans.documents.store');
+          });
+
+          Route::get('loan-documents/{document}/download', [LoanDocumentController::class, 'download'])->name('loan-documents.download');
+
+Route::delete('loan-documents/{document}', [LoanDocumentController::class, 'destroy'])
+    ->name('loan-documents.destroy');
 
           Route::get('/payments/create', [PaymentController::class, 'create'])->name('payments.create');
 

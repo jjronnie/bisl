@@ -203,14 +203,18 @@
                 View Transactions
             </a>
 
-            <a href="{{  route('admin.members.transactions.index', $member) }}" class="btn">
+            {{-- <a href="{{  route('admin.members.transactions.index', $member) }}" class="btn">
                 Loan Portfolio
-            </a>
+            </a> --}}
 
-
+@role('superadmin')
             <x-confirm-modal :action="route('admin.members.destroy', $member->id)"
                 warning="Are you sure you want to delete this Member? This action cannot be undone."
                 triggerText="Delete Member" />
+
+                @endrole
+
+
         </div>
 
 

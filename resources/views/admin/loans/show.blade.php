@@ -92,8 +92,17 @@
                         Disbursement' }}</p>
                   <p class="col-span-full"><strong>Purpose:</strong> {{ $loan->purpose }}</p>
                   <p class="col-span-full"><strong>Notes:</strong> {{ $loan->notes ?? 'None' }}</p>
+
+
+      @include('admin.loans.documents')
+
             </div>
       </div>
+
+
+
+ 
+
 
       {{-- Amortization Schedule --}}
       <div class="bg-white p-6 rounded-lg shadow-md">
@@ -140,6 +149,8 @@
                   @endforelse
             </x-table>
       </div>
+
+
 
 
 </x-app-layout>

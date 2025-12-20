@@ -51,6 +51,12 @@ class Loan extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    public function documents()
+{
+    return $this->hasMany(LoanDocument::class);
+}
+
+
 
 
     public function installments(): HasMany
