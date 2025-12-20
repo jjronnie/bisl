@@ -23,8 +23,13 @@
                 <a class="btn" href="{{ route('admin.members.create') }}"> <i data-lucide="plus"
                         class="w-4 h-4 "></i></a>
 
+@role('superadmin')
+
+
                                 <a class="btn" href="{{ route('admin.interest.ledger') }}"> <i data-lucide="sheet"
                         class="w-4 h-4 "></i></a>
+
+                        @endrole
           
 
 
