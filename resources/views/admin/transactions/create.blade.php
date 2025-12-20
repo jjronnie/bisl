@@ -38,6 +38,23 @@
                 <x-input-error :messages="$errors->get('transaction_type')" class="mt-2" />
             </div>
 
+            {{-- Account --}}
+            <div>
+                <x-input-label for="account" value="Account" />
+                <select id="account" name="account" required
+                    class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base">
+                    <option value="" disabled selected>Select account...</option>
+                    <option value="savings" {{ old('account')=='savings' ? 'selected' : '' }}>
+                        Savings
+                    </option>
+                    <option value="loan_protection_fund" {{ old('account')=='loan_protection_fund' ? 'selected' : '' }}>
+                        Loan Protection Fund
+                    </option>
+                </select>
+                <x-input-error :messages="$errors->get('account')" class="mt-2" />
+            </div>
+
+
 
             {{-- Method --}}
             <div>
@@ -56,7 +73,7 @@
             </div>
 
 
-         
+
 
 
             {{-- Amount --}}

@@ -11,7 +11,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <!-- Name -->
                 <div>
-                    <x-input-label for="name" value="Full Name" />
+                    <x-input-label for="name" value="Full Name " />
                     <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name')"
                         required autofocus autocomplete="name" />
                     <x-input-error :messages="$errors->get('name')" class="mt-2" />
@@ -56,7 +56,7 @@
                 </div>
 
 
-            
+
                 <div>
                     <x-input-label for="membership_fee" value="Membership Fee" />
                     <div class="mt-1 relative rounded-lg shadow-sm">
@@ -164,23 +164,23 @@
                     <x-input-error :messages="$errors->get('address')" class="mt-2" />
                 </div>
 
-             <!-- Avatar -->
-<div>
-    <x-input-label for="avatar" value="Profile Photo (optional)" />
-    <input id="avatar" name="avatar" type="file" accept="image/*"
-           class="mt-1 block w-full border-gray-300 rounded-md" 
-           onchange="previewAvatar(event)" />
+                <!-- Avatar -->
+                <div>
+                    <x-input-label for="avatar" value="Profile Photo (optional)" />
+                    <input id="avatar" name="avatar" type="file" accept="image/*"
+                        class="mt-1 block w-full border-gray-300 rounded-md" onchange="previewAvatar(event)" />
 
-    <!-- Preview -->
-    <div class="mt-2">
-        <img id="avatarPreview" src="#" alt="Avatar Preview" class="hidden w-24 h-24 object-cover rounded-full border" />
-    </div>
+                    <!-- Preview -->
+                    <div class="mt-2">
+                        <img id="avatarPreview" src="#" alt="Avatar Preview"
+                            class="hidden w-24 h-24 object-cover rounded-full border" />
+                    </div>
 
-    <x-input-error :messages="$errors->get('avatar')" class="mt-2" />
-</div>
+                    <x-input-error :messages="$errors->get('avatar')" class="mt-2" />
+                </div>
 
-<script>
-function previewAvatar(event) {
+                <script>
+                    function previewAvatar(event) {
     const input = event.target;
     const preview = document.getElementById('avatarPreview');
 
@@ -196,7 +196,7 @@ function previewAvatar(event) {
         preview.classList.add('hidden');
     }
 }
-</script>
+                </script>
 
 
             </div>

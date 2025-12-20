@@ -11,77 +11,91 @@ use App\Helpers\TierHelper;
 
 class TransactionService
 {
-    public function create(array $data)
-    {
-        return DB::transaction(function () use ($data) {
+public function create(array $data)
+{
+    return DB::transaction(function () use ($data) {
 
-            $account = SavingsAccount::where('member_id', $data['member_id'])->lockForUpdate()->firstOrFail();
+        $account = SavingsAccount::where('member_id', $data['member_id'])
+            ->lockForUpdate()
+            ->firstOrFail();
 
-            $balanceBefore = $account->balance;
-            $amount = $data['amount'];
+        // Decide which balance column to use
+        $balanceColumn = match ($data['account']) {
+            'savings' => 'balance',
+            'loan_protection_fund' => 'loan_protection_fund',
+            default => throw new \InvalidArgumentException('Invalid account type'),
+        };
 
-            // Determine debit or credit
-            if ($data['transaction_type'] === 'deposit') {
-                $side = 'credit';
-                $balanceAfter = $balanceBefore + $amount;
-            } else {
-                $side = 'debit';
+        // HARD RULE: LPF is deposit-only
+        if (
+            $data['account'] === 'loan_protection_fund' &&
+            $data['transaction_type'] === 'withdrawal'
+        ) {
+            throw new \Exception('Withdrawals are not allowed from Loan Protection Fund.');
+        }
 
-                if ($balanceBefore < $amount) {
-                    throw new \Exception('Insufficient balance.');
-                }
+        $balanceBefore = $account->{$balanceColumn};
+        $amount = $data['amount'];
 
-                $balanceAfter = $balanceBefore - $amount;
+        // Determine debit or credit
+        if ($data['transaction_type'] === 'deposit') {
+            $side = 'credit';
+            $balanceAfter = $balanceBefore + $amount;
+        } else {
+            $side = 'debit';
+
+            if ($balanceBefore < $amount) {
+                throw new \Exception('Insufficient balance.');
             }
 
-            // Update the account balance
-            $account->update([
-                'balance' => $balanceAfter
-            ]);
+            $balanceAfter = $balanceBefore - $amount;
+        }
 
+        // Update the correct balance
+        $account->update([
+            $balanceColumn => $balanceAfter,
+        ]);
 
-            // Immediately update tier
-            $member = $account->member; // assuming Member has 'savingsAccount' inverse relation
-            TierHelper::updateTier($member);
+        // Update tier only when savings balance changes
+        if ($balanceColumn === 'balance') {
+            TierHelper::updateTier($account->member);
+        }
 
-            // Generate reference number
-            $reference = generateTransactionId();
+        // Generate reference number
+        $reference = generateTransactionId();
 
-            // Create transaction
-            $transaction = Transaction::create([
-                'member_id' => $data['member_id'],
-                'reference_number' => $reference,
-                'creator' => auth()->id(),
+        // Create transaction record
+        $transaction = Transaction::create([
+            'member_id' => $data['member_id'],
+            'reference_number' => $reference,
+            'creator' => auth()->id(),
 
-                'transaction_type' => $data['transaction_type'],
-                'side' => $side,
-                'amount' => $amount,
+            'account' => $data['account'],
+            'transaction_type' => $data['transaction_type'],
+            'side' => $side,
+            'amount' => $amount,
 
-                'balance_before' => $balanceBefore,
-                'balance_after' => $balanceAfter,
+            'balance_before' => $balanceBefore,
+            'balance_after' => $balanceAfter,
 
-                'method' => $data['method'] ?? null,
-                'remarks' => $data['remarks'] ?? null,
+            'method' => $data['method'] ?? null,
+            'remarks' => $data['remarks'] ?? null,
+        ]);
 
-            ]);
+        // Send email after commit logic
+        try {
+            $member = Member::with('user')->find($data['member_id']);
 
-            // 2. Send Email AFTER the transaction is fully committed
-            // We wrap this in try-catch so email failure doesn't crash the HTTP response
-            try {
-                // Retrieve the member and their user account
-                $member = Member::with('user')->find($data['member_id']);
-
-
-                if ($member && $member->user && $member->user->email) {
-                    Mail::to($member->user->email)->send(new TransactionAlert($transaction));
-                }
-            } catch (\Exception $e) {
-                // Log email failure, but allow the request to succeed effectively
-                // because the money has already been moved.
-                \Illuminate\Support\Facades\Log::error('Transaction Email Failed: ' . $e->getMessage());
+            if ($member?->user?->email) {
+                Mail::to($member->user->email)
+                    ->send(new TransactionAlert($transaction));
             }
+        } catch (\Exception $e) {
+            \Log::error('Transaction Email Failed: ' . $e->getMessage());
+        }
 
-            return $transaction;
-        });
-    }
+        return $transaction;
+    });
+}
+
 }

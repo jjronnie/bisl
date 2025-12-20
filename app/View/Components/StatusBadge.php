@@ -18,13 +18,15 @@ class StatusBadge extends Component
     private function getColorClasses(string $status): string
     {
         return match ($status) {
-            'active' => 'bg-green-100 text-green-800',
-            'silver' => 'bg-gray-100 text-gray-800',
-            'gold' => 'bg-orange-100 text-orange-800',
-            'Deposit' => 'bg-green-100 text-green-800',
-            'Withdrawal' => 'bg-blue-100 text-blue-900',
+            'active' => 'bg-green-100 text-green-700',
+            'Silver' => 'bg-gray-100 text-gray-700',
+            'Gold' => 'bg-orange-100 text-orange-700',
+
+
+            'Deposit' => 'bg-green-100 text-green-700',
+            'Withdrawal' => 'bg-blue-100 text-blue-700',
             'pending' => 'bg-yellow-100 text-yellow-700',
-            'suspended' => 'bg-orange-100 text-orange-800',       
+            'suspended' => 'bg-orange-100 text-orange-700',       
             default => 'bg-gray-100 text-gray-700',
         };
     }

@@ -13,6 +13,9 @@
                   <x-transaction-detail title="Transaction Type"
                         value="{{ ucfirst($transaction->transaction_type) }}" />
 
+                          <x-transaction-detail title="Account"
+                        value="{{ ucfirst($transaction->account) }}" />
+
 
                   <x-transaction-detail title="Amount" value="{{ number_format($transaction->amount, 2) }}" />
 

@@ -20,6 +20,7 @@ class Transaction extends Model
         'reference_number',
         'loan_id',
         'creator',
+        'account',
         'transaction_type',
         'side',
         'amount',

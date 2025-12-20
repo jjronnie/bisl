@@ -20,8 +20,8 @@
         <x-stat-card title="Gold Tier" value="{{ $goldMembers ?? 'O' }}" icon="users" />
         <x-stat-card title="Silver Tier" value="{{ $silverMembers ?? 'O' }}" icon="users" />
 
-        <x-stat-card title="Savings Account" value="UGX {{ number_format($saccoAccount ->member_savings) }}" icon="coins" />
-        <x-stat-card title="Loan Protection Fund" value="UGX {{ number_format($saccoAccount ->loan_protection_fund) }}" icon="shield" />
+        <x-stat-card title="Savings Account" value="UGX {{ number_format($totalSavings) }}" icon="coins" />
+        <x-stat-card title="Loan Protection Fund" value="UGX {{ number_format($totalLoanProtection) }}" icon="shield" />
 
         <x-stat-card title="Operational Account" value="UGX {{ number_format($saccoAccount ->operational) }}" icon="coins" />
 

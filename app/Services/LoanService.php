@@ -6,6 +6,7 @@ use App\Models\Loan;
 use App\Models\Member;
 use App\Models\LoanInstallment;
 use App\Models\SaccoAccount;
+use App\Models\SavingsAccount;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\LoanHelper; // Your helper for ID generation
 use Carbon\Carbon;
@@ -72,14 +73,18 @@ class LoanService
             throw new Exception("Member has an existing active loan.");
         }
 
+        $totals = SavingsAccount::selectRaw(
+    'COALESCE(SUM(balance), 0) as total_savings'
+)->first();
+
+$totalSavings = $totals->total_savings;
+
+
         
-        $saccoAccount = SaccoAccount::first();
+    
+     
 
-        if (!$saccoAccount) {
-            throw new Exception("SACCO operational account not found. Cannot determine available funds.");
-        }
-
-        $availableFunds = $saccoAccount->member_savings; // Using the field name from your query
+        $availableFunds = $totalSavings;
 
         if ($requestedAmount > $availableFunds) {
             throw new Exception("Requested loan amount (UGX " . number_format($requestedAmount, 2) . ") is greater than the available lending funds (UGX " . number_format($availableFunds, 2) . ").");

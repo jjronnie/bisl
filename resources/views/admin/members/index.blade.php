@@ -54,14 +54,37 @@
                 <x-table.row>
                     <x-table.cell>{{ $index + 1 }}</x-table.cell>
                     <x-table.cell>{{ $member->savingsAccount->account_number }}</x-table.cell>
-                    <x-table.cell>
-                        <div class="flex items-center">
-                            <div>
-                                <div class="text-sm font-medium text-gray-900">{{ ucfirst($member->name) }}</div>
-                                <div class="text-sm text-gray-500">{{ $member->user->email ?? '' }}</div>
-                            </div>
-                        </div>
-                    </x-table.cell>
+                 <x-table.cell>
+    <div class="flex items-center gap-3">
+        @php
+            $photo = $member->user->profile_photo_path;
+        @endphp
+
+        @if ($photo)
+            @if (Str::startsWith($photo, ['http://', 'https://']))
+                <img src="{{ $photo }}" alt="Profile" class="w-10 h-10 rounded-full object-cover">
+            @else
+                <img src="{{ asset('storage/' . $photo) }}" alt="Profile" class="w-10 h-10 rounded-sm object-cover">
+            @endif
+        @else
+            <img src="{{ asset('default-avatar.png') }}" alt="Profile" class="w-10 h-10 rounded-sm object-cover">
+        @endif
+
+        <div class="flex flex-col leading-tight">
+            <span class="font-medium">
+                {{ ucfirst($member->user->name) }}
+            </span>
+            <span class="text-sm text-gray-500">
+                {{ $member->user->email }}
+            </span>
+        </div>
+    </div>
+</x-table.cell>
+
+
+               
+
+
                     <x-table.cell>UGX {{ number_format($member->savingsAccount->balance) }}</x-table.cell>
                     <x-table.cell>
                         <x-status-badge :status="$member->user->status" />

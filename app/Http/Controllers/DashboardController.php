@@ -74,6 +74,11 @@ class DashboardController extends Controller
 
 
 
+        $totals = SavingsAccount::selectRaw('
+            COALESCE(SUM(balance), 0) as total_savings,
+            COALESCE(SUM(loan_protection_fund), 0) as total_loan_protection
+        ')
+        ->first();
         $saccoAccount = SaccoAccount::first();
 
 
@@ -82,13 +87,20 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+                $totalSavings = $totals->total_savings;
+        $totalLoanProtection = $totals->total_loan_protection;
+
 
         return view('admin.dashboard', compact(
             'totalMembers',
             'transactions',
             'saccoAccount',
             'goldMembers',
-            'silverMembers'
+            'silverMembers',
+            'totalSavings',
+            'totalLoanProtection'
+
+            
 
 
         ));

@@ -44,6 +44,7 @@ public function store(Request $request, TransactionService $service)
     $validated = $request->validate([
         'member_id' => 'required|exists:members,id',
         'transaction_type' => 'required|in:deposit,withdrawal',
+        'account' => 'required',
         'amount' => 'required|numeric|min:1',
         'method' => 'nullable|string',
         'remarks' => 'nullable|string'

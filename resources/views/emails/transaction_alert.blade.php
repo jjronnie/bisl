@@ -20,6 +20,7 @@ Please find the details of this transaction below:
 | **Transaction Date** | {{ $transaction->created_at->format('d M Y, h:i A') }} |
 | **Transaction  ID** | {{ $transaction->reference_number }} |
 | **Transaction Type** | {{ ucfirst($transaction->transaction_type) }} |
+| **Account** | {{ ucfirst($transaction->account) }} |
 | **Amount** |UGX {{ number_format($transaction->amount, 2) }} |
 | **Available Balance** | **UGX {{ number_format($transaction->balance_after, 2) }}** |
 </x-mail::table>
