@@ -27,7 +27,7 @@ class TransactionController extends Controller
     {
         $transactions = Transaction::with('member',  'savingsAccount')
             ->latest()
-            ->paginate(50);
+            ->paginate(20);
 
               $members = Member::with('savingsAccount:id,member_id,account_number')
             ->whereNull('deleted_at')

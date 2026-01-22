@@ -27,12 +27,14 @@
 
                   <x-transaction-detail title="Method" value="{{ $transaction->method ?? 'N/A' }}" />
 
-                  <x-transaction-detail title="Remarks" value="{{ $transaction->remarks ?? 'None' }}" />
 
                   <x-transaction-detail title="Created At"
                         value="{{ $transaction->created_at->format('d M Y H:i') }}" />
 
                   <x-transaction-detail title="Transacted By" value="{{ $transaction->createdBy->name ?? 'Unknown' }}" />
+
+                  <x-transaction-detail title="Remarks" value="{{ $transaction->remarks ?? 'None' }}" />
+
 
             </dl>
       </div>
