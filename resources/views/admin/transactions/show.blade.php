@@ -33,8 +33,12 @@
 
                   <x-transaction-detail title="Transacted By" value="{{ $transaction->createdBy->name ?? 'Unknown' }}" />
 
-                  <x-transaction-detail title="Remarks" value="{{ $transaction->remarks ?? 'None' }}" />
 
+
+            </dl>
+
+             <dl class="grid grid-cols-1  gap-6">
+                  <x-transaction-detail title="Remarks" value="{{ $transaction->remarks ?? 'None' }}" />
 
             </dl>
       </div>
