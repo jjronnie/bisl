@@ -5,7 +5,7 @@
     </dt>
 
     <!-- Value -->
-    <dd class="text-lg font-semibold">
+    <dd class="text-lg font-semibold  break-words whitespace-normal">
         {{ $value }}
     </dd>
 </div>
