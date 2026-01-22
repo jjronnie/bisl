@@ -1,95 +1,91 @@
-<header class="nav" x-data="{ sidebarOpen: false, quickAccessOpen: false, notificationOpen: false }"
-    @resize.window="if (window.innerWidth >= 1024) sidebarOpen = true">
+<header class="nav" x-cloak x-data="{ sidebarOpen: false, quickAccessOpen: false, notificationOpen: false }" @resize.window="if (window.innerWidth >= 1024) sidebarOpen = true">
 
     @php
-    $member = auth()->user()?->member;
+        $member = auth()->user()?->member;
     @endphp
 
-    @if(auth()->check() && auth()->user()->hasRole('admin'))
+    @if (auth()->check() && auth()->user()->hasRole('admin'))
 
 
- <!-- Mobile Menu Button -->
-    <button class="menu-btn" id="menuBtn">
-        <i data-lucide="menu"></i>
-    </button>
-
-    @elseif(auth()->check() && auth()->user()->hasRole('user'))
-
-
-    <!-- Profile -->
-    <div x-data="{ open: false, showLogoutModal: false }" class="relative lg:hidden">
-        <!-- Trigger -->
-        <button @click="open = !open" class="flex items-center space-x-3 pl-2 focus:outline-none">
-
-            <div class="p-2 rounded-lg text-blue-700 bg-gray-100 transition-colors">
-
-                @if ($member && $member->avatar)
-                <img src="{{ asset('storage/' . $member->avatar) }}" alt="Member Avatar"
-                    class="w-8 h-8 object-cover rounded-full">
-                @else
-                <img src="{{ asset('default-avatar.png') }}" class="w-8 h-8 rounded-full" alt="profile">
-                @endif
-
-            </div>
-
+        <!-- Mobile Menu Button -->
+        <button class="menu-btn" id="menuBtn">
+            <i data-lucide="menu"></i>
         </button>
+    @elseif(auth()->check() && auth()->user()->hasRole('user'))
+        <!-- Profile -->
+        <div x-data="{ open: false, showLogoutModal: false }" class="relative lg:hidden">
+            <!-- Trigger -->
+            <button @click="open = !open" class="flex items-center space-x-3 pl-2 focus:outline-none">
 
+                <div class="p-2 rounded-lg text-blue-700 bg-gray-100 transition-colors">
 
-        <!-- Profile Dropdown -->
-        <div x-show="open" @click.away="open = false" x-transition x-cloak
-            class="absolute left-0 mt-4 w-72 bg-white text-gray-800 rounded-lg shadow-xl z-30">
-
-            <!-- Account Info -->
-            <div class="flex items-center space-x-3 p-4 border-b">
-                <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-600">
                     @if ($member && $member->avatar)
-                    <img src="{{ asset('storage/' . $member->avatar) }}" alt="Member Avatar"
-                        class="w-8 h-8 object-cover rounded-full">
+                        <img src="{{ asset('storage/' . $member->avatar) }}" alt="Member Avatar"
+                            class="w-8 h-8 object-cover rounded-full">
                     @else
-                    <img src="{{ asset('default-avatar.png') }}" class="w-8 h-8 rounded-full" alt="profile">
+                        <img src="{{ asset('default-avatar.png') }}" class="w-8 h-8 rounded-full" alt="profile">
                     @endif
+
                 </div>
-                <div>
-                    <p class="font-semibold">{{ ucfirst(auth()->user()->name) ?? '' }}</p>
-                    <p class="text-sm text-gray-500">{{ auth()->user()->email ?? '' }}</p>
-                </div>
-            </div>
 
-            <!-- Menu Items -->
-            <nav class="py-2">
-                <a href="{{ route('profile.edit') }}" class="flex items-center px-4 py-2 text-sm hover:bg-gray-100">
-                    <i data-lucide="settings" class="w-4 h-4 mr-2"></i> Settings
-                </a>
-
-            </nav>
-
-            <!-- Logout -->
-            <button @click="showLogoutModal = true; open = false"
-                class="w-full flex items-center px-4 py-2 text-sm hover:bg-gray-100 text-red-600 border-t">
-                <i data-lucide="log-out" class="w-4 h-4 mr-2"></i> Log out
             </button>
-        </div>
 
-        <!-- Logout Modal -->
-        <div x-show="showLogoutModal" x-transition x-cloak
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6" @click.away="showLogoutModal = false">
-                <h2 class="text-lg font-semibold text-gray-800">Confirm Logout</h2>
-                <p class="text-sm text-gray-600 mt-2">Are you sure you want to logout?</p>
-                <div class="mt-4 flex justify-end space-x-2">
-                    <button @click="showLogoutModal = false"
-                        class="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 text-gray-800 rounded">Cancel</button>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit"
-                            class="px-4 py-2 text-sm bg-red-600 hover:bg-red-700 text-white rounded">Logout</button>
-                    </form>
+
+            <!-- Profile Dropdown -->
+            <div x-show="open" @click.away="open = false" x-transition x-cloak
+                class="absolute left-0 mt-4 w-72 bg-white text-gray-800 rounded-lg shadow-xl z-30">
+
+                <!-- Account Info -->
+                <div class="flex items-center space-x-3 p-4 border-b">
+                    <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-600">
+                        @if ($member && $member->avatar)
+                            <img src="{{ asset('storage/' . $member->avatar) }}" alt="Member Avatar"
+                                class="w-8 h-8 object-cover rounded-full">
+                        @else
+                            <img src="{{ asset('default-avatar.png') }}" class="w-8 h-8 rounded-full" alt="profile">
+                        @endif
+                    </div>
+                    <div>
+                        <p class="font-semibold">{{ ucfirst(auth()->user()->name) ?? '' }}</p>
+                        <p class="text-sm text-gray-500">{{ auth()->user()->email ?? '' }}</p>
+                    </div>
+                </div>
+
+                <!-- Menu Items -->
+                <nav class="py-2">
+                    <a href="{{ route('profile.edit') }}" class="flex items-center px-4 py-2 text-sm hover:bg-gray-100">
+                        <i data-lucide="settings" class="w-4 h-4 mr-2"></i> Settings
+                    </a>
+
+                </nav>
+
+                <!-- Logout -->
+                <button @click="showLogoutModal = true; open = false"
+                    class="w-full flex items-center px-4 py-2 text-sm hover:bg-gray-100 text-red-600 border-t">
+                    <i data-lucide="log-out" class="w-4 h-4 mr-2"></i> Log out
+                </button>
+            </div>
+
+            <!-- Logout Modal -->
+            <div x-show="showLogoutModal" x-transition x-cloak
+                class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                <div class="bg-white rounded-lg shadow-lg w-full max-w-sm p-6" @click.away="showLogoutModal = false">
+                    <h2 class="text-lg font-semibold text-gray-800">Confirm Logout</h2>
+                    <p class="text-sm text-gray-600 mt-2">Are you sure you want to logout?</p>
+                    <div class="mt-4 flex justify-end space-x-2">
+                        <button @click="showLogoutModal = false"
+                            class="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 text-gray-800 rounded">Cancel</button>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit"
+                                class="px-4 py-2 text-sm bg-red-600 hover:bg-red-700 text-white rounded">Logout</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-@endif
+    @endif
 
 
 
@@ -112,82 +108,90 @@
     <!-- Right Section -->
     <div class="ml-auto flex items-center space-x-4 relative">
 
-        <!-- Quick Access -->
-        <div class="relative" @click.away="quickAccessOpen = false">
-            <button class="p-2 rounded-lg hover:bg-gray-100 transition-colors bg-blue-50 text-blue-700"
-                @click="quickAccessOpen = !quickAccessOpen">
-                <i data-lucide="zap" class="w-5 h-5"></i>
-            </button>
+        @if (auth()->check() && auth()->user()->hasRole('admin'))
+            <!-- Quick Access -->
+            <div class="relative" @click.away="quickAccessOpen = false">
+                <button class="p-2 rounded-lg hover:bg-gray-100 transition-colors bg-blue-50 text-blue-700"
+                    @click="quickAccessOpen = !quickAccessOpen">
+                    <i data-lucide="zap" class="w-5 h-5"></i>
+                </button>
 
-            <div x-show="quickAccessOpen" x-transition x-cloak
-                class="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-30">
-                <div class="p-4">
-                    <h3 class="text-sm font-medium text-blue-700 mb-3">Quick Access</h3>
-                    <div class="space-y-2">
-
-
-                        <a href="{{ route('admin.transactions.index') }}" class="quick-access-item ">
-                            <i data-lucide="user-plus" class="w-4 h-4"></i>
-                            <span class="text-sm">Transactions</span>
-                        </a>
-
-                        <a href="{{ route('admin.loans.index') }}" class="quick-access-item ">
-                            <i data-lucide="user-plus" class="w-4 h-4"></i>
-                            <span class="text-sm">Loans</span>
-                        </a>
-
-                        <a href="{{ route('admin.members.index') }}" class="quick-access-item ">
-                            <i data-lucide="user-plus" class="w-4 h-4"></i>
-                            <span class="text-sm">Members</span>
-                        </a>
+                <div x-show="quickAccessOpen" x-transition x-cloak
+                    class="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-30">
+                    <div class="p-4">
+                        <h3 class="text-sm font-medium text-blue-700 mb-3">Quick Access</h3>
+                        <div class="space-y-2">
 
 
+                            <a href="{{ route('admin.transactions.index') }}" class="quick-access-item ">
+                                <i data-lucide="user-plus" class="w-4 h-4"></i>
+                                <span class="text-sm">Transactions</span>
+                            </a>
 
+                            <a href="{{ route('admin.loans.index') }}" class="quick-access-item ">
+                                <i data-lucide="user-plus" class="w-4 h-4"></i>
+                                <span class="text-sm">Loans</span>
+                            </a>
+
+                            <a href="{{ route('admin.members.index') }}" class="quick-access-item ">
+                                <i data-lucide="user-plus" class="w-4 h-4"></i>
+                                <span class="text-sm">Members</span>
+                            </a>
 
 
 
-
-
-
-
-
-
-
-
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
 
         <!-- Notifications -->
-        <div class="relative" @click.away="notificationOpen = false">
-            <button class="p-2 rounded-lg  hover:bg-gray-100 transition-colors"
-                @click="notificationOpen = !notificationOpen">
+        <div class="relative" x-data="{ notificationOpen: false }" @click.away="notificationOpen = false">
+            <button class="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                @click="notificationOpen = !notificationOpen" aria-label="Notifications">
                 <i data-lucide="bell"></i>
+
+                <!-- Counter -->
                 <span
-                    class="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full leading-none">0</span>
+                    class="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full leading-none">
+                    2
+                </span>
             </button>
 
+            <!-- Dropdown -->
             <div x-show="notificationOpen" x-transition x-cloak
-                class="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-200 z-30 p-4"
-                @click.away="notificationOpen = false">
+                class="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-200 z-30">
+                <div class="p-4 border-b">
+                    <h3 class="text-sm font-semibold text-gray-800 text-center">
+                        Security Notifications
+                    </h3>
+                </div>
 
+                <ul class="divide-y text-sm">
+                    <li class="p-4 flex gap-3">
+                        <i data-lucide="log-out" class="w-4 h-4 text-yellow-500 mt-0.5"></i>
+                        <p class="text-gray-700 leading-snug">
+                            Always log out after using a device that does not belong to you.
+                        </p>
+                    </li>
 
-
-                <h3 class="text-sm text-center font-semibold text-gray-800 mb-4"></h3>
-
-                <p class="text-center">No Notifications </p>
-
-
-
+                    <li class="p-4 flex gap-3">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-green-600 mt-0.5"></i>
+                        <p class="text-gray-700 leading-snug">
+                            Use a strong, unique password to keep your account secure.
+                        </p>
+                    </li>
+                </ul>
             </div>
         </div>
+
 
         <!-- Profile desktop -->
         <div x-data="{ open: false, showLogoutModal: false }" class="relative hidden lg:flex">
             <!-- Trigger -->
             @php
-            $member = auth()->user()?->member;
+                $member = auth()->user()?->member;
             @endphp
 
             <button @click="open = !open" class="flex items-center space-x-3 pl-2 focus:outline-none">
@@ -195,10 +199,10 @@
                 <div class="p-2 rounded-lg text-blue-700 bg-gray-100 transition-colors">
 
                     @if ($member && $member->avatar)
-                    <img src="{{ asset('storage/' . $member->avatar) }}" alt="Member Avatar"
-                        class="w-8 h-8 object-cover rounded-full">
+                        <img src="{{ asset('storage/' . $member->avatar) }}" alt="Member Avatar"
+                            class="w-8 h-8 object-cover rounded-full">
                     @else
-                    <img src="{{ asset('default-avatar.png') }}" class="w-8 h-8 rounded-full" alt="profile">
+                        <img src="{{ asset('default-avatar.png') }}" class="w-8 h-8 rounded-full" alt="profile">
                     @endif
 
                 </div>
@@ -215,10 +219,11 @@
                 <div class="flex items-center space-x-3 p-4 border-b">
                     <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-600">
                         @if ($member && $member->avatar)
-                        <img src="{{ asset('storage/' . $member->avatar) }}" alt="Member Avatar"
-                            class="w-8 h-8 object-cover rounded-full">
+                            <img src="{{ asset('storage/' . $member->avatar) }}" alt="Member Avatar"
+                                class="w-8 h-8 object-cover rounded-full">
                         @else
-                        <img src="{{ asset('default-avatar.png') }}" class="w-8 h-8 rounded-full" alt="profile">
+                            <img src="{{ asset('default-avatar.png') }}" class="w-8 h-8 rounded-full"
+                                alt="profile">
                         @endif
                     </div>
                     <div>
@@ -229,7 +234,8 @@
 
                 <!-- Menu Items -->
                 <nav class="py-2">
-                    <a href="{{ route('profile.edit') }}" class="flex items-center px-4 py-2 text-sm hover:bg-gray-100">
+                    <a href="{{ route('profile.edit') }}"
+                        class="flex items-center px-4 py-2 text-sm hover:bg-gray-100">
                         <i data-lucide="settings" class="w-4 h-4 mr-2"></i> Settings
                     </a>
 
