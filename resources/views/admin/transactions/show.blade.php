@@ -37,7 +37,7 @@
 
             </dl>
 
-             <dl class="grid grid-cols-1  gap-6">
+             <dl class="grid grid-cols-1  gap-6 pt-6">
                   <x-transaction-detail title="Remarks" value="{{ $transaction->remarks ?? 'None' }}" />
 
             </dl>
