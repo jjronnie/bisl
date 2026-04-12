@@ -23,18 +23,15 @@
                 <a class="btn" href="{{ route('admin.members.create') }}"> <i data-lucide="plus"
                         class="w-4 h-4 "></i></a>
 
-@role('superadmin')
-
-
-                                <a class="btn" href="{{ route('admin.interest.ledger') }}"> <i data-lucide="sheet"
-                        class="w-4 h-4 "></i></a>
-
-                        @endrole
-          
+                @role('superadmin')
+                    <a class="btn" href="{{ route('admin.interest.ledger') }}"> <i data-lucide="sheet"
+                            class="w-4 h-4 "></i></a>
+                @endrole
 
 
 
-               
+
+
             </div>
 
         </div>
@@ -42,92 +39,89 @@
         @if ($members->isEmpty())
 
 
-        <x-empty-state icon="users" message="No members added yet. " />
-
-
+            <x-empty-state icon="users" message="No members added yet. " />
         @else
+            <x-table :headers="['#', 'Account Number', 'Member', 'Balance', 'Status', 'Tier', 'Actions']">
+                @foreach ($members as $index => $member)
+                    <template
+                        x-if="!search || '{{ $member->name }}'.toLowerCase().includes(search.toLowerCase()) || '{{ $member->savingsAccount->account_number }}'.toLowerCase().includes(search.toLowerCase())">
+
+                        <x-table.row>
+                            <x-table.cell>{{ $index + 1 }}</x-table.cell>
+                            <x-table.cell>{{ $member->savingsAccount->account_number }}</x-table.cell>
+                            <x-table.cell>
+                                <div class="flex items-center gap-3">
+                                    @php
+                                        $photo = $member->user->profile_photo_path;
+                                    @endphp
+
+                                    @if ($photo)
+                                        @if (Str::startsWith($photo, ['http://', 'https://']))
+                                            <img src="{{ $photo }}" alt="Profile"
+                                                class="w-10 h-10 rounded-full object-cover">
+                                        @else
+                                            <img src="{{ asset('storage/' . $photo) }}" alt="Profile"
+                                                class="w-10 h-10 rounded-sm object-cover">
+                                        @endif
+                                    @else
+                                        <img src="{{ asset('default-avatar.png') }}" alt="Profile"
+                                            class="w-10 h-10 rounded-sm object-cover">
+                                    @endif
+
+                                    <div class="flex flex-col leading-tight">
+                                        <span class="font-medium">
+                                            {{ ucfirst($member->user->name) }}
+                                        </span>
+                                        <span class="text-sm text-gray-500">
+                                            {{ $member->user->email }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </x-table.cell>
 
 
 
 
-        <x-table :headers="[ '#','Account Number', 'Member', 'Balance', 'Status', 'Tier', 'Actions']">
-            @foreach ($members as $index =>$member)
 
-            <template
-                x-if="!search || '{{ $member->name }}'.toLowerCase().includes(search.toLowerCase()) || '{{ $member->savingsAccount->account_number  }}'.toLowerCase().includes(search.toLowerCase())">
+                            <x-table.cell>UGX {{ number_format($member->savingsAccount->balance) }}</x-table.cell>
+                            <x-table.cell>
+                                <x-status-badge :status="$member->user->status" />
+                            </x-table.cell>
 
-                <x-table.row>
-                    <x-table.cell>{{ $index + 1 }}</x-table.cell>
-                    <x-table.cell>{{ $member->savingsAccount->account_number }}</x-table.cell>
-                 <x-table.cell>
-    <div class="flex items-center gap-3">
-        @php
-            $photo = $member->user->profile_photo_path;
-        @endphp
+                            <x-table.cell>
+                                <x-status-badge :status="$member->tier" />
+                            </x-table.cell>
 
-        @if ($photo)
-            @if (Str::startsWith($photo, ['http://', 'https://']))
-                <img src="{{ $photo }}" alt="Profile" class="w-10 h-10 rounded-full object-cover">
-            @else
-                <img src="{{ asset('storage/' . $photo) }}" alt="Profile" class="w-10 h-10 rounded-sm object-cover">
+
+
+                            <x-table.cell>
+
+                                <div class="flex space-x-2">
+                                    <a class="btn" href="{{ route('admin.members.show', $member->id) }}"><i
+                                            data-lucide="eye" class="w-4 h-4 "></i></a>
+                                    <a class="btn" href="{{ route('admin.members.edit', $member->id) }}"><i
+                                            data-lucide="edit" class="w-4 h-4 "></i></a>
+
+                                    <a class="btn"
+                                        href="{{ route('admin.members.transactions.index', $member->id) }}"><i
+                                            data-lucide="arrow-left-right" class="w-4 h-4 "></i></a>
+
+
+
+                                </div>
+                            </x-table.cell>
+
+                        </x-table.row>
+                    </template>
+                @endforeach
+            </x-table>
+
+            {{-- Pagination --}}
+            @if ($members->hasPages())
+                <div class="px-6 py-4 border-t border-gray-200">
+                    {{ $members->links() }}
+                </div>
             @endif
-        @else
-            <img src="{{ asset('default-avatar.png') }}" alt="Profile" class="w-10 h-10 rounded-sm object-cover">
-        @endif
-
-        <div class="flex flex-col leading-tight">
-            <span class="font-medium">
-                {{ ucfirst($member->user->name) }}
-            </span>
-            <span class="text-sm text-gray-500">
-                {{ $member->user->email }}
-            </span>
-        </div>
-    </div>
-</x-table.cell>
-
-
-               
-
-
-                    <x-table.cell>UGX {{ number_format($member->savingsAccount->balance) }}</x-table.cell>
-                    <x-table.cell>
-                        <x-status-badge :status="$member->user->status" />
-                    </x-table.cell>
-
-                    <x-table.cell>
-                        <x-status-badge :status="$member->tier" />
-                    </x-table.cell>
-
-
-
-                    <x-table.cell>
-
-                        <div class="flex space-x-2">
-                            <a class="btn" href="{{ route('admin.members.show', $member->id) }}"><i data-lucide="eye"
-                                    class="w-4 h-4 "></i></a>
-                            <a class="btn" href="{{ route('admin.members.edit', $member->id) }}"><i data-lucide="edit"
-                                    class="w-4 h-4 "></i></a>
-
-                            <a class="btn" href="{{ route('admin.members.transactions.index', $member->id) }}"><i
-                                    data-lucide="arrow-left-right" class="w-4 h-4 "></i></a>
-
-
-
-                        </div>
-                    </x-table.cell>
-
-                </x-table.row>
-            </template>
-            @endforeach
-        </x-table>
-
-        {{-- Pagination --}}
-        @if($members->hasPages())
-        <div class="px-6 py-4 border-t border-gray-200">
-            {{ $members->links() }}
-        </div>
-        @endif
 
         @endif
 
