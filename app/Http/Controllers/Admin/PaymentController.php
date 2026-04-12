@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Loan;
 use App\Services\PaymentService;
+use App\Services\SmsService;
 use Exception;
 use App\Mail\PaymentReceived;
 use Illuminate\Support\Facades\Mail;
@@ -84,8 +85,8 @@ class PaymentController extends Controller
         try {
             // Log the payment using the service
             $updatedLoan = $this->paymentService->logPayment($loan, $validated);
-            
-              $this->sendPaymentConfirmationEmail($updatedLoan, $validated['payment_amount']);
+
+            $this->sendPaymentConfirmationEmail($updatedLoan, $validated['payment_amount']);
 
             return redirect()
                 ->route('admin.loans.show', $updatedLoan->id)
@@ -110,6 +111,9 @@ class PaymentController extends Controller
         if ($recipient && $recipient->email) {
             // Mail::send() sends the email immediately, as requested.
             Mail::to($recipient->email)->send(new PaymentReceived($loan, $amountPaid));
+
+            // Send SMS notification
+            SmsService::sendPaymentReceivedSms($loan, $amountPaid, $recipient);
         }
     }
 

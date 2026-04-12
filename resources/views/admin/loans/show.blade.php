@@ -150,7 +150,56 @@
             </x-table>
       </div>
 
+      {{-- Loan Reminders --}}
+      @if($loan->reminders->count() > 0)
+      <div class="bg-white p-6 rounded-lg shadow-md mt-8">
+            <h3 class="text-xl font-semibold mb-4">Loan Reminders</h3>
 
+            <div class="overflow-x-auto">
+                  <table class="w-full">
+                        <thead class="bg-gray-50 border-b border-gray-200">
+                              <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Channel</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sent At</th>
+                              </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                              @foreach($loan->reminders as $reminder)
+                                    <tr class="hover:bg-gray-50">
+                                          <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                                <span class="px-2 py-1 rounded text-xs font-medium
+                                                      @if($reminder->type === 'due_today') bg-red-100 text-red-800
+                                                      @else bg-yellow-100 text-yellow-800
+                                                      @endif">
+                                                      {{ str_replace('_', ' ', strtoupper($reminder->type)) }}
+                                                </span>
+                                          </td>
+                                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                                <span class="px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                                      {{ ucfirst($reminder->channel) }}
+                                                </span>
+                                          </td>
+                                          <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                                <span class="px-2 py-1 rounded text-xs font-medium
+                                                      @if($reminder->status === 'sent') bg-green-100 text-green-800
+                                                      @elseif($reminder->status === 'failed') bg-red-100 text-red-800
+                                                      @else bg-yellow-100 text-yellow-800
+                                                      @endif">
+                                                      {{ ucfirst($reminder->status) }}
+                                                </span>
+                                          </td>
+                                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                                {{ $reminder->sent_at ? $reminder->sent_at->format('d M Y H:i A') : 'N/A' }}
+                                          </td>
+                                    </tr>
+                              @endforeach
+                        </tbody>
+                  </table>
+            </div>
+      </div>
+      @endif
 
 
 </x-app-layout>

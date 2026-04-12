@@ -10,6 +10,8 @@ use App\Http\Controllers\Member\MemberController as Member;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\TransferController;
+use App\Http\Controllers\Admin\SmsSettingController;
+use App\Http\Controllers\Admin\SmsLogController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoanDocumentController;
 
@@ -43,6 +45,12 @@ Route::middleware(['auth', 'verified', 'pwc', 'role:admin'])
           Route::patch('/admins/{admin}/suspend', [AdminController::class, 'suspend'])->name('suspend');
           Route::patch('/admins/{admin}/unsuspend', [AdminController::class, 'unsuspend'])->name('unsuspend');
 
+          // SMS Settings (app-wide)
+          Route::get('/sms-settings', [SmsSettingController::class, 'index'])->name('sms-settings.index');
+          Route::patch('/sms-settings', [SmsSettingController::class, 'update'])->name('sms-settings.update');
+
+          // SMS Logs
+          Route::get('/sms-logs', [SmsLogController::class, 'index'])->name('sms-logs.index');
 
           Route::resource('loans', LoanController::class);
           Route::post('/loans/{loan}/approve', [LoanController::class, 'approve'])->name('loans.approve');

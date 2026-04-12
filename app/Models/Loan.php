@@ -63,4 +63,9 @@ class Loan extends Model
     {
         return $this->hasMany(LoanInstallment::class)->orderBy('installment_number');
     }
+
+    public function reminders(): HasMany
+    {
+        return $this->hasMany(LoanReminder::class)->orderBy('created_at', 'desc');
+    }
 }

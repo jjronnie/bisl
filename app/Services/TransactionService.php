@@ -8,6 +8,7 @@ use App\Mail\TransactionAlert;
 use App\Models\Member;
 use Illuminate\Support\Facades\Mail;
 use App\Helpers\TierHelper;
+use App\Services\SmsService;
 
 class TransactionService
 {
@@ -86,12 +87,20 @@ public function create(array $data)
         try {
             $member = Member::with('user')->find($data['member_id']);
 
-            if ($member?->user?->email) {
-                Mail::to($member->user->email)
-                    ->send(new TransactionAlert($transaction));
+            if ($member?->user) {
+                // Send email
+                if ($member->user->email) {
+                    Mail::to($member->user->email)
+                        ->send(new TransactionAlert($transaction));
+                }
+
+                // Send SMS notification for deposits and withdrawals
+                if (in_array($transaction->transaction_type, ['deposit', 'withdrawal'])) {
+                    SmsService::sendTransactionAlertSms($transaction, $member->user);
+                }
             }
         } catch (\Exception $e) {
-            \Log::error('Transaction Email Failed: ' . $e->getMessage());
+            \Log::error('Transaction Email/SMS Failed: ' . $e->getMessage());
         }
 
         return $transaction;

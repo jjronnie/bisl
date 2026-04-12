@@ -87,9 +87,19 @@
                     <span>Reports</span>
                 </a>
 
-            
+                <a href="{{ route('admin.sms-settings.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.sms-settings.*') ? 'sidebar-link-active' : '' }}">
 
+                    <i data-lucide="message-square" class="w-4 h-4 "></i>
+                    <span>SMS Settings</span>
+                </a>
 
+                <a href="{{ route('admin.sms-logs.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.sms-logs.*') ? 'sidebar-link-active' : '' }}">
+
+                    <i data-lucide="history" class="w-4 h-4 "></i>
+                    <span>SMS Logs</span>
+                </a>
 
                 <a href="{{ route('admin.admins.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.admins.*') ? 'sidebar-link-active' : '' }}">

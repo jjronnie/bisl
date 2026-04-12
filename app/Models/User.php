@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use App\Traits\SplitsUserName;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, SplitsUserName;
 
     /**
      * The attributes that are mass assignable.
@@ -20,6 +21,8 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
         'member_id',
@@ -72,8 +75,29 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function transfersMade()
-{
-    return $this->hasMany(Transfer::class, 'transferred_by');
-}
+    {
+        return $this->hasMany(Transfer::class, 'transferred_by');
+    }
 
+    /**
+     * Automatically split name into first_name and last_name
+     * If setting multiple words, first word is first_name, second word is last_name
+     * If single word, it's first_name and last_name is empty
+     */
+    public static function splitName(string $name): array
+    {
+        $parts = array_filter(explode(' ', trim($name)));
+
+        if (count($parts) >= 2) {
+            return [
+                'first_name' => $parts[0],
+                'last_name' => $parts[1],
+            ];
+        }
+
+        return [
+            'first_name' => $parts[0] ?? '',
+            'last_name' => '',
+        ];
+    }
 }

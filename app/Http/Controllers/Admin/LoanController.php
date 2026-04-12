@@ -8,6 +8,7 @@ use App\Models\Member;
 use App\Models\SaccoAccount;
 use App\Helpers\LoanHelper;
 use App\Services\LoanService;
+use App\Services\SmsService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Exception;
@@ -140,7 +141,7 @@ class LoanController extends Controller
      */
     public function show(Loan $loan)
     {
-        $loan->load(['member', 'installments']);
+        $loan->load(['member', 'installments', 'reminders']);
 
         return view('admin.loans.show', compact('loan'));
     }
@@ -195,6 +196,9 @@ class LoanController extends Controller
 
             $this->sendLoanStatusEmail($loan);
 
+            // Send disbursement SMS
+            \App\Services\SmsService::sendLoanDisbursementSms($loan);
+
             return redirect()
                 ->route('admin.loans.show', $loan)
                 ->with('success', "Loan #{$loan->loan_number} disbursed and is now ACTIVE. Installment due dates have been adjusted.");
@@ -204,8 +208,8 @@ class LoanController extends Controller
     }
 
 
-   
- 
+
+
 private function sendLoanStatusEmail(Loan $loan): void
 {
     // Ensure the loan is loaded with the member and user data

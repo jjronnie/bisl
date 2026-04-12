@@ -60,11 +60,15 @@ class PaymentReceived extends Mailable
      */
     public function content()
     {
+        // Get user's first name
+        $firstName = $this->loan->member->user->first_name ?? 'Member';
+
         return new Content(
             markdown: 'emails.loan.payment', // We create this Blade file next
             with: [
                 'loan' => $this->loan,
                 'amountPaid' => $this->amountPaid,
+                'firstName' => $firstName,
             ]
         );
     }

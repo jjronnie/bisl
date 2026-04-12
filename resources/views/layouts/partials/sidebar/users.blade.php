@@ -69,7 +69,8 @@
 
 
 
-        <a href="{{ route('member.dashboard') }}" class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
+        <a href="{{ route('member.dashboard') }}"
+            class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
    {{ request()->routeIs('member.dashboard') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
             <i data-lucide="house" class="w-5 h-5"></i>
             <span class="text-xs font-medium mt-1">Home</span>
@@ -78,7 +79,8 @@
 
 
 
-        <a href="{{ route('member.transactions') }}" class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
+        <a href="{{ route('member.transactions') }}"
+            class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
    {{ request()->routeIs('member.transactions') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
             <i data-lucide="arrow-left-right" class="w-5 h-5"></i>
             <span class="text-xs font-medium mt-1">Transactions</span>
@@ -86,13 +88,15 @@
 
 
 
-        <a href="{{ route('member.loans') }}" class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
+        <a href="{{ route('member.loans') }}"
+            class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
    {{ request()->routeIs('member.loans') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
             <i data-lucide="hand-coins" class="w-5 h-5"></i>
             <span class="text-xs font-medium mt-1">Loans</span>
         </a>
 
-         <a href="{{ route('profile.edit') }}" class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
+        <a href="{{ route('profile.edit') }}"
+            class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
    {{ request()->routeIs('profile.*') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
             <i data-lucide="user-round" class="w-5 h-5"></i>
             <span class="text-xs font-medium mt-1">Profile</span>

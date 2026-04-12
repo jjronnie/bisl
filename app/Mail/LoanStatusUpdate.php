@@ -50,10 +50,17 @@ class LoanStatusUpdate extends Mailable
      */
     public function content()
     {
+        // Load relationship if not already loaded
+        $this->loan->loadMissing('member.user');
+
+        // Get user's first name
+        $firstName = $this->loan->member->user->first_name ?? 'Member';
+
         return new Content(
             markdown: 'emails.loan.status-update', // We will create this Blade file next
             with: [
                 'loan' => $this->loan,
+                'firstName' => $firstName,
             ]
         );
     }
