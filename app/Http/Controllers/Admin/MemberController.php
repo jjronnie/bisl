@@ -86,6 +86,7 @@ class MemberController extends Controller
                     'password' => Hash::make($plainPassword),
                     'must_change_password' => true,
                     'created_by' => Auth::user()->id,
+                    'email_verified_at' => now(), // Mark email as verified since it's a temporary password scenario
                 ]);
 
                 // 2.3. Assign Role (Ensure the 'user' role exists)
