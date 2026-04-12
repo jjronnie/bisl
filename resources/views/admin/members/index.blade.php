@@ -73,7 +73,8 @@
                                             {{ ucfirst($member->user->name) }}
                                         </span>
                                         <span class="text-sm text-gray-500">
-                                            {{ $member->user->email }}
+                                            {{ $member->user->email }} <br>
+                                            {{ $member->user->phone1 ?? 'N/A' }}
                                         </span>
                                     </div>
                                 </div>
