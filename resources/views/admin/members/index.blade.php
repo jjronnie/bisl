@@ -74,7 +74,7 @@
                                         </span>
                                         <span class="text-sm text-gray-500">
                                             {{ $member->user->email }} <br>
-                                            {{ $member->->phone1 ?? 'N/A' }}
+                                            {{ $member->phone1 ?? 'N/A' }}
                                         </span>
                                     </div>
                                 </div>
