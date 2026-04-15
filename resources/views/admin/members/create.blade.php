@@ -1,17 +1,17 @@
 <x-app-layout>
     <x-page-title title="Add New Sacco Member" />
 
-    <div class=" mx-auto bg-white p-6 rounded-xl shadow-sm mt-6">
+    <div class="mx-auto bg-white p-6 rounded-xl shadow-sm mt-6">
         <form method="POST" action="{{ route('admin.members.store') }}" enctype="multipart/form-data">
             @csrf
 
             {{-- Personal Info --}}
             <h2 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Personal Information</h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <!-- Name -->
                 <div>
-                    <x-input-label for="name" value="Full Name " />
+                    <x-input-label for="name" value="Full Name" />                    <x-required-mark />
                     <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name')"
                         required autofocus autocomplete="name" />
                     <x-input-error :messages="$errors->get('name')" class="mt-2" />
@@ -20,58 +20,20 @@
                 <!-- Email -->
                 <div>
                     <x-input-label for="email" value="Email" />
+                    <x-required-mark />
                     <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email')"
                         required />
                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
                 </div>
 
-                {{-- opening_balance --}}
+                <!-- Phone1 -->
                 <div>
-                    <x-input-label for="opening_balance" value="Opening Balance" />
-                    <div class="mt-1 relative rounded-lg shadow-sm">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <span class="text-gray-500 text-sm sm:text-base">UGX</span>
-                        </div>
-
-                        <input type="number" name="opening_balance" placeholder="0.00"
-                            value="{{ old('opening_balance') }}"
-                            class="block w-full pl-12 pr-3 py-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base" />
-                    </div>
-                    <x-input-error :messages="$errors->get('opening_balance')" class="mt-2" />
+                    <x-input-label for="phone1" value="Primary Phone" />
+                    <x-required-mark />
+                    <x-text-input id="phone1" name="phone1" type="text" class="mt-1 block w-full" :value="old('phone1')"
+                        required />
+                    <x-input-error :messages="$errors->get('phone1')" class="mt-2" />
                 </div>
-
-
-                <div>
-                    <x-input-label for="loan_protection_fund" value="Loan Protection Fund" />
-                    <div class="mt-1 relative rounded-lg shadow-sm">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <span class="text-gray-500 text-sm sm:text-base">UGX</span>
-                        </div>
-
-                        <input type="number" name="loan_protection_fund" placeholder="0.00"
-                            value="{{ old('loan_protection_fund') }}"
-                            class="block w-full pl-12 pr-3 py-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base" />
-                    </div>
-                    <x-input-error :messages="$errors->get('loan_protection_fund')" class="mt-2" />
-                </div>
-
-
-
-                <div>
-                    <x-input-label for="membership_fee" value="Membership Fee" />
-                    <div class="mt-1 relative rounded-lg shadow-sm">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <span class="text-gray-500 text-sm sm:text-base">UGX</span>
-                        </div>
-
-                        <input type="number" name="membership_fee" placeholder="0.00"
-                            value="{{ old('membership_fee') }}"
-                            class="block w-full pl-12 pr-3 py-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base" />
-                    </div>
-                    <x-input-error :messages="$errors->get('membership_fee')" class="mt-2" />
-                </div>
-
-
 
                 <!-- Date of Birth -->
                 <div>
@@ -107,12 +69,9 @@
                         class="mt-1 block w-full border-gray-300 rounded-md">
                         <option value="" selected disabled>Select</option>
                         <option value="single" {{ old('marital_status')=='single' ? 'selected' : '' }}>Single</option>
-                        <option value="married" {{ old('marital_status')=='married' ? 'selected' : '' }}>Married
-                        </option>
-                        <option value="divorced" {{ old('marital_status')=='divorced' ? 'selected' : '' }}>Divorced
-                        </option>
-                        <option value="widowed" {{ old('marital_status')=='widowed' ? 'selected' : '' }}>Widowed
-                        </option>
+                        <option value="married" {{ old('marital_status')=='married' ? 'selected' : '' }}>Married</option>
+                        <option value="divorced" {{ old('marital_status')=='divorced' ? 'selected' : '' }}>Divorced</option>
+                        <option value="widowed" {{ old('marital_status')=='widowed' ? 'selected' : '' }}>Widowed</option>
                     </select>
                     <x-input-error :messages="$errors->get('marital_status')" class="mt-2" />
                 </div>
@@ -133,21 +92,6 @@
                     <x-input-error :messages="$errors->get('passport_number')" class="mt-2" />
                 </div>
 
-
-            </div>
-
-            {{-- Contact Info --}}
-            <h2 class="text-lg font-semibold text-gray-800 mt-6 mb-4 border-b pb-2">Contact Information</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Phone1 -->
-                <div>
-                    <x-input-label for="phone1" value="Primary Phone" />
-                    <x-text-input id="phone1" name="phone1" type="text" class="mt-1 block w-full" :value="old('phone1')"
-                        required />
-                    <x-input-error :messages="$errors->get('phone1')" class="mt-2" />
-                </div>
-
                 <!-- Phone2 -->
                 <div>
                     <x-input-label for="phone2" value="Secondary Phone (optional)" />
@@ -164,47 +108,61 @@
                     <x-input-error :messages="$errors->get('address')" class="mt-2" />
                 </div>
 
-                <!-- Avatar -->
-                <div>
-                    <x-input-label for="avatar" value="Profile Photo (optional)" />
-                    <input id="avatar" name="avatar" type="file" accept="image/*"
-                        class="mt-1 block w-full border-gray-300 rounded-md" onchange="previewAvatar(event)" />
-
-                    <!-- Preview -->
-                    <div class="mt-2">
-                        <img id="avatarPreview" src="#" alt="Avatar Preview"
-                            class="hidden w-24 h-24 object-cover rounded-full border" />
-                    </div>
-
-                    <x-input-error :messages="$errors->get('avatar')" class="mt-2" />
+                <!-- Avatar - Last -->
+                <div class="lg:col-span-3">
+                    <x-image-upload name="avatar" label="Profile Photo (optional)" />
                 </div>
-
-                <script>
-                    function previewAvatar(event) {
-    const input = event.target;
-    const preview = document.getElementById('avatarPreview');
-
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.src = e.target.result;
-            preview.classList.remove('hidden');
-        }
-        reader.readAsDataURL(input.files[0]);
-    } else {
-        preview.src = '#';
-        preview.classList.add('hidden');
-    }
-}
-                </script>
-
-
             </div>
 
+            {{-- Financial Info --}}
+            <h2 class="text-lg font-semibold text-gray-800 mt-6 mb-4 border-b pb-2">Financial Information</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Opening Balance -->
+                <div>
+                    <x-input-label for="opening_balance" value="Opening Balance" />
+                    <div class="mt-1 relative rounded-lg shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 text-sm sm:text-base">UGX</span>
+                        </div>
+                        <input type="number" name="opening_balance" placeholder="0.00"
+                            value="{{ old('opening_balance') }}"
+                            class="block w-full pl-12 pr-3 py-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base" />
+                    </div>
+                    <x-input-error :messages="$errors->get('opening_balance')" class="mt-2" />
+                </div>
+
+                <!-- Loan Protection Fund -->
+                <div>
+                    <x-input-label for="loan_protection_fund" value="Loan Protection Fund" />
+                    <div class="mt-1 relative rounded-lg shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 text-sm sm:text-base">UGX</span>
+                        </div>
+                        <input type="number" name="loan_protection_fund" placeholder="0.00"
+                            value="{{ old('loan_protection_fund') }}"
+                            class="block w-full pl-12 pr-3 py-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base" />
+                    </div>
+                    <x-input-error :messages="$errors->get('loan_protection_fund')" class="mt-2" />
+                </div>
+
+                <!-- Membership Fee -->
+                <div>
+                    <x-input-label for="membership_fee" value="Membership Fee" />
+                    <div class="mt-1 relative rounded-lg shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 text-sm sm:text-base">UGX</span>
+                        </div>
+                        <input type="number" name="membership_fee" placeholder="0.00"
+                            value="{{ old('membership_fee') }}"
+                            class="block w-full pl-12 pr-3 py-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base" />
+                    </div>
+                    <x-input-error :messages="$errors->get('membership_fee')" class="mt-2" />
+                </div>
+            </div>
 
             {{-- Submit --}}
             <div class="mt-6 flex items-center justify-end space-x-3">
-
                 <x-confirmation-checkbox />
                 <button class="btn" type="submit">Create Member</button>
             </div>

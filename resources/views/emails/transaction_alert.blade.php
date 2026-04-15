@@ -7,8 +7,10 @@ Dear **{{ $transaction->member->user->name ?? 'Valued Member' }}**,
 {{-- Logic for Debit vs Credit Wording --}}
 @if($transaction->transaction_type === 'deposit')
 This email is to inform you that Your account has been **credited** with UGX**{{ number_format($transaction->amount, 2) }}**.
-@else
+@elseif($transaction->transaction_type === 'withdrawal')
 This email is to inform you that Your account has been **debited** with UGX**{{ number_format($transaction->amount, 2) }}**.
+@elseif($transaction->transaction_type === 'reversal')
+This email is to inform you that transaction **{{ $transaction->remarks ? Str::between($transaction->remarks, 'Reversal of ', ':') : 'N/A' }}** where UGX **{{ number_format($transaction->amount, 2) }}** was deposited on your account has been reversed. 
 @endif
 
 Please find the details of this transaction below:

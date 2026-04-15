@@ -8,17 +8,11 @@
                 {{-- Avatar --}}
                 <div class="flex-shrink-0">
                     @if ($member->avatar)
-                    <img src="{{ asset('storage/' . $member->avatar) }}" alt="Member Avatar"
-                        class="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-full ring-4 ring-white shadow-lg">
+                        <img src="{{ asset('storage/' . $member->avatar) }}" alt="{{ $member->name }}"
+                            class="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-full ring-4 ring-white shadow-lg">
                     @else
-                    <div
-                        class="w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center bg-indigo-300 rounded-full ring-4 ring-white shadow-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-indigo-700" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                    </div>
+                        <img src="{{ asset('default-avatar.png') }}" alt="{{ $member->name }}"
+                            class="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded-full ring-4 ring-white shadow-lg">
                     @endif
                 </div>
 
@@ -203,17 +197,21 @@
                 View Transactions
             </a>
 
-            {{-- <a href="{{  route('admin.members.transactions.index', $member) }}" class="btn">
-                Loan Portfolio
-            </a> --}}
-
 @role('superadmin')
+            @if($member->user->status === 'suspended')
+                <x-confirm-modal :action="route('admin.members.unsuspend', $member)"
+                    warning="Are you sure you want to reactivate this member's account?"
+                    triggerText="Reactivate Member" buttonClass="bg-green-600 hover:bg-green-700" />
+            @else
+                <x-confirm-modal :action="route('admin.members.suspend', $member)"
+                    warning="Are you sure you want to suspend this member's account?"
+                    triggerText="Suspend Member" buttonClass="bg-orange-500 hover:bg-orange-600" />
+            @endif
+
             <x-confirm-modal :action="route('admin.members.destroy', $member->id)"
                 warning="Are you sure you want to delete this Member? This action cannot be undone."
                 triggerText="Delete Member" />
-
-                @endrole
-
+@endrole
 
         </div>
 

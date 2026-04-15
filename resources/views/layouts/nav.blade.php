@@ -4,7 +4,7 @@
         $member = auth()->user()?->member;
     @endphp
 
-    @if (auth()->check() && auth()->user()->hasRole('admin'))
+    @if (auth()->check() && auth()->user()->hasRole(['admin', 'superadmin']))
 
 
         <!-- Mobile Menu Button -->
@@ -108,7 +108,7 @@
     <!-- Right Section -->
     <div class="ml-auto flex items-center space-x-4 relative">
 
-        @if (auth()->check() && auth()->user()->hasRole('admin'))
+        @if (auth()->check() && auth()->user()->hasRole(['admin', 'superadmin']))
             <!-- Quick Access -->
             <div class="relative" @click.away="quickAccessOpen = false">
                 <button class="p-2 rounded-lg hover:bg-gray-100 transition-colors bg-blue-50 text-blue-700"

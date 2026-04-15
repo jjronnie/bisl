@@ -33,6 +33,7 @@ if ($hour < 12) { $bgImage=asset('assets/img/morning.webp'); } elseif ($hour < 1
                         <div class="absolute bottom-2 right-2 w-5 h-5 bg-green-500 border-4 border-white rounded-full"
                             title="Active"></div>
                     </div>
+                    
 
                     <!-- User Details -->
                     <div class="space-y-2">
@@ -49,21 +50,11 @@ if ($hour < 12) { $bgImage=asset('assets/img/morning.webp'); } elseif ($hour < 1
                             <span>{{ $user->email }}</span>
                         </div>
 
-                        <!-- Verification Badge -->
-                        @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
+                        <!-- Roles Badge -->
+                        @if($user->roles->isNotEmpty())
                         <div
-                            class="mt-4 inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                            Email Unverified
-                        </div>
-                        @else
-                        <div
-                            class="mt-4 inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
-                            Verified Account
+                            class="mt-4 inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {{ $user->getRoleNames()->map(fn($role) => ucfirst($role))->join(', ') }}
                         </div>
                         @endif
                     </div>

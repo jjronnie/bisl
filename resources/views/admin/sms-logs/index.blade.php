@@ -69,8 +69,8 @@
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Message</th>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">System</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Provider</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cost</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sent At</th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Action</th>
@@ -78,17 +78,18 @@
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         @forelse($logs as $log)
+                            @php
+                                $providerSuccess = $log->isProviderSuccess();
+                                $providerFailed = $log->isProviderFailed();
+                            @endphp
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                     {{ $log->phone_number }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                                     <span class="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs font-medium">
-                                        {{ str_replace(['PaymentReceived', 'LoanStatusUpdate', 'TransactionAlert'], ['Payment', 'Loan Status', 'Transaction'], $log->notification_type) }}
+                                        {{ str_replace(['PaymentReceived', 'LoanStatusUpdate', 'TransactionAlert', 'bulk_sms'], ['Payment', 'Loan Status', 'Transaction', 'Bulk SMS'], $log->notification_type) }}
                                     </span>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate">
-                                    {{ Str::limit($log->message, 50) }}
                                 </td>
                                 <td class="px-6 py-4 text-center whitespace-nowrap">
                                     @if ($log->status === 'sent')
@@ -105,6 +106,27 @@
                                         <span
                                             class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                             <i data-lucide="x" class="w-3 h-3 mr-1"></i> Failed
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 text-center whitespace-nowrap">
+                                    @if($log->provider_status_code)
+                                        @if($providerSuccess)
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800" title="Code: {{ $log->provider_status_code }}">
+                                                {{ $log->getProviderStatusLabel() }}
+                                            </span>
+                                        @elseif($providerFailed)
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800" title="Code: {{ $log->provider_status_code }}">
+                                                {{ $log->getProviderStatusLabel() }}
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800" title="Code: {{ $log->provider_status_code }}">
+                                                {{ $log->getProviderStatusLabel() }}
+                                            </span>
+                                        @endif
+                                    @else
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">
+                                            Pending
                                         </span>
                                     @endif
                                 </td>
@@ -126,7 +148,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                                <td colspan="7" class="px-6 py-8 text-center text-gray-500">
                                     <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 text-gray-400"></i>
                                     <p>No SMS logs found</p>
                                 </td>

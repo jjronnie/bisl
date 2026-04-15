@@ -20,9 +20,10 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $admins = User::role('admin')->latest()->get();
+        $admins = User::role(['admin', 'superadmin'])->latest()->get();
+        $roles = Role::whereIn('name', ['admin', 'superadmin'])->get();
 
-        return view('admin.admins.index', compact('admins'));
+        return view('admin.admins.index', compact('admins', 'roles'));
     }
 
     /**
@@ -30,7 +31,9 @@ class AdminController extends Controller
      */
     public function create()
     {
-        return view('admin.admins.create');
+        $roles = Role::whereIn('name', ['admin', 'superadmin'])->get();
+
+        return view('admin.admins.create', compact('roles'));
     }
 
     /**
@@ -41,44 +44,35 @@ class AdminController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-
+            'roles' => 'required|array',
+            'roles.*' => 'exists:roles,name',
         ]);
 
-        // 2. DATABASE TRANSACTION (Ensures atomic operations)
         try {
             DB::transaction(function () use ($validated) {
-
-                // 1. Generate a 6-digit numeric temporary password (OTP style)
                 $plainPassword = (string) random_int(100000, 999999);
 
-                // 2.2. Create User Record
                 $user = User::create([
                     'name' => $validated['name'],
                     'email' => $validated['email'],
-
                     'status' => 'active',
                     'password' => Hash::make($plainPassword),
                     'must_change_password' => true,
                     'created_by' => Auth::user()->id,
                 ]);
 
-                // 2.3. Assign Role (Ensure the 'user' role exists)
-                $adminRole = Role::where('name', 'admin')->firstOrFail();
-                $user->assignRole($adminRole);
+                $user->forceFill(['email_verified_at' => now()])->save();
+
+                $user->syncRoles($validated['roles']);
 
                 Mail::to($user->email)->send(new AdminInviteMail($user, $plainPassword));
-
             });
         } catch (\Exception $e) {
-
-            // Log the error for debugging
             Log::error('User creation transaction failed: '.$e->getMessage());
 
-            // A generic, user-friendly error response
             return back()->with('error', 'Invite failed due to a system error. Please check logs.')->withInput();
         }
 
-        // 3. REDIRECTION
         return redirect()->route('admin.admins.index')->with('success', 'Admin Invited successfully. Temporary credentials have been emailed.');
     }
 
@@ -102,7 +96,9 @@ class AdminController extends Controller
             abort(403, 'Superadmin accounts cannot be edited.');
         }
 
-        return view('admin.admins.edit', compact('user'));
+        $roles = Role::whereIn('name', ['admin', 'superadmin'])->get();
+
+        return view('admin.admins.edit', compact('user', 'roles'));
     }
 
     /**
@@ -119,11 +115,19 @@ class AdminController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
+            'email' => 'required|email|unique:users,email,'.$user->id,
             'status' => 'required|in:active,suspended',
+            'roles' => 'required|array',
+            'roles.*' => 'exists:roles,name',
         ]);
 
-        $user->update($validated);
+        $user->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'status' => $validated['status'],
+        ]);
+
+        $user->syncRoles($validated['roles']);
 
         return redirect()->route('admin.admins.index')->with('success', 'Admin updated successfully.');
     }
@@ -153,17 +157,16 @@ class AdminController extends Controller
     // Suspend user
     public function suspend(User $admin)
     {
-        // Block suspending superadmins
+        abort_unless(auth()->user()->hasRole('superadmin'), 403);
+
         if ($admin->hasRole('superadmin')) {
             return back()->with('error', 'Superadmin accounts cannot be suspended.');
         }
 
-        // Block suspending yourself
         if (auth()->id() === $admin->id) {
             return back()->with('error', 'You cannot suspend your own account.');
         }
 
-        // Update status safely
         $admin->update([
             'status' => 'suspended',
         ]);
@@ -173,7 +176,8 @@ class AdminController extends Controller
 
     public function unsuspend(User $admin)
     {
-        // Optional: also block unsuspending superadmins if status logic should never touch them
+        abort_unless(auth()->user()->hasRole('superadmin'), 403);
+
         if ($admin->hasRole('superadmin')) {
             return back()->with('error', 'Superadmin accounts cannot be modified.');
         }

@@ -1,76 +1,111 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
-
-use App\Models\Transaction;
-use Illuminate\Http\Request;
-
 use App\Models\Member;
-use App\Http\Requests\StoreTransactionRequest;
+use App\Models\Transaction;
 use App\Services\TransactionService;
-use App\Exceptions\InsufficientFundsException;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
-      protected $transactionService;
+    protected $transactionService;
 
     public function __construct(TransactionService $transactionService)
     {
         $this->transactionService = $transactionService;
     }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $transactions = Transaction::with('member',  'savingsAccount')
-            ->latest()
-            ->paginate(20);
+        $query = Transaction::with(['member.savingsAccount', 'createdBy', 'reversals']);
 
-              $members = Member::with('savingsAccount:id,member_id,account_number')
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('reference_number', 'LIKE', "%{$search}%")
+                    ->orWhereHas('member', function ($q) use ($search) {
+                        $q->where('name', 'LIKE', "%{$search}%");
+                    });
+            });
+        }
+
+        if ($request->filled('type') && in_array($request->type, ['deposit', 'withdrawal', 'reversal'])) {
+            $query->where('transaction_type', $request->type);
+        }
+
+        $transactions = $query->latest()->paginate(20)->withQueryString();
+
+        return view('admin.transactions.index', compact('transactions'));
+    }
+
+    public function create()
+    {
+        $members = Member::with('savingsAccount')
             ->whereNull('deleted_at')
             ->orderBy('name')
             ->get();
 
-        return view('admin.transactions.index', compact('transactions', 'members'));
+        return view('admin.transactions.create', compact('members'));
     }
 
+    public function store(Request $request, TransactionService $service)
+    {
+        $request->merge([
+            'amount' => $request->filled('amount') ? (int) str_replace(',', '', $request->amount) : null,
+        ]);
 
-public function store(Request $request, TransactionService $service)
-{
-   
-    $validated = $request->validate([
-        'member_id' => 'required|exists:members,id',
-        'transaction_type' => 'required|in:deposit,withdrawal',
-        'account' => 'required',
-        'amount' => 'required|numeric|min:1',
-        'method' => 'nullable|string',
-        'remarks' => 'nullable|string'
-    ]);
+        $validated = $request->validate([
+            'member_id' => 'required|exists:members,id',
+            'transaction_type' => 'required|in:deposit,withdrawal',
+            'account' => 'required',
+            'amount' => 'required|numeric|min:1',
+            'method' => 'nullable|string',
+            'remarks' => 'nullable|string',
+        ]);
 
-    try {
-        $transaction = $service->create($validated);
+        try {
+            $transaction = $service->create($validated);
 
-
-
-        return redirect()->back()->with('success', 'Transaction successful.');
-    } catch (\Exception $e) {
-        return redirect()->back()->withErrors($e->getMessage());
+            return redirect()
+                ->route('admin.transactions.index')
+                ->with('success', 'Transaction recorded successfully.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors($e->getMessage());
+        }
     }
-}
 
+    public function show(Transaction $transaction)
+    {
+        return redirect()->route('admin.transactions.index');
+    }
 
     /**
-     * Display the specified resource.
+     * Reverse a deposit transaction.
      */
-  public function show(Transaction $transaction)
+    public function reverse(Request $request, Transaction $transaction, TransactionService $service)
     {
-        // Eager load related data
-        $transaction->load(['member', 'savingsAccount']);
-        
-        return view('admin.transactions.show', compact('transaction'));
-    }
+        $validated = $request->validate([
+            'reason' => 'required|string|min:10',
+        ]);
 
+        try {
+            $reversal = $service->reverse($transaction, $validated['reason']);
+
+            return redirect()
+                ->back()
+                ->with('success', 'Transaction reversed successfully.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->withErrors($e->getMessage());
+        }
+    }
 }

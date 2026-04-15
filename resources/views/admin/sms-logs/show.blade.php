@@ -35,6 +35,11 @@
 
             <x-transaction-detail title="Retry Count" value="{{ $log->retry_count }}" />
 
+            @if($log->provider_status_code)
+                <x-transaction-detail title="Provider Status Code" value="{{ $log->provider_status_code }}" />
+                <x-transaction-detail title="Provider Status" value="{{ $log->getProviderStatusLabel() }}" />
+            @endif
+
             <x-transaction-detail title="Log ID" value="{{ $log->id }}" />
 
             <x-transaction-detail title="Created At" value="{{ $log->created_at->format('d M Y H:i') }}" />

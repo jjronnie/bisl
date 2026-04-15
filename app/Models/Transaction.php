@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Transaction extends Model
 {
@@ -15,7 +16,7 @@ class Transaction extends Model
      *
      * @var array<int, string>
      */
-   protected $fillable = [
+    protected $fillable = [
         'member_id',
         'reference_number',
         'loan_id',
@@ -28,7 +29,7 @@ class Transaction extends Model
         'balance_after',
         'method',
         'remarks',
-        'transaction_date'
+        'transaction_date',
     ];
 
     /**
@@ -36,7 +37,6 @@ class Transaction extends Model
      *
      * @var array<string, string>
      */
-  
 
     // --- RELATIONSHIPS ---
 
@@ -55,11 +55,13 @@ class Transaction extends Model
         return $this->belongsTo(Loan::class);
     }
 
+    public function reversals(): HasMany
+    {
+        return $this->hasMany(Reversal::class);
+    }
 
-public function createdBy()
-{
-    return $this->belongsTo(User::class, 'creator');
-}
-
-    
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'creator');
+    }
 }

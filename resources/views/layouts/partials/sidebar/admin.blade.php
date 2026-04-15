@@ -50,10 +50,17 @@
                 </a>
 
                 <a href="{{ route('admin.transactions.index') }}"
-                    class="sidebar-link {{ request()->routeIs('admin.transactions.*') ? 'sidebar-link-active' : '' }}">
+                    class="sidebar-link {{ request()->routeIs('admin.transactions.*') && !request()->routeIs('admin.transactions.reversal.*') ? 'sidebar-link-active' : '' }}">
 
                     <i data-lucide="arrow-left-right" class="w-4 h-4 "></i>
                     <span>Transactions</span>
+                </a>
+
+                <a href="{{ route('admin.transactions.reversal.index') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.transactions.reversal.*') ? 'sidebar-link-active' : '' }}">
+
+                    <i data-lucide="rotate-ccw" class="w-4 h-4 "></i>
+                    <span>Reversals</span>
                 </a>
 
 
@@ -83,8 +90,15 @@
                 <a href="{{ route('admin.reports.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.reports.*') ? 'sidebar-link-active' : '' }}">
 
-                    <i data-lucide="bar-chart" class="w-4 h-4 "></i>
+                    <i data-lucide="bar-chart" class="w-4 h-4"></i>
                     <span>Reports</span>
+                </a>
+
+                <a href="{{ route('admin.interest.ledger') }}"
+                    class="sidebar-link {{ request()->routeIs('admin.interest.*') ? 'sidebar-link-active' : '' }}">
+
+                    <i data-lucide="percent" class="w-4 h-4"></i>
+                    <span>Interest Ledger</span>
                 </a>
 
                 @role('superadmin')
@@ -93,6 +107,13 @@
 
                         <i data-lucide="message-square" class="w-4 h-4 "></i>
                         <span>SMS Settings</span>
+                    </a>
+
+                    <a href="{{ route('admin.bulk-sms.index') }}"
+                        class="sidebar-link {{ request()->routeIs('admin.bulk-sms.*') ? 'sidebar-link-active' : '' }}">
+
+                        <i data-lucide="users" class="w-4 h-4 "></i>
+                        <span>Bulk SMS</span>
                     </a>
 
                     <a href="{{ route('admin.sms-logs.index') }}"

@@ -2,10 +2,13 @@
 
 
     <div class="py-4">
+
+
         <div class=" mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="">
-
-                @include('profile.partials.update-profile-information-form')
+                @if (!$user->must_change_password)
+                    @include('profile.partials.update-profile-information-form')
+                @endif
             </div>
 
             <div class="p-4 sm:p-8 bg-white shadow rounded-lg">

@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Helpers\PhoneHelper;
 use App\Jobs\SendSmsJob;
 use App\Models\Loan;
-use App\Models\Member;
 use App\Models\SmsLog;
+use App\Models\SmsSetting;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Notifications\LoanDisbursementSms;
@@ -27,8 +27,9 @@ class SmsService
             $member = $loan->member;
             $phoneNumber = $member->phone1;
 
-            if (!$phoneNumber) {
+            if (! $phoneNumber) {
                 Log::warning('No phone number found for member', ['member_id' => $member->id]);
+
                 return null;
             }
 
@@ -57,6 +58,7 @@ class SmsService
             return $log;
         } catch (\Exception $e) {
             Log::error('Failed to send loan disbursement SMS', ['error' => $e->getMessage()]);
+
             return null;
         }
     }
@@ -68,8 +70,9 @@ class SmsService
     {
         try {
             $phoneNumber = $user->member?->phone1;
-            if (!$phoneNumber) {
+            if (! $phoneNumber) {
                 Log::warning('No phone number found for user', ['user_id' => $user->id]);
+
                 return null;
             }
 
@@ -98,19 +101,25 @@ class SmsService
             return $log;
         } catch (\Exception $e) {
             Log::error('Failed to send payment received SMS', ['error' => $e->getMessage()]);
+
             return null;
         }
     }
 
     /**
-     * Send SMS for transaction (deposit/withdrawal)
+     * Send SMS for transaction (deposit/withdrawal/reversal)
      */
     public static function sendTransactionAlertSms(Transaction $transaction, User $user): ?SmsLog
     {
+        if (! SmsSetting::isEnabled('transaction')) {
+            return null;
+        }
+
         try {
             $phoneNumber = $user->member?->phone1;
-            if (!$phoneNumber) {
+            if (! $phoneNumber) {
                 Log::warning('No phone number found for user', ['user_id' => $user->id]);
+
                 return null;
             }
 
@@ -122,7 +131,7 @@ class SmsService
             $log = SmsLog::create([
                 'phone_number' => PhoneHelper::normalize($phoneNumber),
                 'message' => $message,
-                'notification_type' => 'transaction_' . $transaction->transaction_type,
+                'notification_type' => 'transaction_'.$transaction->transaction_type,
                 'recipient_id' => $user->id,
                 'status' => 'pending',
             ]);
@@ -131,7 +140,7 @@ class SmsService
             dispatch(new SendSmsJob(
                 $phoneNumber,
                 $message,
-                'transaction_' . $transaction->transaction_type,
+                'transaction_'.$transaction->transaction_type,
                 (string) $user->id,
                 $log->id
             ));
@@ -139,6 +148,7 @@ class SmsService
             return $log;
         } catch (\Exception $e) {
             Log::error('Failed to send transaction SMS', ['error' => $e->getMessage()]);
+
             return null;
         }
     }

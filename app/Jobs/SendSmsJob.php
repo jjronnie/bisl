@@ -2,7 +2,9 @@
 
 namespace App\Jobs;
 
+use AfricasTalking\SDK\AfricasTalking;
 use App\Helpers\PhoneHelper;
+use App\Models\BulkSmsCampaign;
 use App\Models\SmsLog;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -10,25 +12,27 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use AfricasTalking\SDK\AfricasTalking;
 
 class SendSmsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 3;
-    public $backoff = [60, 120, 300]; // Retry after 1m, 2m, 5m
+
+    public $backoff = [60, 120, 300];
+
     public $timeout = 30;
 
-    protected $phoneNumber;
-    protected $message;
-    protected $notificationType;
-    protected $recipientId;
-    protected $smsLogId;
+    protected string $phoneNumber;
 
-    /**
-     * Create a new job instance.
-     */
+    protected string $message;
+
+    protected string $notificationType;
+
+    protected ?string $recipientId;
+
+    protected ?int $smsLogId;
+
     public function __construct(
         string $phoneNumber,
         string $message,
@@ -43,18 +47,13 @@ class SendSmsJob implements ShouldQueue
         $this->smsLogId = $smsLogId;
     }
 
-    /**
-     * Execute the job.
-     */
     public function handle(): void
     {
         try {
-            // Validate phone number
-            if (!PhoneHelper::isValid($this->phoneNumber)) {
-                throw new \Exception('Invalid phone number: ' . $this->phoneNumber);
+            if (! PhoneHelper::isValid($this->phoneNumber)) {
+                throw new \Exception('Invalid phone number: '.$this->phoneNumber);
             }
 
-            // Initialize Africa's Talking SDK
             $at = new AfricasTalking(
                 config('services.africas_talking.username'),
                 config('services.africas_talking.api_key')
@@ -62,73 +61,68 @@ class SendSmsJob implements ShouldQueue
 
             $sms = $at->sms();
 
-            // Send SMS
             $result = $sms->send([
                 'to' => $this->phoneNumber,
-                'message' => $this->message
+                'message' => $this->message,
             ]);
 
-            // Extract cost from provider response
             $cost = $this->extractCost($result);
+            $providerStatus = $this->extractProviderStatus($result);
+            $isSuccess = $this->isProviderSuccess($providerStatus);
 
-            // Create or update SMS log
-            $log = $this->smsLogId
-                ? SmsLog::find($this->smsLogId)
-                : new SmsLog();
-
-            $log->fill([
+            $this->updateOrCreateLog([
                 'phone_number' => $this->phoneNumber,
                 'message' => $this->message,
                 'notification_type' => $this->notificationType,
                 'recipient_id' => $this->recipientId,
-                'status' => 'sent',
+                'status' => $isSuccess ? 'sent' : 'failed',
+                'provider_status_code' => $providerStatus['code'] ?? null,
+                'provider_status_message' => $providerStatus['message'] ?? null,
                 'provider_response' => (array) $result,
-                'sent_at' => now(),
+                'sent_at' => $isSuccess ? now() : null,
                 'retry_count' => $this->attempts() - 1,
-                'cost' => $cost,
-            ])->save();
+                'cost' => $isSuccess ? $cost : null,
+                'error_message' => $isSuccess ? null : ($providerStatus['message'] ?? 'Provider reported failure'),
+            ]);
 
-            Log::info('SMS sent successfully', [
+            Log::info('SMS sent', [
                 'phone' => $this->phoneNumber,
                 'type' => $this->notificationType,
-                'log_id' => $log->id,
+                'log_id' => $this->smsLogId,
+                'provider_status' => $providerStatus['code'] ?? 'unknown',
+                'success' => $isSuccess,
             ]);
 
         } catch (\Exception $e) {
-            // Create or update error log
-            $log = $this->smsLogId
-                ? SmsLog::find($this->smsLogId)
-                : new SmsLog();
+            $retryCount = $this->attempts();
+            $willRetry = $retryCount < $this->tries;
 
-            $log->fill([
+            $this->updateOrCreateLog([
                 'phone_number' => $this->phoneNumber,
                 'message' => $this->message,
                 'notification_type' => $this->notificationType,
                 'recipient_id' => $this->recipientId,
-                'status' => 'failed',
+                'status' => $willRetry ? 'pending' : 'failed',
+                'retry_count' => $retryCount,
                 'error_message' => $e->getMessage(),
-                'retry_count' => $this->attempts(),
-            ])->save();
+                'sent_at' => null,
+            ]);
 
             Log::error('SMS sending failed', [
                 'phone' => $this->phoneNumber,
                 'error' => $e->getMessage(),
-                'attempt' => $this->attempts(),
+                'attempt' => $retryCount,
+                'will_retry' => $willRetry,
             ]);
 
-            // Retry or mark as finally failed
-            if ($this->attempts() < $this->tries) {
-                $this->smsLogId = $log->id;
-                $this->release($this->backoff[$this->attempts() - 1] ?? 300);
+            if ($willRetry) {
+                $this->release($this->backoff[$retryCount - 1] ?? 300);
             } else {
                 throw $e;
             }
         }
     }
 
-    /**
-     * Handle job failure
-     */
     public function failed(\Throwable $exception): void
     {
         Log::critical('SMS job failed after all retries', [
@@ -137,40 +131,130 @@ class SendSmsJob implements ShouldQueue
             'type' => $this->notificationType,
         ]);
 
-        // Update log to mark as permanently failed
         if ($this->smsLogId) {
             $log = SmsLog::find($this->smsLogId);
             if ($log) {
                 $log->update(['status' => 'failed']);
+                $this->updateBulkCampaignCounts($log->bulk_sms_campaign_id);
             }
         }
     }
 
-    /**
-     * Extract numeric cost from provider response
-     * Cost format: "UGX 35.0000" -> 35.0000
-     */
+    protected function updateOrCreateLog(array $data): void
+    {
+        if ($this->smsLogId) {
+            $log = SmsLog::find($this->smsLogId);
+            if ($log) {
+                $log->update($data);
+                $this->smsLogId = $log->id;
+            }
+        } else {
+            $log = SmsLog::create($data);
+            $this->smsLogId = $log->id;
+        }
+
+        $this->updateBulkCampaignCounts($log->bulk_sms_campaign_id);
+    }
+
+    protected function updateBulkCampaignCounts(?int $campaignId): void
+    {
+        if (! $campaignId) {
+            return;
+        }
+
+        $campaign = BulkSmsCampaign::find($campaignId);
+        if (! $campaign) {
+            return;
+        }
+
+        $logs = SmsLog::where('bulk_sms_campaign_id', $campaignId)->get();
+
+        $successCodes = SmsLog::PROVIDER_SUCCESS_CODES;
+        $failureCodes = SmsLog::PROVIDER_FAILURE_CODES;
+
+        $sentCount = $logs->filter(function ($log) use ($successCodes) {
+            return $log->provider_status_code && in_array($log->provider_status_code, $successCodes);
+        })->count();
+
+        $failedCount = $logs->filter(function ($log) use ($successCodes, $failureCodes) {
+            return $log->provider_status_code
+                && ! in_array($log->provider_status_code, $successCodes)
+                && in_array($log->provider_status_code, $failureCodes);
+        })->count();
+
+        $pendingCount = $logs->filter(function ($log) use ($successCodes, $failureCodes) {
+            return ! $log->provider_status_code
+                || (! in_array($log->provider_status_code, $successCodes) && ! in_array($log->provider_status_code, $failureCodes));
+        })->count();
+
+        $totalCost = $logs->where('status', 'sent')->sum('cost');
+
+        $updateData = [
+            'sent_count' => $sentCount,
+            'failed_count' => $failedCount,
+            'total_cost' => $totalCost,
+        ];
+
+        if ($pendingCount === 0 && $campaign->status !== 'cancelled') {
+            $updateData['status'] = 'completed';
+            $updateData['completed_at'] = now();
+        }
+
+        $campaign->update($updateData);
+    }
+
     protected function extractCost($result): ?float
     {
         try {
             $recipients = data_get($result, 'data.SMSMessageData.Recipients.0');
-            if (!$recipients) {
+            if (! $recipients) {
                 return null;
             }
 
-            // Convert object to array if needed
             $recipients = (array) $recipients;
             $costString = $recipients['cost'] ?? null;
-            if (!$costString) {
+            if (! $costString) {
                 return null;
             }
 
-            // Extract numeric value from "UGX 35.0000"
             preg_match('/[\d.]+/', $costString, $matches);
+
             return $matches ? (float) $matches[0] : null;
         } catch (\Exception $e) {
             Log::warning('Failed to extract SMS cost', ['error' => $e->getMessage()]);
+
             return null;
         }
+    }
+
+    protected function extractProviderStatus($result): array
+    {
+        try {
+            $recipients = data_get($result, 'data.SMSMessageData.Recipients.0');
+            if (! $recipients) {
+                return ['code' => null, 'message' => 'No recipient data'];
+            }
+
+            $recipients = (array) $recipients;
+
+            return [
+                'code' => (string) ($recipients['statusCode'] ?? $recipients['status'] ?? null),
+                'message' => $recipients['status'] ?? $recipients['statusMessage'] ?? null,
+            ];
+        } catch (\Exception $e) {
+            Log::warning('Failed to extract provider status', ['error' => $e->getMessage()]);
+
+            return ['code' => null, 'message' => $e->getMessage()];
+        }
+    }
+
+    protected function isProviderSuccess(array $status): bool
+    {
+        $code = $status['code'] ?? null;
+        if (! $code) {
+            return false;
+        }
+
+        return in_array($code, ['100', '101', '102']);
     }
 }

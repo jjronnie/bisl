@@ -1,3 +1,7 @@
+@php
+$userRoles = $user->roles->pluck('name')->toArray();
+@endphp
+
 <x-slide-form title="Edit Admin" buttonIcon="edit">
 
     <form method="POST" action="{{ route('admin.admins.update', $user->id) }}">
@@ -7,7 +11,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
             <div>
-                <label for="name" class="label"> Name <span class="text-red-600"> *</span></label>
+                <label for="name" class="label">Name <span class="text-red-600">*</span></label>
                 <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" required
                     class="input @error('name') border-red-500 @enderror" />
                 @error('name')
@@ -16,7 +20,7 @@
             </div>
 
             <div>
-                <label for="email" class="label">Email Address<span class="text-red-600"> *</span></label>
+                <label for="email" class="label">Email Address <span class="text-red-600">*</span></label>
                 <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" required
                     class="input @error('email') border-red-500 @enderror" />
                 @error('email')
@@ -25,16 +29,28 @@
             </div>
 
             <div>
-                <label for="status" class="label">Status <span class="text-red-600"> *</span></label>
+                <label for="status" class="label">Status <span class="text-red-600">*</span></label>
                 <select name="status" id="status" class="input @error('status') border-red-500 @enderror" required>
-                    <option value="active" {{ old('status', $user->status) === 'active' ? 'selected' : '' }}>Active
-                    </option>
-                    <option value="suspended" {{ old('status', $user->status) === 'suspended' ? 'selected' : '' }}>
-                        Suspended</option>
+                    <option value="active" {{ old('status', $user->status) === 'active' ? 'selected' : '' }}>Active</option>
+                    <option value="suspended" {{ old('status', $user->status) === 'suspended' ? 'selected' : '' }}>Suspended</option>
                 </select>
                 @error('status')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
+            </div>
+
+            <div class="md:col-span-2">
+                <label class="label">Roles <span class="text-red-600">*</span></label>
+                <div class="flex flex-wrap gap-3 mt-2">
+                    @foreach($roles as $role)
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" name="roles[]" value="{{ $role->name }}"
+                                class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                {{ in_array($role->name, $userRoles) ? 'checked' : '' }}>
+                            <span class="ml-2">{{ ucfirst($role->name) }}</span>
+                        </label>
+                    @endforeach
+                </div>
             </div>
 
         </div>
