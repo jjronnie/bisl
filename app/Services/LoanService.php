@@ -3,14 +3,14 @@
 namespace App\Services;
 
 use App\Models\Loan;
-use App\Models\Member;
 use App\Models\LoanInstallment;
+use App\Models\Member;
 use App\Models\SaccoAccount;
 use App\Models\SavingsAccount;
-use Illuminate\Support\Facades\DB;
-use App\Helpers\LoanHelper; // Your helper for ID generation
 use Carbon\Carbon;
+// Your helper for ID generation
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class LoanService
 {
@@ -24,7 +24,7 @@ class LoanService
             $member = Member::findOrFail($data['member_id']);
 
             // 1. Business Logic Validations
-               $this->validateLoanEligibility($member, $data['loan_type'], $data['amount']);
+            $this->validateLoanEligibility($member, $data['loan_type'], $data['amount']);
 
             $reference = generateLoanId();
 
@@ -59,7 +59,7 @@ class LoanService
     {
         // Rule 1: Priority loans strictly for Gold tier
         if ($loanType === 'priority' && $member->tier !== 'gold') {
-            throw new Exception("Priority loans are reserved for Gold Tier members only.");
+            throw new Exception('Priority loans are reserved for Gold Tier members only.');
         }
 
         // Rule 2: Check for existing active loans
@@ -70,26 +70,22 @@ class LoanService
             ->exists();
 
         if ($hasActiveLoan) {
-            throw new Exception("Member has an existing active loan.");
+            throw new Exception('Member has an existing active loan.');
         }
 
         $totals = SavingsAccount::selectRaw(
-    'COALESCE(SUM(balance), 0) as total_savings'
-)->first();
+            'COALESCE(SUM(balance), 0) as total_savings'
+        )->first();
 
-$totalSavings = $totals->total_savings;
-
-
-        
-    
-     
+        $totalSavings = $totals->total_savings;
 
         $availableFunds = $totalSavings;
 
         if ($requestedAmount > $availableFunds) {
-            throw new Exception("Requested loan amount (UGX " . number_format($requestedAmount, 2) . ") is greater than the available lending funds (UGX " . number_format($availableFunds, 2) . ").");
+            throw new Exception('Requested loan amount (UGX '.number_format($requestedAmount, 2).') is greater than the available lending funds (UGX '.number_format($availableFunds, 2).').');
         }
     }
+
     /**
      * Calculate Reducing Balance Amortization and save installments.
      * Formula: EMI = [P x R x (1+R)^N]/[(1+R)^N-1]
@@ -113,7 +109,7 @@ $totalSavings = $totals->total_savings;
         }
 
         $balance = $principal;
-        // Since loan is just applied, we estimate start date. 
+        // Since loan is just applied, we estimate start date.
         // NOTE: These dates usually reset when status changes to 'disbursed'.
         $paymentDate = Carbon::parse($loan->application_date)->addMonth();
 
@@ -139,7 +135,7 @@ $totalSavings = $totals->total_savings;
                 'interest_amount' => round($interestForMonth, 2),
                 'total_amount' => round($emi, 2), // The amount user pays
                 'ending_balance' => round($endingBalance < 0 ? 0 : $endingBalance, 2),
-                'status' => 'pending'
+                'status' => 'pending',
             ]);
 
             $balance = $endingBalance;
@@ -147,11 +143,10 @@ $totalSavings = $totals->total_savings;
         }
     }
 
-
     public function approve(Loan $loan): Loan
     {
         if ($loan->status !== 'pending') {
-            throw new Exception("Loan must be pending to be approved.");
+            throw new Exception('Loan must be pending to be approved.');
         }
 
         $loan->update([
@@ -168,7 +163,7 @@ $totalSavings = $totals->total_savings;
     public function reject(Loan $loan): Loan
     {
         if ($loan->status !== 'pending') {
-            throw new Exception("Only pending loans can be rejected.");
+            throw new Exception('Only pending loans can be rejected.');
         }
 
         $loan->update([
@@ -184,7 +179,7 @@ $totalSavings = $totals->total_savings;
     public function disburse(Loan $loan): Loan
     {
         if ($loan->status !== 'approved') {
-            throw new Exception("Loan must be approved before disbursement.");
+            throw new Exception('Loan must be approved before disbursement.');
         }
 
         $disbursementDate = now();
@@ -193,13 +188,12 @@ $totalSavings = $totals->total_savings;
 
         return DB::transaction(function () use ($loan, $disbursementDate, $maturityDate, $saccoAccount) {
 
-                if ($loan->amount > $saccoAccount->member_savings) {
-                throw new Exception("Disbursement failed: Loan amount exceeds current available lending funds.");
+            if ($loan->amount > $saccoAccount->member_savings) {
+                throw new Exception('Disbursement failed: Loan amount exceeds current available lending funds.');
             }
 
-               $saccoAccount->member_savings -= $loan->amount;
+            $saccoAccount->member_savings -= $loan->amount;
             $saccoAccount->save();
-            
 
             // 1. Update Loan Record
             $loan->update([
@@ -223,8 +217,6 @@ $totalSavings = $totals->total_savings;
         });
     }
 
-
- 
     /**
      * Checks for defaults and applies penalty to remaining installments.
      * This method would typically be called via a daily scheduled task (Laravel Command/Cron).
@@ -275,5 +267,4 @@ $totalSavings = $totals->total_savings;
 
         return $loan;
     }
-
 }

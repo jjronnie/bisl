@@ -2,18 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class SaccoAccount extends Model
 {
-       use HasFactory; 
+    use HasFactory;
 
-       protected $fillable = [
+    protected $fillable = [
         'operational',
         'loan_interest',
         'member_interest',
         'member_savings',
-        'loan_protection_fund'
-       ];
+        'loan_protection_fund',
+    ];
 }

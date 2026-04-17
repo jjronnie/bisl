@@ -2,8 +2,8 @@
 
 namespace App\Charts;
 
-use ConsoleTVs\Charts\Classes\Chartjs\Chart;
 use App\Models\Member;
+use ConsoleTVs\Charts\Classes\Chartjs\Chart;
 
 class MembersGenderChart extends Chart
 {
@@ -19,12 +19,12 @@ class MembersGenderChart extends Chart
 
         $this->dataset('Members by Gender', 'pie', [
             $genderCounts['male'] ?? 0,
-            $genderCounts['female'] ?? 0
+            $genderCounts['female'] ?? 0,
         ])->backgroundColor(['#3B82F6', '#F472B6']); // Blue for male, pink for female
 
         $this->options([
             'responsive' => true,
-            'maintainAspectRatio' => false
+            'maintainAspectRatio' => false,
         ]);
     }
 }

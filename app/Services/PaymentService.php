@@ -3,19 +3,19 @@
 namespace App\Services;
 
 use App\Models\Loan;
-use App\Models\LoanInstallment;
-use Illuminate\Support\Facades\DB;
 use App\Models\SaccoAccount;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class PaymentService
 {
     /**
      * Processes an incoming payment against a loan, applying it to the oldest outstanding installment.
      *
-     * @param Loan $loan The loan receiving the payment.
-     * @param array $data Contains ['payment_amount']
+     * @param  Loan  $loan  The loan receiving the payment.
+     * @param  array  $data  Contains ['payment_amount']
      * @return Loan The updated loan model.
+     *
      * @throws Exception
      */
     public function logPayment(Loan $loan, array $data): ?Loan
@@ -24,13 +24,13 @@ class PaymentService
         return DB::transaction(function () use ($loan, $data) {
 
             $paymentAmount = $data['payment_amount'];
-            // $paymentMethod = $data['payment_method'] ?? 'cash'; 
-            // $reference = $data['reference'] ?? 'N/A'; 
-            
+            // $paymentMethod = $data['payment_method'] ?? 'cash';
+            // $reference = $data['reference'] ?? 'N/A';
+
             // Fetch the single Sacco Account record
             $saccoAccount = SaccoAccount::first();
-            if (!$saccoAccount) {
-                 throw new Exception("SACCO operational account not found. Cannot log payment.");
+            if (! $saccoAccount) {
+                throw new Exception('SACCO operational account not found. Cannot log payment.');
             }
 
             // Find the oldest pending or partially paid installment
@@ -39,7 +39,7 @@ class PaymentService
                 ->orderBy('due_date', 'asc')
                 ->first();
 
-            if (!$installment) {
+            if (! $installment) {
                 // Check if the loan is truly completed
                 if ($loan->status !== 'completed') {
                     $loan->update(['status' => 'completed']);
@@ -52,23 +52,23 @@ class PaymentService
             // (e.g. 13645.64 vs 13645.640000001)
             $amountDue = round($installment->principal_amount + $installment->interest_amount + $installment->penalty_amount, 2);
             $paymentAmount = round($paymentAmount, 2);
-            
+
             if ($paymentAmount >= $amountDue) {
                 // 1. Payment is FULL or OVER
-                
+
                 // --- ACCOUNTING ALLOCATION (Applies to the full amount due) ---
                 $principalPaid = $installment->principal_amount;
                 $interestPaid = $installment->interest_amount;
                 $penaltyPaid = $installment->penalty_amount;
-                
+
                 // 1.1. Adjust SACCO Balances
                 // Principal portion returns to the lending pool
-                $saccoAccount->member_savings += $principalPaid; 
+                $saccoAccount->member_savings += $principalPaid;
                 // Interest portion is recorded as revenue
                 $saccoAccount->loan_interest += $interestPaid;
                 // Penalty portion is recorded as operational income
                 $saccoAccount->operational += $penaltyPaid;
-                
+
                 $saccoAccount->save();
                 // -----------------------------------------------------------------
 
@@ -93,17 +93,17 @@ class PaymentService
                 // We strictly throw the error.
 
                 throw new Exception(
-                    "Payment of UGX " . number_format($paymentAmount, 2) . " is only partial. " .
-                    "UGX " . number_format($amountDue, 2) . " should be paid."
+                    'Payment of UGX '.number_format($paymentAmount, 2).' is only partial. '.
+                    'UGX '.number_format($amountDue, 2).' should be paid.'
                 );
             }
-            
+
             // Check if all installments are now paid
             $unpaidCount = $loan->installments()->whereIn('status', ['pending', 'partial', 'defaulted'])->count();
             if ($unpaidCount === 0) {
                 $loan->update(['status' => 'completed']);
             }
-            
+
             // Return the updated loan instance
             return $loan->refresh();
 

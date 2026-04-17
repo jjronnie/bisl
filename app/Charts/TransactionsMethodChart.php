@@ -2,8 +2,8 @@
 
 namespace App\Charts;
 
-use ConsoleTVs\Charts\Classes\Chartjs\Chart;
 use App\Models\Transaction;
+use ConsoleTVs\Charts\Classes\Chartjs\Chart;
 
 class TransactionsMethodChart extends Chart
 {
@@ -11,7 +11,7 @@ class TransactionsMethodChart extends Chart
     {
         parent::__construct();
 
-        $methods = Transaction::selectRaw("method, COUNT(*) as total")
+        $methods = Transaction::selectRaw('method, COUNT(*) as total')
             ->groupBy('method')
             ->pluck('total', 'method');
 
@@ -21,7 +21,6 @@ class TransactionsMethodChart extends Chart
             'responsive' => true,
             'maintainAspectRatio' => false,
         ]);
-
 
         $this->dataset('Transactions by Method', 'pie', $methods->values()->toArray())
             ->backgroundColor(['#3B82F6', '#F97316', '#10B981', '#EF4444']); // customize colors

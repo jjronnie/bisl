@@ -8,9 +8,13 @@ use App\Models\LoanInstallment;
 class LoanReminderSms
 {
     public $loan;
+
     public $installment;
+
     public $phoneNumber;
+
     public $firstName;
+
     public $reminderType; // 'due_today' or 'due_in_7_days'
 
     public function __construct(Loan $loan, LoanInstallment $installment, string $phoneNumber, string $firstName, string $reminderType)
@@ -34,7 +38,7 @@ class LoanReminderSms
 
         if ($this->reminderType === 'due_today') {
             return sprintf(
-                "Dear %s, Your Loan Installment #%s is DUE TODAY. Amount: UGX %s. Please settle to avoid penalties. Thank you for saving with %s",
+                'Dear %s, Your Loan Installment #%s is DUE TODAY. Amount: UGX %s. Please settle to avoid penalties. Thank you for saving with %s',
                 $firstName,
                 $loanNumber,
                 $amount,
@@ -44,7 +48,7 @@ class LoanReminderSms
 
         // Due in 7 days
         return sprintf(
-            "Dear %s, Reminder: Your Loan Installment #%s is due in 7 days. Amount: UGX %s. Thank you for saving with %s",
+            'Dear %s, Reminder: Your Loan Installment #%s is due in 7 days. Amount: UGX %s. Thank you for saving with %s',
             $firstName,
             $loanNumber,
             $amount,

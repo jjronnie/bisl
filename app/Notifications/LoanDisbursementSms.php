@@ -7,7 +7,9 @@ use App\Models\Loan;
 class LoanDisbursementSms
 {
     public $loan;
+
     public $phoneNumber;
+
     public $firstName;
 
     public function __construct(Loan $loan, string $phoneNumber, string $firstName)
@@ -27,7 +29,7 @@ class LoanDisbursementSms
         $firstName = strtoupper($this->firstName);
 
         return sprintf(
-            "Dear %s, your Loan of UGX %s from %s has been disbursed on %s, please login to your account to view details LN NUMBER: %s.",
+            'Dear %s, your Loan of UGX %s from %s has been disbursed on %s, please login to your account to view details LN NUMBER: %s.',
             $firstName,
             number_format($this->loan->amount, 0),
             $appName,

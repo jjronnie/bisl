@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Transfer extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'transfer_id',
         'from_account',
@@ -18,7 +19,7 @@ class Transfer extends Model
         'to_balance_before',
         'to_balance_after',
         'transferred_by',
-        'reason'
+        'reason',
     ];
 
     // Relation to user who made the transfer
@@ -27,7 +28,7 @@ class Transfer extends Model
         return $this->belongsTo(User::class, 'transferred_by');
     }
 
-     // If you ever want to attach a specific sacco account record
+    // If you ever want to attach a specific sacco account record
     public function saccoAccount()
     {
         return $this->belongsTo(SaccoAccount::class);

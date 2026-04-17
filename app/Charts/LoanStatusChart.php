@@ -2,8 +2,8 @@
 
 namespace App\Charts;
 
-use ConsoleTVs\Charts\Classes\Chartjs\Chart;
 use App\Models\Loan;
+use ConsoleTVs\Charts\Classes\Chartjs\Chart;
 
 class LoanStatusChart extends Chart
 {
@@ -12,7 +12,7 @@ class LoanStatusChart extends Chart
         parent::__construct();
 
         // Count loans by status
-        $statuses = Loan::selectRaw("status, COUNT(*) as total")
+        $statuses = Loan::selectRaw('status, COUNT(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status');
 
@@ -33,7 +33,7 @@ class LoanStatusChart extends Chart
                 '#10B981',
                 '#EF4444',
                 '#6366F1',
-                '#F59E0B'
+                '#F59E0B',
             ]);
     }
 }

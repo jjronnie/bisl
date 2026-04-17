@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\SmsLog;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class SmsLogController extends Controller
 {
@@ -28,10 +28,10 @@ class SmsLogController extends Controller
 
         // Get logs with filtering
         $logs = SmsLog::query()
-            ->when($request->filled('status'), fn($q) => $q->where('status', $request->status))
-            ->when($request->filled('notification_type'), fn($q) => $q->where('notification_type', $request->notification_type))
-            ->when($request->filled('search'), fn($q) => $q->where('phone_number', 'like', '%' . $request->search . '%')
-                ->orWhere('message', 'like', '%' . $request->search . '%'))
+            ->when($request->filled('status'), fn ($q) => $q->where('status', $request->status))
+            ->when($request->filled('notification_type'), fn ($q) => $q->where('notification_type', $request->notification_type))
+            ->when($request->filled('search'), fn ($q) => $q->where('phone_number', 'like', '%'.$request->search.'%')
+                ->orWhere('message', 'like', '%'.$request->search.'%'))
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 

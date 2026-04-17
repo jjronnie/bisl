@@ -16,7 +16,7 @@ class LoanStatusUpdate extends Mailable
     /**
      * The Loan instance.
      *
-     * @var \App\Models\Loan
+     * @var Loan
      */
     public $loan;
 
@@ -33,11 +33,12 @@ class LoanStatusUpdate extends Mailable
     /**
      * Get the message envelope.
      *
-     * @return \Illuminate\Mail\Mailables\Envelope
+     * @return Envelope
      */
     public function envelope()
     {
-        $subject = 'Loan Application #' . $this->loan->loan_number . ' Status Update: ' . ucfirst($this->loan->status);
+        $subject = 'Loan Application #'.$this->loan->loan_number.' Status Update: '.ucfirst($this->loan->status);
+
         return new Envelope(
             subject: $subject,
         );
@@ -46,7 +47,7 @@ class LoanStatusUpdate extends Mailable
     /**
      * Get the message content definition.
      *
-     * @return \Illuminate\Mail\Mailables\Content
+     * @return Content
      */
     public function content()
     {

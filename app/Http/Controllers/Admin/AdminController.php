@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 
 class AdminController extends Controller
@@ -21,9 +22,8 @@ class AdminController extends Controller
     public function index()
     {
         $admins = User::role(['admin', 'superadmin'])->latest()->get();
-        $roles = Role::whereIn('name', ['admin', 'superadmin'])->get();
 
-        return view('admin.admins.index', compact('admins', 'roles'));
+        return view('admin.admins.index', compact('admins'));
     }
 
     /**
@@ -87,47 +87,37 @@ class AdminController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(User $user)
+    public function edit(User $admin)
     {
         abort_unless(auth()->user()->hasRole('superadmin'), 403);
 
-        // Prevent editing superadmin
-        if ($user->hasRole('superadmin')) {
-            abort(403, 'Superadmin accounts cannot be edited.');
-        }
-
         $roles = Role::whereIn('name', ['admin', 'superadmin'])->get();
 
-        return view('admin.admins.edit', compact('user', 'roles'));
+        return view('admin.admins.edit', compact('admin', 'roles'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $admin)
     {
         abort_unless(auth()->user()->hasRole('superadmin'), 403);
 
-        // Prevent editing superadmin
-        if ($user->hasRole('superadmin')) {
-            abort(403, 'Superadmin accounts cannot be edited.');
-        }
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$user->id,
+            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($admin->id)],
             'status' => 'required|in:active,suspended',
             'roles' => 'required|array',
             'roles.*' => 'exists:roles,name',
         ]);
 
-        $user->update([
+        $admin->update([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'status' => $validated['status'],
         ]);
 
-        $user->syncRoles($validated['roles']);
+        $admin->syncRoles($validated['roles']);
 
         return redirect()->route('admin.admins.index')->with('success', 'Admin updated successfully.');
     }
@@ -135,21 +125,21 @@ class AdminController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(User $admin)
     {
         abort_unless(auth()->user()->hasRole('superadmin'), 403);
 
         // Prevent deleting superadmin
-        if ($user->hasRole('superadmin')) {
+        if ($admin->hasRole('superadmin')) {
             return back()->with('error', 'Superadmin accounts cannot be deleted.');
         }
 
-        if (auth()->id() === $user->id) {
+        if (auth()->id() === $admin->id) {
             return back()->with('error', 'You cannot delete your own account.');
         }
 
-        $name = $user->name;
-        $user->delete();
+        $name = $admin->name;
+        $admin->delete();
 
         return redirect()->route('admin.admins.index')->with('success', "Admin {$name} deleted successfully.");
     }

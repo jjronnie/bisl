@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Member extends Model
 {
-    use HasFactory, SoftDeletes; 
-    
-   protected $fillable = [
+    use HasFactory, SoftDeletes;
+
+    protected $fillable = [
         'user_id',
-         'tier',
+        'tier',
         'member_no',
         'name',
         'date_of_birth',
@@ -25,34 +25,28 @@ class Member extends Model
         'phone1',
         'phone2',
         'address',
-     
+
     ];
 
     protected $casts = [
-       
+
         'date_of_birth' => 'date',
     ];
 
-  
     public function user()
-{
-    return $this->belongsTo(User::class);
-}
+    {
+        return $this->belongsTo(User::class);
+    }
 
-public function savingsAccount()
-{
-    return $this->hasOne(SavingsAccount::class);
-}
+    public function savingsAccount()
+    {
+        return $this->hasOne(SavingsAccount::class);
+    }
 
-public function transactions()
-{
-    return $this->hasMany(Transaction::class);
-}
-
-
-
- 
-
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 
     public function employmentDetail()
     {
@@ -63,8 +57,6 @@ public function transactions()
     {
         return $this->hasOne(EmergencyContact::class);
     }
-
-
 
     public function loans()
     {

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('interest_ledger', function (Blueprint $table) {
+        Schema::create('interest_ledger', function (Blueprint $table) {
             $table->id();
             $table->foreignId('member_id')->nullable()->constrained()->nullOnDelete();
             $table->decimal('balance_before', 20, 2)->nullable();

@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Loan;
 use App\Models\LoanDocument;
 use Illuminate\Http\Request;
-use App\Models\Loan;
 use Illuminate\Support\Facades\Storage;
-
 
 class LoanDocumentController extends Controller
 {
@@ -29,7 +28,7 @@ class LoanDocumentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-  public function store(Request $request, Loan $loan)
+    public function store(Request $request, Loan $loan)
     {
         $request->validate([
             'documents.*.name' => 'required|string|max:255',
@@ -56,28 +55,23 @@ class LoanDocumentController extends Controller
         ]);
     }
 
-
-   
-
     public function download(LoanDocument $document)
-{
-    if (!Storage::exists($document->file_path)) {
-        abort(404);
+    {
+        if (! Storage::exists($document->file_path)) {
+            abort(404);
+        }
+
+        // Get original file extension
+        $extension = pathinfo($document->file_path, PATHINFO_EXTENSION);
+
+        // Append extension to the name if it doesn't already have it
+        $filename = $document->name;
+        if (! str_ends_with(strtolower($filename), strtolower(".{$extension}"))) {
+            $filename .= '.'.$extension;
+        }
+
+        return Storage::download($document->file_path, $filename);
     }
-
-    // Get original file extension
-    $extension = pathinfo($document->file_path, PATHINFO_EXTENSION);
-
-    // Append extension to the name if it doesn't already have it
-    $filename = $document->name;
-    if (!str_ends_with(strtolower($filename), strtolower(".{$extension}"))) {
-        $filename .= '.' . $extension;
-    }
-
-    return Storage::download($document->file_path, $filename);
-}
-
-
 
     /**
      * Display the specified resource.
@@ -107,17 +101,16 @@ class LoanDocumentController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(LoanDocument $document)
-{
+    {
 
-    // Delete file from storage
-    if (Storage::exists($document->file_path)) {
-        Storage::delete($document->file_path);
+        // Delete file from storage
+        if (Storage::exists($document->file_path)) {
+            Storage::delete($document->file_path);
+        }
+
+        // Delete record from database
+        $document->delete();
+
+        return redirect()->back()->with('success', 'Document deleted successfully.');
     }
-
-    // Delete record from database
-    $document->delete();
-
-    return redirect()->back()->with('success', 'Document deleted successfully.');
-}
-
 }

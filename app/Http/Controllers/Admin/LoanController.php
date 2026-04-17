@@ -1,23 +1,20 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
+use App\Mail\LoanStatusUpdate;
 use App\Models\Loan;
-use Illuminate\Http\Request;
 use App\Models\Member;
-use App\Models\SaccoAccount;
-use App\Helpers\LoanHelper;
 use App\Services\LoanService;
 use App\Services\SmsService;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 use Exception;
-use App\Mail\LoanStatusUpdate; // The Mailable class
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // The Mailable class
 use Illuminate\Support\Facades\Mail; // The Mail Facade
 
 class LoanController extends Controller
 {
-
     protected $loanService;
 
     public function __construct(LoanService $loanService)
@@ -28,9 +25,6 @@ class LoanController extends Controller
     /**
      * Display a listing of the resource.
      */
-
-
-
     public function index()
     {
         // 1. Fetch Paginated Loans (for the table)
@@ -38,7 +32,6 @@ class LoanController extends Controller
         $loans = Loan::with(['member', 'member.savingsAccount'])
             ->latest()
             ->paginate(10);
-
 
         // Define status groups for outstanding loans (loans actively being repaid or due)
         $activeStatuses = ['approved', 'disbursed', 'active', 'defaulted', 'default_pending'];
@@ -67,20 +60,8 @@ class LoanController extends Controller
         // You might also want total disbursed amount lifetime:
         $stats['total_disbursed_lifetime'] = Loan::whereIn('status', array_merge($activeStatuses, ['completed']))->sum('amount');
 
-
         return view('admin.loans.index', compact('loans', 'stats'));
     }
-
-
-
-
-
-
-
-
-
-
-
 
     /**
      * Show the form for creating a new resource.
@@ -97,7 +78,6 @@ class LoanController extends Controller
         return view('admin.loans.create', compact('members'));
     }
 
-
     /**
      * Store a newly created resource in storage.
      */
@@ -112,7 +92,7 @@ class LoanController extends Controller
             'loan_type' => 'required|string', // e.g., 'standard', 'priority'
             'purpose' => 'required|string|max:255',
             'application_date' => 'required|date',
-            'notes' => 'nullable|string'
+            'notes' => 'nullable|string',
         ]);
 
         try {
@@ -135,7 +115,6 @@ class LoanController extends Controller
         }
     }
 
-
     /**
      * Display the specified resource.
      */
@@ -151,14 +130,12 @@ class LoanController extends Controller
         return view('admin.loans.edit', compact('loan'));
     }
 
-
-
-
     public function approve(Loan $loan)
     {
         try {
             $this->loanService->approve($loan);
             $this->sendLoanStatusEmail($loan);
+
             return redirect()
                 ->route('admin.loans.show', $loan)
                 ->with('success', "Loan #{$loan->loan_number} approved successfully. Ready for disbursement.");
@@ -197,7 +174,7 @@ class LoanController extends Controller
             $this->sendLoanStatusEmail($loan);
 
             // Send disbursement SMS
-            \App\Services\SmsService::sendLoanDisbursementSms($loan);
+            SmsService::sendLoanDisbursementSms($loan);
 
             return redirect()
                 ->route('admin.loans.show', $loan)
@@ -207,22 +184,19 @@ class LoanController extends Controller
         }
     }
 
+    private function sendLoanStatusEmail(Loan $loan): void
+    {
+        // Ensure the loan is loaded with the member and user data
+        $loan->load('member.user');
 
+        $recipient = $loan->member->user;
 
-
-private function sendLoanStatusEmail(Loan $loan): void
-{
-    // Ensure the loan is loaded with the member and user data
-    $loan->load('member.user');
-
-    $recipient = $loan->member->user;
-
-    // Check if a user record exists and has an email
-    if ($recipient && $recipient->email) {
-        // Mail::send() sends the email immediately, as requested.
-        Mail::to($recipient->email)->send(new LoanStatusUpdate($loan));
+        // Check if a user record exists and has an email
+        if ($recipient && $recipient->email) {
+            // Mail::send() sends the email immediately, as requested.
+            Mail::to($recipient->email)->send(new LoanStatusUpdate($loan));
+        }
     }
-}
 
     /**
      * Remove the specified resource from storage.

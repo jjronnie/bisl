@@ -7,7 +7,9 @@ use App\Models\Loan;
 class LoanStatusUpdateSms
 {
     public $loan;
+
     public $phoneNumber;
+
     public $firstName;
 
     public function __construct(Loan $loan, string $phoneNumber, string $firstName)
@@ -27,11 +29,11 @@ class LoanStatusUpdateSms
         $message = "Hi {$this->firstName}, your loan application #{$this->loan->loan_number} status is now: {$status}";
 
         if ($this->loan->status === 'approved') {
-            $message .= ". Amount: UGX " . number_format($this->loan->amount, 0);
+            $message .= '. Amount: UGX '.number_format($this->loan->amount, 0);
         } elseif ($this->loan->status === 'rejected') {
-            $message .= ". Please contact support for details.";
+            $message .= '. Please contact support for details.';
         } elseif ($this->loan->status === 'disbursed') {
-            $message .= ". Amount: UGX " . number_format($this->loan->amount, 0) . " has been sent.";
+            $message .= '. Amount: UGX '.number_format($this->loan->amount, 0).' has been sent.';
         }
 
         return $message;

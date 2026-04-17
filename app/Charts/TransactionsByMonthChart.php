@@ -2,9 +2,8 @@
 
 namespace App\Charts;
 
-use ConsoleTVs\Charts\Classes\Chartjs\Chart;
 use App\Models\Transaction;
-use Illuminate\Support\Facades\DB;
+use ConsoleTVs\Charts\Classes\Chartjs\Chart;
 
 class TransactionsByMonthChart extends Chart
 {
@@ -27,7 +26,7 @@ class TransactionsByMonthChart extends Chart
             'Sep',
             'Oct',
             'Nov',
-            'Dec'
+            'Dec',
         ]);
 
         // Get transaction counts grouped by month
@@ -44,17 +43,13 @@ class TransactionsByMonthChart extends Chart
 
         $this->labels($months->toArray());
 
+        $this->dataset('Transactions per Month', 'line', $monthlyData)
+            ->backgroundColor('rgba(59, 130, 246, 0.2)')
+            ->options([
+                'borderColor' => '#3B82F6',   // <-- move borderColor here
+                'fill' => true,
+                'tension' => 0.3,
+            ]);
 
-
-    $this->dataset('Transactions per Month', 'line', $monthlyData)
-    ->backgroundColor('rgba(59, 130, 246, 0.2)')
-    ->options([
-        'borderColor' => '#3B82F6',   // <-- move borderColor here
-        'fill' => true,
-        'tension' => 0.3,
-    ]);
-
-
- 
     }
 }

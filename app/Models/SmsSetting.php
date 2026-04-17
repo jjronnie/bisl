@@ -33,7 +33,7 @@ class SmsSetting extends Model
     {
         $settings = self::getInstance();
 
-        return match($type) {
+        return match ($type) {
             'payment' => $settings->payment_notifications_enabled,
             'loan_status' => $settings->loan_status_notifications_enabled,
             'transaction' => $settings->transaction_alerts_enabled,

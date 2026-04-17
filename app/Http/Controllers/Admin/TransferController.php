@@ -1,12 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-use App\Http\Controllers\Controller;
 
+use App\Http\Controllers\Controller;
+use App\Models\SaccoAccount;
 use App\Models\Transfer;
 use Illuminate\Http\Request;
-
-use App\Models\SaccoAccount;
 use Illuminate\Support\Facades\DB;
 
 class TransferController extends Controller
@@ -17,17 +16,18 @@ class TransferController extends Controller
     public function index()
     {
 
-          $transfers = Transfer::with('saccoAccount',  )
+        $transfers = Transfer::with('saccoAccount')
             ->latest()
             ->paginate(50);
 
-            $accountFields = [
-    'operational' => 'Operational Account',
-    'loan_interest' => 'Loan Interest',
-    'loan_protection_fund' => 'Loan Protection Fund',
-    'member_interest' => 'Member Interest',
-    'member_savings' => 'Member Savings'
-];
+        $accountFields = [
+            'operational' => 'Operational Account',
+            'loan_interest' => 'Loan Interest',
+            'loan_protection_fund' => 'Loan Protection Fund',
+            'member_interest' => 'Member Interest',
+            'member_savings' => 'Member Savings',
+        ];
+
         return view('admin.transfers.index', compact('transfers', 'accountFields'));
     }
 
@@ -42,7 +42,7 @@ class TransferController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-   public function store(Request $request)
+    public function store(Request $request)
     {
         // Fetch list of valid columns from sacco_accounts table
         $validAccounts = [
@@ -50,13 +50,13 @@ class TransferController extends Controller
             'loan_interest',
             'loan_protection_fund',
             'member_interest',
-            'member_savings'
+            'member_savings',
         ];
 
         // Validate input
         $validated = $request->validate([
-            'from_account' => 'required|string|in:' . implode(',', $validAccounts),
-            'to_account' => 'required|string|in:' . implode(',', $validAccounts),
+            'from_account' => 'required|string|in:'.implode(',', $validAccounts),
+            'to_account' => 'required|string|in:'.implode(',', $validAccounts),
             'amount' => 'required|numeric|min:0.01',
             'reason' => 'nullable|string|max:255',
         ]);
@@ -64,8 +64,6 @@ class TransferController extends Controller
         if ($validated['from_account'] === $validated['to_account']) {
             return back()->withErrors(['Invalid transfer. Accounts must be different']);
         }
-
-        
 
         return DB::transaction(function () use ($validated) {
 

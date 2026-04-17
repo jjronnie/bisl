@@ -7,8 +7,11 @@ use App\Models\Loan;
 class PaymentReceivedSms
 {
     public $loan;
+
     public $amountPaid;
+
     public $phoneNumber;
+
     public $firstName;
 
     public function __construct(Loan $loan, float $amountPaid, string $phoneNumber, string $firstName)
@@ -32,7 +35,7 @@ class PaymentReceivedSms
         // Check if loan is completely paid off
         if ($this->loan->status === 'completed') {
             return sprintf(
-                "Dear %s, Congratulations! Your Loan #%s has been SETTLED. Thank you for choosing %s",
+                'Dear %s, Congratulations! Your Loan #%s has been SETTLED. Thank you for choosing %s',
                 $firstName,
                 $this->loan->loan_number,
                 $appName
@@ -40,7 +43,7 @@ class PaymentReceivedSms
         }
 
         return sprintf(
-            "Dear %s, your Loan repayment of UGX %s HAS BEEN RECIEVED. Thank you for saving with %s",
+            'Dear %s, your Loan repayment of UGX %s HAS BEEN RECIEVED. Thank you for saving with %s',
             $firstName,
             number_format($this->amountPaid, 0),
             $appName

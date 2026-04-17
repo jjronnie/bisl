@@ -2,22 +2,20 @@
 
 namespace App\Jobs;
 
+use App\Helpers\PhoneHelper;
 use App\Models\Loan;
 use App\Models\LoanInstallment;
 use App\Models\LoanReminder;
+use App\Models\SmsLog;
 use App\Notifications\LoanReminderEmail;
 use App\Notifications\LoanReminderSms;
-use App\Services\SmsService;
-use App\Models\SmsLog;
-use App\Helpers\PhoneHelper;
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class SendLoanRemindersJob implements ShouldQueue
 {
@@ -52,7 +50,7 @@ class SendLoanRemindersJob implements ShouldQueue
         $member = $loan->member;
         $user = $member->user;
 
-        if (!$user || !$member->phone1) {
+        if (! $user || ! $member->phone1) {
             return;
         }
 
@@ -96,7 +94,7 @@ class SendLoanRemindersJob implements ShouldQueue
                     'reminder' => $emailReminder,
                 ], function ($message) use ($user, $emailReminder) {
                     $message->to($user->email)
-                            ->subject($emailReminder->getSubject());
+                        ->subject($emailReminder->getSubject());
                 });
 
                 // Log the email reminder
@@ -123,7 +121,7 @@ class SendLoanRemindersJob implements ShouldQueue
                 $smsLog = SmsLog::create([
                     'phone_number' => PhoneHelper::normalize($member->phone1),
                     'message' => $message,
-                    'notification_type' => 'loan_reminder_' . $reminderType,
+                    'notification_type' => 'loan_reminder_'.$reminderType,
                     'recipient_id' => $user->id,
                     'status' => 'pending',
                 ]);
@@ -132,7 +130,7 @@ class SendLoanRemindersJob implements ShouldQueue
                 dispatch(new SendSmsJob(
                     $member->phone1,
                     $message,
-                    'loan_reminder_' . $reminderType,
+                    'loan_reminder_'.$reminderType,
                     (string) $member->id,
                     $smsLog->id
                 ));

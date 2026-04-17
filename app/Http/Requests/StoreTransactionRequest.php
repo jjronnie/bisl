@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -18,7 +19,7 @@ class StoreTransactionRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -27,25 +28,25 @@ class StoreTransactionRequest extends FormRequest
             'member_id' => [
                 'required',
                 'numeric',
-                Rule::exists('members', 'id')->whereNull('deleted_at')
+                Rule::exists('members', 'id')->whereNull('deleted_at'),
             ],
-            
+
             'transaction_type' => [
                 'required',
-                Rule::in(['deposit', 'withdrawal', 'loan_disbursement', 'loan_repayment', 'fee', 'other'])
+                Rule::in(['deposit', 'withdrawal', 'loan_disbursement', 'loan_repayment', 'fee', 'other']),
             ],
-            
-            'amount' => ['required', 'numeric', 'min:0.01', 'max:1000000000'], 
+
+            'amount' => ['required', 'numeric', 'min:0.01', 'max:1000000000'],
             'method' => ['nullable', 'string', 'max:50'],
             'description' => ['required', 'string', 'max:255'],
             'remarks' => ['nullable', 'string', 'max:1000'],
-            'transaction_date' => ['required', 'date'], 
+            'transaction_date' => ['required', 'date'],
 
             // Handle loan-related transactions
             'loan_id' => [
                 'nullable',
                 Rule::requiredIf(in_array($this->transaction_type, ['loan_disbursement', 'loan_repayment'])),
-                'exists:loans,id'
+                'exists:loans,id',
             ],
         ];
     }

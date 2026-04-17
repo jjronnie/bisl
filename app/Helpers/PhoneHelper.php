@@ -20,11 +20,11 @@ class PhoneHelper
 
         // If starts with 0, replace with country code
         if (str_starts_with($phone, '0')) {
-            return '+256' . substr($phone, 1);
+            return '+256'.substr($phone, 1);
         }
 
         // If no country code, add it
-        return '+256' . $phone;
+        return '+256'.$phone;
     }
 
     /**

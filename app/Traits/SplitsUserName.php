@@ -12,7 +12,7 @@ trait SplitsUserName
     protected static function bootSplitsUserName()
     {
         static::creating(function ($model) {
-            if ($model->name && !$model->first_name) {
+            if ($model->name && ! $model->first_name) {
                 $nameParts = User::splitName($model->name);
                 $model->first_name = $nameParts['first_name'];
                 $model->last_name = $nameParts['last_name'];

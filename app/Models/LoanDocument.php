@@ -14,7 +14,7 @@ class LoanDocument extends Model
         'file_path',
     ];
 
-     public function loan()
+    public function loan()
     {
         return $this->belongsTo(Loan::class);
     }

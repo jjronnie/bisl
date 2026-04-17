@@ -13,17 +13,16 @@ class MemberController extends Controller
     public function index()
     {
 
-           $member = auth()->user()->member;
+        $member = auth()->user()->member;
 
-        if (!$member) {
+        if (! $member) {
             abort(404, 'Member account not found');
         }
 
-        
         // transactions from member
         $transactions = $member->transactions()->latest()
             ->paginate(20);
-        
+
         return view('members.transactions', compact('transactions'));
     }
 
@@ -32,36 +31,35 @@ class MemberController extends Controller
      */
     public function notifications()
     {
-         return view('members.notifications');
+        return view('members.notifications');
     }
 
- public function loans()
-{
-    $member = auth()->user()->member;
+    public function loans()
+    {
+        $member = auth()->user()->member;
 
-    if (!$member) {
-        abort(404, 'Member account not found');
+        if (! $member) {
+            abort(404, 'Member account not found');
+        }
+
+        $loans = $member->loans()
+            ->latest()
+            ->paginate(10);
+
+        $loanCount = $member->loans()->count();
+
+        $pendingCount = $member->loans()->where('status', 'pending')->count();
+        $rejectedCount = $member->loans()->where('status', 'rejected')->count();
+        $completedCount = $member->loans()->where('status', 'completed')->count();
+
+        return view('members.loans.index', compact(
+            'loans',
+            'loanCount',
+            'pendingCount',
+            'rejectedCount',
+            'completedCount'
+        ));
     }
-
-    $loans = $member->loans()
-        ->latest()
-        ->paginate(10);
-
-    $loanCount =  $member->loans()->count();
-
-    $pendingCount = $member->loans()->where('status', 'pending')->count();
-    $rejectedCount = $member->loans()->where('status', 'rejected')->count();
-    $completedCount = $member->loans()->where('status', 'completed')->count();
-
-    return view('members.loans.index', compact(
-        'loans',
-        'loanCount',
-        'pendingCount',
-        'rejectedCount',
-        'completedCount'
-    ));
-}
-
 
     /**
      * Store a newly created resource in storage.

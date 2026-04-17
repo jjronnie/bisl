@@ -21,7 +21,7 @@ class TierHelper
 
         if ($member->tier !== $tier) {
             $member->tier = $tier;
-            $member->saveQuietly(); 
+            $member->saveQuietly();
         }
     }
 }

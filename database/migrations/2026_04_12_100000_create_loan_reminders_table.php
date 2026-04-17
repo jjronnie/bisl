@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('message')->nullable();
             $table->integer('retry_count')->default(0);
             $table->timestamps();
-            
+
             // Indexes
             $table->index('loan_id');
             $table->index('installment_id');

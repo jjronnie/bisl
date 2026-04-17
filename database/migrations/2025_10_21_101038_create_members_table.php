@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -19,7 +20,7 @@ return new class extends Migration {
             $table->string('name');
             $table->date('date_of_birth')->nullable();
             $table->string('nationality')->nullable();
-            $table->enum('gender', ['male', 'female',])->nullable();
+            $table->enum('gender', ['male', 'female'])->nullable();
             $table->enum('marital_status', ['single', 'married', 'divorced', 'widowed'])->nullable();
             $table->string('national_id_number')->unique()->nullable();
             $table->string('passport_number')->nullable();
@@ -31,8 +32,6 @@ return new class extends Migration {
 
             // Residential Address
             $table->text('address')->nullable();
-
-
 
             $table->timestamps();
             $table->softDeletes();

@@ -2,17 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\SplitsUserName;
+use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
-use App\Traits\SplitsUserName;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, SplitsUserName;
+    /** @use HasFactory<UserFactory> */
+    use HasFactory, HasRoles, Notifiable, SplitsUserName;
 
     /**
      * The attributes that are mass assignable.
@@ -29,7 +30,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'google_id',
         'must_change_password',
         'created_by',
-        'status'
+        'status',
     ];
 
     /**
@@ -60,14 +61,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(User::class, 'created_by');
     }
 
-
-
-
     public function member()
     {
         return $this->hasOne(Member::class);
     }
-
 
     public function transactions()
     {

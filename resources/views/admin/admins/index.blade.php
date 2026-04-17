@@ -6,7 +6,9 @@
     <div class="flex justify-end mb-6">
         <div class="flex gap-3">
             @role('superadmin')
-                @include('admin.admins.create')
+                <a href="{{ route('admin.admins.create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Invite Admin
+                </a>
             @endrole
         </div>
     </div>
@@ -54,13 +56,14 @@
                             @include('admin.admins.show')
 
                             @if (auth()->user()->hasRole('superadmin'))
-                                @if (!$admin->hasRole('superadmin'))
-                                    @include('admin.admins.edit', ['user' => $admin])
+                                    <a href="{{ route('admin.admins.edit', $admin->id) }}"
+                                        class="btn">
+                                        <i data-lucide="edit" class="w-4 h-4"></i>
+                                    </a>
 
                                     <x-confirm-modal :action="route('admin.admins.destroy', $admin->id)"
                                         warning="Are you sure you want to delete this admin? This action cannot be undone."
                                         method="DELETE" triggerIcon="trash-2" />
-                                @endif
                             @endif
 
                         </div>

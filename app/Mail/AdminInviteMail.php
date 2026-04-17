@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -13,6 +14,7 @@ class AdminInviteMail extends Mailable
     use Queueable, SerializesModels;
 
     public $user;
+
     public $plainPassword;
 
     /**
@@ -40,7 +42,7 @@ class AdminInviteMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.admin-invite', 
+            markdown: 'emails.admin-invite',
             with: [
                 'name' => $this->user->name,
                 'email' => $this->user->email,
@@ -52,7 +54,7 @@ class AdminInviteMail extends Mailable
     /**
      * Get the attachments for the message.
      *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     * @return array<int, Attachment>
      */
     public function attachments(): array
     {

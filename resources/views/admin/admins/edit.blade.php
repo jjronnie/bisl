@@ -1,65 +1,66 @@
 @php
-$userRoles = $user->roles->pluck('name')->toArray();
+$adminRoles = $admin->roles->pluck('name')->toArray();
 @endphp
 
-<x-slide-form title="Edit Admin" buttonIcon="edit">
+<x-app-layout>
+    <x-page-title title="Edit Admin: {{ $admin->name }}" />
 
-    <form method="POST" action="{{ route('admin.admins.update', $user->id) }}">
-        @csrf
-        @method('PUT')
+    <div class="mx-auto bg-white p-6 rounded-xl shadow-sm mt-6">
+        <form method="POST" action="{{ route('admin.admins.update', $admin->id) }}">
+            @csrf
+            @method('PUT')
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <x-input-label for="name" value="Name" />
+                    <x-required-mark />
+                    <x-text-input id="name" name="name" type="text" class="mt-1 block w-full"
+                        :value="old('name', $admin->name)" required autofocus autocomplete="name" />
+                    <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                </div>
 
-            <div>
-                <label for="name" class="label">Name <span class="text-red-600">*</span></label>
-                <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" required
-                    class="input @error('name') border-red-500 @enderror" />
-                @error('name')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+                <div>
+                    <x-input-label for="email" value="Email Address" />
+                    <x-required-mark />
+                    <x-text-input id="email" name="email" type="email" class="mt-1 block w-full"
+                        :value="old('email', $admin->email)" required />
+                    <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                </div>
 
-            <div>
-                <label for="email" class="label">Email Address <span class="text-red-600">*</span></label>
-                <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" required
-                    class="input @error('email') border-red-500 @enderror" />
-                @error('email')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+                <div>
+                    <x-input-label for="status" value="Status" />
+                    <x-required-mark />
+                    <select name="status" id="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                        <option value="active" {{ old('status', $admin->status) === 'active' ? 'selected' : '' }}>Active</option>
+                        <option value="suspended" {{ old('status', $admin->status) === 'suspended' ? 'selected' : '' }}>Suspended</option>
+                    </select>
+                    <x-input-error :messages="$errors->get('status')" class="mt-2" />
+                </div>
 
-            <div>
-                <label for="status" class="label">Status <span class="text-red-600">*</span></label>
-                <select name="status" id="status" class="input @error('status') border-red-500 @enderror" required>
-                    <option value="active" {{ old('status', $user->status) === 'active' ? 'selected' : '' }}>Active</option>
-                    <option value="suspended" {{ old('status', $user->status) === 'suspended' ? 'selected' : '' }}>Suspended</option>
-                </select>
-                @error('status')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div class="md:col-span-2">
-                <label class="label">Roles <span class="text-red-600">*</span></label>
-                <div class="flex flex-wrap gap-3 mt-2">
-                    @foreach($roles as $role)
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" name="roles[]" value="{{ $role->name }}"
-                                class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                {{ in_array($role->name, $userRoles) ? 'checked' : '' }}>
-                            <span class="ml-2">{{ ucfirst($role->name) }}</span>
-                        </label>
-                    @endforeach
+                <div class="md:col-span-2">
+                    <x-input-label for="roles" value="Roles" />
+                    <x-required-mark />
+                    <div class="flex flex-wrap gap-3 mt-2">
+                        @foreach($roles as $role)
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="roles[]" value="{{ $role->name }}"
+                                    class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                    {{ in_array($role->name, $adminRoles) ? 'checked' : '' }}>
+                                <span class="ml-2">{{ ucfirst($role->name) }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                    <x-input-error :messages="$errors->get('roles')" class="mt-2" />
                 </div>
             </div>
 
-        </div>
-
-        <div class="flex justify-start space-x-3 mt-6">
-            <button type="submit" class="btn">
-                Update Admin <i data-lucide="save" class="w-4 h-4 ml-2"></i>
-            </button>
-        </div>
-    </form>
-
-</x-slide-form>
+            <div class="mt-6 flex items-center justify-end space-x-3">
+                <a href="{{ route('admin.admins.index') }}"
+                    class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition duration-150">Cancel</a>
+                <x-primary-button>
+                    Update Admin <i data-lucide="save" class="w-4 h-4 ml-2"></i>
+                </x-primary-button>
+            </div>
+        </form>
+    </div>
+</x-app-layout>

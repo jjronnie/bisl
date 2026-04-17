@@ -115,8 +115,6 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
-
-
     'bcc' => [
         'address' => env('MAIL_BCC_ADDRESS'),
         'name' => env('MAIL_BCC_NAME'),

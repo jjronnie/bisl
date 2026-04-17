@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-      Schema::create('employment_details', function (Blueprint $table) {
+        Schema::create('employment_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('member_id')->unique()->constrained()->onDelete('cascade');
 
@@ -23,7 +23,6 @@ return new class extends Migration
 
             // Employer Address
             $table->text('address')->nullable();
-           
 
             $table->timestamps();
         });

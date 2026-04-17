@@ -31,11 +31,11 @@
 
 
       @if($admin->status === 'active')
-      <x-confirm-modal :action="route('admin.suspend', $admin)"
+      <x-confirm-modal :action="route('admin.suspend', $admin->id)"
             warning="Are you sure you want to suspend this user? They will lose access till you unsuspend them."
             method="PATCH" triggerText="Suspend" />
       @else
-      <x-confirm-modal :action="route('admin.unsuspend', $admin)"
+      <x-confirm-modal :action="route('admin.unsuspend', $admin->id)"
             warning="Are you sure you want to unsuspend this user? They will regain access to the system."
             method="PATCH" triggerText="UnSuspend" triggerClass="btn-gray" />
       @endif

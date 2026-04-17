@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -17,7 +18,7 @@ return new class extends Migration {
             $table->decimal('balance', 12, 2)->default(0.00);
 
             $table->decimal('loan_protection_fund', 12, 2)->default(0.00);
-            
+
             $table->decimal('membership_fee', 12, 2)->default(0.00);
             $table->decimal('interest_earned', 12, 2)->default(0.00);
 

@@ -16,7 +16,7 @@ class PaymentReceived extends Mailable
     /**
      * The Loan instance.
      *
-     * @var \App\Models\Loan
+     * @var Loan
      */
     public $loan;
 
@@ -29,9 +29,6 @@ class PaymentReceived extends Mailable
 
     /**
      * Create a new message instance.
-     *
-     * @param Loan $loan
-     * @param float $amountPaid
      */
     public function __construct(Loan $loan, float $amountPaid)
     {
@@ -44,19 +41,19 @@ class PaymentReceived extends Mailable
     /**
      * Get the message envelope.
      *
-     * @return \Illuminate\Mail\Mailables\Envelope
+     * @return Envelope
      */
     public function envelope()
     {
         return new Envelope(
-            subject: 'Payment Confirmation: Loan #' . $this->loan->loan_number,
+            subject: 'Payment Confirmation: Loan #'.$this->loan->loan_number,
         );
     }
 
     /**
      * Get the message content definition.
      *
-     * @return \Illuminate\Mail\Mailables\Content
+     * @return Content
      */
     public function content()
     {

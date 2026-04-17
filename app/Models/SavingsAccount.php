@@ -29,8 +29,4 @@ class SavingsAccount extends Model
     {
         return $this->member ? $this->member->transactions() : collect();
     }
-
-
-
-
 }
