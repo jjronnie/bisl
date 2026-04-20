@@ -61,10 +61,23 @@ class SendSmsJob implements ShouldQueue
 
             $sms = $at->sms();
 
-            $result = $sms->send([
+            $senderId = config('services.africas_talking.sender_id');
+            $appName = strtoupper(config('app.name'));
+            $message = $this->message;
+            if ($appName) {
+                $message = "{$appName}: {$message}";
+            }
+
+            $sendData = [
                 'to' => $this->phoneNumber,
-                'message' => $this->message,
-            ]);
+                'message' => $message,
+            ];
+
+            if ($senderId) {
+                $sendData['from'] = $senderId;
+            }
+
+            $result = $sms->send($sendData);
 
             $cost = $this->extractCost($result);
             $providerStatus = $this->extractProviderStatus($result);
