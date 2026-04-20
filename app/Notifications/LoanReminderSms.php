@@ -31,7 +31,7 @@ class LoanReminderSms
      */
     public function getMessage(): string
     {
-        $appName = strtoupper(config('app.name'));
+        $appName = strtoupper(config('services.africas_talking.sms_app_name'));
         $firstName = strtoupper($this->firstName);
         $amount = number_format($this->installment->principal_amount + $this->installment->interest_amount + $this->installment->penalty_amount, 0);
         $loanNumber = $this->loan->loan_number;

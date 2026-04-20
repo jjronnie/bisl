@@ -25,7 +25,7 @@ class TransactionAlertSms
      */
     public function getMessage(): string
     {
-        $appName = strtoupper(config('app.name'));
+        $appName = strtoupper(config('services.africas_talking.sms_app_name'));
         $firstName = strtoupper($this->firstName);
 
         // Handle reversal SMS template separately

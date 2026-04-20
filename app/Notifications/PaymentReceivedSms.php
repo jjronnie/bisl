@@ -29,7 +29,7 @@ class PaymentReceivedSms
      */
     public function getMessage(): string
     {
-        $appName = strtoupper(config('app.name'));
+        $appName = strtoupper(config('services.africas_talking.sms_app_name'));
         $firstName = strtoupper($this->firstName);
 
         // Check if loan is completely paid off
