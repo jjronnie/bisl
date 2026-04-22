@@ -22,11 +22,22 @@
                 <x-table.row>
                     <x-table.cell>{{ $index + 1 }}</x-table.cell>
                     <x-table.cell>
-                        <div class="text-sm font-medium text-gray-900">
-                            {{ $admin->name ?? 'N/A' }}
-                        </div>
-                        <div class="text-xs text-gray-500">
-                            {{ $admin->email ?? '' }}
+                        <div class="flex items-center gap-3">
+                            @if ($admin->profile_photo)
+                                <img src="{{ asset('storage/' . $admin->profile_photo) }}" alt="{{ $admin->name }}"
+                                    class="w-10 h-10 rounded-full object-cover">
+                            @else
+                                <img src="{{ asset('default-avatar.png') }}" alt="{{ $admin->name }}"
+                                    class="w-10 h-10 rounded-full">
+                            @endif
+                            <div>
+                                <div class="text-sm font-medium text-gray-900">
+                                    {{ $admin->name ?? 'N/A' }}
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    {{ $admin->email ?? '' }}
+                                </div>
+                            </div>
                         </div>
                     </x-table.cell>
 

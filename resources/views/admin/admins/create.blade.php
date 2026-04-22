@@ -2,7 +2,7 @@
     <x-page-title title="Invite New System Admin" />
 
     <div class="mx-auto bg-white p-6 rounded-xl shadow-sm mt-6">
-        <form method="POST" action="{{ route('admin.admins.store') }}">
+        <form method="POST" action="{{ route('admin.admins.store') }}" enctype="multipart/form-data">
             @csrf
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -36,6 +36,11 @@
                         @endforeach
                     </div>
                     <x-input-error :messages="$errors->get('roles')" class="mt-2" />
+                </div>
+
+              
+                 <div class="lg:col-span-3">
+                    <x-image-upload name="profile_photo" label="Profile Photo (optional)" />
                 </div>
             </div>
 

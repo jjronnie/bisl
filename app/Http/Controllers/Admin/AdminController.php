@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 
@@ -46,11 +47,18 @@ class AdminController extends Controller
             'email' => 'required|email|unique:users,email',
             'roles' => 'required|array',
             'roles.*' => 'exists:roles,name',
+            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4048',
         ]);
 
         try {
-            DB::transaction(function () use ($validated) {
+            DB::transaction(function () use ($request, $validated) {
                 $plainPassword = (string) random_int(100000, 999999);
+
+                $profilePhotoPath = null;
+                $file = $request->file('profile_photo');
+                if ($file) {
+                    $profilePhotoPath = $file->store('avatars/admins', 'public');
+                }
 
                 $user = User::create([
                     'name' => $validated['name'],
@@ -59,6 +67,7 @@ class AdminController extends Controller
                     'password' => Hash::make($plainPassword),
                     'must_change_password' => true,
                     'created_by' => Auth::user()->id,
+                    'profile_photo' => $profilePhotoPath,
                 ]);
 
                 $user->forceFill(['email_verified_at' => now()])->save();
@@ -103,18 +112,31 @@ class AdminController extends Controller
     {
         abort_unless(auth()->user()->hasRole('superadmin'), 403);
 
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($admin->id)],
             'status' => 'required|in:active,suspended',
             'roles' => 'required|array',
             'roles.*' => 'exists:roles,name',
+            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4048',
         ]);
+
+        $profilePhotoPath = $admin->profile_photo;
+
+        $file = $request->file('profile_photo');
+        if ($file) {
+            if ($admin->profile_photo) {
+                Storage::disk('public')->delete($admin->profile_photo);
+            }
+            $profilePhotoPath = $file->store('avatars/admins', 'public');
+        }
 
         $admin->update([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'status' => $validated['status'],
+            'profile_photo' => $profilePhotoPath,
         ]);
 
         $admin->syncRoles($validated['roles']);

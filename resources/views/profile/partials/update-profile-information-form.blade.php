@@ -8,9 +8,11 @@ if ($hour < 12) { $bgImage=asset('assets/img/morning.webp'); } elseif ($hour < 1
     $bgImage=asset('assets/img/afternoon.webp'); } else { $bgImage=asset('assets/img/evening.webp'); }
 
 
-    $avatarUrl=($member && $member->avatar)
-    ? asset('storage/' . $member->avatar)
-    : asset('default-avatar.png');
+if ($user->hasRole(['admin', 'superadmin'])) {
+    $avatarUrl = $user->profile_photo ? asset('storage/' . $user->profile_photo) : asset('default-avatar.png');
+} else {
+    $avatarUrl = ($member && $member->avatar) ? asset('storage/' . $member->avatar) : asset('default-avatar.png');
+}
     @endphp
 
     <section class="mx-auto">

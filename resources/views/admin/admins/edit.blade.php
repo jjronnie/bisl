@@ -6,7 +6,7 @@ $adminRoles = $admin->roles->pluck('name')->toArray();
     <x-page-title title="Edit Admin: {{ $admin->name }}" />
 
     <div class="mx-auto bg-white p-6 rounded-xl shadow-sm mt-6">
-        <form method="POST" action="{{ route('admin.admins.update', $admin->id) }}">
+        <form method="POST" action="{{ route('admin.admins.update', $admin->id) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -51,6 +51,11 @@ $adminRoles = $admin->roles->pluck('name')->toArray();
                         @endforeach
                     </div>
                     <x-input-error :messages="$errors->get('roles')" class="mt-2" />
+                </div>
+
+                <!-- profile_photo - Last -->
+                <div class="lg:col-span-3">
+                    <x-image-upload name="profile_photo" label="Profile Photo (optional)" :preview="$admin->profile_photo ? 'storage/' . $admin->profile_photo : null" />
                 </div>
             </div>
 
