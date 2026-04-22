@@ -47,7 +47,7 @@ class AdminController extends Controller
             'email' => 'required|email|unique:users,email',
             'roles' => 'required|array',
             'roles.*' => 'exists:roles,name',
-            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4048',
+            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:6048',
         ]);
 
         try {
@@ -119,7 +119,7 @@ class AdminController extends Controller
             'status' => 'required|in:active,suspended',
             'roles' => 'required|array',
             'roles.*' => 'exists:roles,name',
-            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4048',
+            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:6048',
         ]);
 
         $profilePhotoPath = $admin->profile_photo;

@@ -2,7 +2,7 @@
     'name' => 'avatar',
     'label' => 'Image',
     'preview' => null,
-    'maxSize' => 3, // MB
+    'maxSize' => 4, // MB
 ])
 
 <div {{ $attributes->merge(['class' => 'flex flex-col space-y-2']) }}>
