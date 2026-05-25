@@ -26,7 +26,8 @@
         @endif
 
         <div class="bg-white rounded-lg shadow p-6">
-            <form method="POST" action="{{ route('admin.transactions.store') }}" class="space-y-6">
+            <form method="POST" action="{{ route('admin.transactions.store') }}"
+                  enctype="multipart/form-data" class="space-y-6">
                 @csrf
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -109,6 +110,82 @@
                         placeholder="Add any notes about this transaction...">{{ old('remarks') }}</textarea>
                 </div>
 
+                {{-- Document Upload --}}
+                <div class="border-t pt-6">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <i data-lucide="paperclip" class="w-5 h-5"></i>
+                        Attach Documents
+                    </h3>
+
+                    <div x-data="createDocsUpload()" class="space-y-4">
+                        <template x-for="(doc, index) in documents" :key="index">
+                            <div class="border rounded-lg p-4 space-y-3">
+                                <div class="flex items-start justify-between">
+                                    <span class="text-sm font-medium text-gray-700" x-text="'Document ' + (index + 1)"></span>
+                                    <button type="button" @click="removeDocument(index)"
+                                            class="text-red-600 hover:text-red-800 text-sm" x-show="documents.length > 1">
+                                        Remove
+                                    </button>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <x-input-label value="Document Name" />
+                                        <input type="text" x-model="doc.name"
+                                               :name="'documents[' + index + '][name]'"
+                                               class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm text-sm"
+                                               placeholder="e.g. Payment Receipt">
+                                    </div>
+                                    <div>
+                                        <x-input-label value="Notes (optional)" />
+                                        <input type="text" x-model="doc.notes"
+                                               :name="'documents[' + index + '][notes]'"
+                                               class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm text-sm"
+                                               placeholder="Optional notes">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">File</label>
+                                    <label class="relative flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors"
+                                           :class="doc.file ? 'border-green-400 bg-green-50' : ''">
+                                        <template x-if="!doc.file">
+                                            <div class="flex flex-col items-center justify-center text-gray-500">
+                                                <i data-lucide="upload" class="w-8 h-8 mb-1"></i>
+                                                <span class="text-sm font-medium">Click to upload</span>
+                                                <span class="text-xs text-gray-400 mt-1">PDF, Word, Excel, CSV, or Image (max 15MB)</span>
+                                            </div>
+                                        </template>
+                                        <template x-if="doc.file">
+                                            <div class="flex flex-col items-center justify-center text-green-600">
+                                                <i data-lucide="check-circle" class="w-8 h-8 mb-1"></i>
+                                                <span class="text-sm font-medium" x-text="doc.file.name"></span>
+                                                <span class="text-xs text-gray-400 mt-1" x-text="(doc.file.size / 1024 / 1024).toFixed(2) + ' MB'"></span>
+                                            </div>
+                                        </template>
+                                        <input type="file"
+                                               :name="'documents[' + index + '][file]'"
+                                               class="hidden"
+                                               accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.jpg,.jpeg,.png,.gif,.webp,.bmp"
+                                               @change="handleFileUpload($event, index)">
+                                    </label>
+                                    <template x-if="doc.error">
+                                        <p class="text-red-500 text-sm mt-1" x-text="doc.error"></p>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+
+                        <div class="flex gap-2">
+                            <button type="button" @click="addDocument()"
+                                    class="btn">
+                                <i data-lucide="plus" class="w-4 h-4 mr-1"></i>
+                                Add Another Document
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="flex items-center justify-between pt-6 border-t border-gray-200">
                     <a href="{{ route('admin.transactions.index') }}" class="btn-gray">
                         <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i>
@@ -124,3 +201,37 @@
         </div>
     </div>
 </x-app-layout>
+
+<script>
+function createDocsUpload() {
+    return {
+        documents: [
+            { name: '', notes: '', file: null, error: null }
+        ],
+        maxFileSize: 15 * 1024 * 1024,
+
+        addDocument() {
+            this.documents.push({ name: '', notes: '', file: null, error: null });
+        },
+
+        removeDocument(index) {
+            this.documents.splice(index, 1);
+        },
+
+        handleFileUpload(event, index) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            this.documents[index].error = null;
+
+            if (file.size > this.maxFileSize) {
+                this.documents[index].error = 'File size exceeds 15MB!';
+                event.target.value = '';
+                return;
+            }
+
+            this.documents[index].file = file;
+        }
+    }
+}
+</script>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Member;
 use App\Models\Transaction;
+use App\Models\TransactionDocument;
 use App\Services\TransactionService;
 use Illuminate\Http\Request;
 
@@ -22,7 +23,7 @@ class TransactionController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Transaction::with(['member.savingsAccount', 'createdBy', 'reversals']);
+        $query = Transaction::with(['member.savingsAccount', 'createdBy', 'reversals', 'documents']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -70,6 +71,26 @@ class TransactionController extends Controller
 
         try {
             $transaction = $service->create($validated);
+
+            $docs = $request->input('documents', []);
+            $docFiles = $request->file('documents', []);
+
+            foreach ($docs as $index => $doc) {
+                $file = $docFiles[$index]['file'] ?? null;
+
+                if (! $file || ! $file->isValid()) {
+                    continue;
+                }
+
+                $path = $file->store('transaction_documents');
+
+                TransactionDocument::create([
+                    'transaction_id' => $transaction->id,
+                    'name' => $doc['name'],
+                    'notes' => $doc['notes'] ?? null,
+                    'file_path' => $path,
+                ]);
+            }
 
             return redirect()
                 ->route('admin.transactions.index')

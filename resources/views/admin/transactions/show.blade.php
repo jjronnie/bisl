@@ -61,5 +61,6 @@
         </div>
     @endif
 
+    @include('admin.transactions.documents')
 
 </x-slide-form>

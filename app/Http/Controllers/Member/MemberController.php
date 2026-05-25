@@ -20,7 +20,7 @@ class MemberController extends Controller
         }
 
         // transactions from member
-        $transactions = $member->transactions()->latest()
+        $transactions = $member->transactions()->with('documents')->latest()
             ->paginate(20);
 
         return view('members.transactions', compact('transactions'));

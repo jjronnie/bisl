@@ -15,6 +15,7 @@ use App\Http\Controllers\LoanDocumentController;
 use App\Http\Controllers\Member\MemberController as Member;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\TransactionDocumentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -106,6 +107,17 @@ Route::middleware(['auth', 'verified', 'pwc', 'role:admin|superadmin'])
             'store',
             'show',
         ]);
+
+        Route::prefix('transactions/{transaction}')->group(function () {
+            Route::get('/documents', [TransactionDocumentController::class, 'index'])->name('transactions.documents');
+            Route::post('/documents', [TransactionDocumentController::class, 'store'])->name('transactions.documents.store');
+        });
+
+        Route::get('transaction-documents/{document}/download', [TransactionDocumentController::class, 'download'])->name('transaction-documents.download');
+
+        Route::delete('transaction-documents/{document}', [TransactionDocumentController::class, 'destroy'])
+            ->name('transaction-documents.destroy');
+
         Route::resource('transfers', TransferController::class);
 
         Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');

@@ -13,20 +13,22 @@
  <script>
     const preloader = document.getElementById('refreshPreloader');
 
-    // Show preloader before unload
+    preloader.classList.add('hidden');
+
     window.addEventListener('beforeunload', () => {
         preloader.classList.remove('hidden');
     });
 
-    // Hide preloader when coming back via history (back button, forward button)
+    window.addEventListener('load', () => {
+        preloader.classList.add('hidden');
+    });
+
     window.addEventListener('pageshow', (event) => {
-        // If restored from bfcache (browser cache), hide preloader
         if (event.persisted) {
             preloader.classList.add('hidden');
         }
     });
 
-    // Also handle popstate for SPA/PWA navigation
     window.addEventListener('popstate', () => {
         preloader.classList.add('hidden');
     });

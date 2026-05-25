@@ -112,7 +112,6 @@ class AdminController extends Controller
     {
         abort_unless(auth()->user()->hasRole('superadmin'), 403);
 
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($admin->id)],

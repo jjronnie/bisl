@@ -64,4 +64,9 @@ class Transaction extends Model
     {
         return $this->belongsTo(User::class, 'creator');
     }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(TransactionDocument::class);
+    }
 }
