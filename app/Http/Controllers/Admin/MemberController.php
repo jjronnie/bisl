@@ -44,7 +44,7 @@ class MemberController extends Controller
             $query->where('tier', $request->tier);
         }
 
-        $members = $query->latest()->paginate(20);
+        $members = $query->latest()->paginate(50);
 
         return view('admin.members.index', compact('members'));
     }
