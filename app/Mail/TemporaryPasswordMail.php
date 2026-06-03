@@ -8,14 +8,20 @@ use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class TemporaryPasswordMail extends Mailable
+class TemporaryPasswordMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     public $user;
 
     public $plainPassword;
+
+    /**
+     * Ensure the mailable is queued after DB commit when used inside transactions.
+     */
+    public bool $afterCommit = true;
 
     /**
      * Create a new message instance.

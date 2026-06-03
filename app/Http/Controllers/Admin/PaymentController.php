@@ -103,8 +103,8 @@ class PaymentController extends Controller
 
         // Check if a user record exists and has an email
         if ($recipient && $recipient->email) {
-            // Mail::send() sends the email immediately, as requested.
-            Mail::to($recipient->email)->send(new PaymentReceived($loan, $amountPaid));
+            // Queue the payment confirmation email to avoid blocking.
+            Mail::to($recipient->email)->queue(new PaymentReceived($loan, $amountPaid));
 
             // Send SMS notification
             SmsService::sendPaymentReceivedSms($loan, $amountPaid, $recipient);

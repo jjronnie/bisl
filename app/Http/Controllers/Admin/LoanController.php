@@ -193,8 +193,8 @@ class LoanController extends Controller
 
         // Check if a user record exists and has an email
         if ($recipient && $recipient->email) {
-            // Mail::send() sends the email immediately, as requested.
-            Mail::to($recipient->email)->send(new LoanStatusUpdate($loan));
+            // Queue the loan status update email to avoid blocking.
+            Mail::to($recipient->email)->queue(new LoanStatusUpdate($loan));
         }
     }
 

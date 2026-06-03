@@ -148,7 +148,7 @@ class MemberController extends Controller
                 $saccoAccount->operational += $validated['membership_fee'];
                 $saccoAccount->save();
 
-                Mail::to($user->email)->send(new TemporaryPasswordMail($user, $plainPassword));
+                Mail::to($user->email)->queue(new TemporaryPasswordMail($user, $plainPassword));
 
             });
         } catch (\Exception $e) {

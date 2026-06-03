@@ -74,7 +74,7 @@ class AdminController extends Controller
 
                 $user->syncRoles($validated['roles']);
 
-                Mail::to($user->email)->send(new AdminInviteMail($user, $plainPassword));
+                Mail::to($user->email)->queue(new AdminInviteMail($user, $plainPassword));
             });
         } catch (\Exception $e) {
             Log::error('User creation transaction failed: '.$e->getMessage());

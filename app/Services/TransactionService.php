@@ -92,7 +92,7 @@ class TransactionService
                     // Send email
                     if ($member->user->email) {
                         Mail::to($member->user->email)
-                            ->send(new TransactionAlert($transaction));
+                            ->queue(new TransactionAlert($transaction));
                     }
 
                     // Send SMS notification for deposits and withdrawals
@@ -180,7 +180,7 @@ class TransactionService
                 try {
                     if ($member->user->email) {
                         Mail::to($member->user->email)
-                            ->send(new TransactionAlert($reversalTransaction));
+                            ->queue(new TransactionAlert($reversalTransaction));
                     }
 
                     SmsService::sendTransactionAlertSms($reversalTransaction, $member->user);

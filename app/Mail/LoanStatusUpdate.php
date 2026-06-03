@@ -8,8 +8,9 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class LoanStatusUpdate extends Mailable
+class LoanStatusUpdate extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -19,6 +20,11 @@ class LoanStatusUpdate extends Mailable
      * @var Loan
      */
     public $loan;
+
+    /**
+     * Ensure the mailable is queued after DB commit when used inside transactions.
+     */
+    public bool $afterCommit = true;
 
     /**
      * Create a new message instance.
