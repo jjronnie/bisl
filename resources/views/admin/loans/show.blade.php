@@ -117,7 +117,7 @@
         'Interest', 
         'Penalty', 
         'Ending Balance', 
-        'Payment Status'
+        'Payment Status',
     ]" showActions="false">
 
                   @forelse ($loan->installments as $installment)
@@ -141,10 +141,66 @@
                                     {{ ucfirst($installment->status) }}
                               </span>
                         </x-table.cell>
+                        <x-table.cell>
+                              <x-slide-form button-icon="eye" button-text="View" title="Installment #{{ $installment->installment_number }} Details">
+                                    <div class="space-y-4 text-sm text-gray-700">
+                                          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                <div>
+                                                      <span class="font-semibold">Installment #</span>
+                                                      <p>{{ $installment->installment_number }}</p>
+                                                </div>
+                                                <div>
+                                                      <span class="font-semibold">Due Date</span>
+                                                      <p>{{ $installment->due_date->format('Y-m-d') }}</p>
+                                                </div>
+                                                <div>
+                                                      <span class="font-semibold">Starting Balance</span>
+                                                      <p>UGX {{ number_format($installment->starting_balance, 2) }}</p>
+                                                </div>
+                                                <div>
+                                                      <span class="font-semibold">Monthly Installment</span>
+                                                      <p>UGX {{ number_format($installment->total_amount, 2) }}</p>
+                                                </div>
+                                                <div>
+                                                      <span class="font-semibold">Principal</span>
+                                                      <p>UGX {{ number_format($installment->principal_amount, 2) }}</p>
+                                                </div>
+                                                <div>
+                                                      <span class="font-semibold">Interest</span>
+                                                      <p>UGX {{ number_format($installment->interest_amount, 2) }}</p>
+                                                </div>
+                                                <div>
+                                                      <span class="font-semibold">Penalty</span>
+                                                      <p>UGX {{ number_format($installment->penalty_amount, 2) }}</p>
+                                                </div>
+                                                <div>
+                                                      <span class="font-semibold">Ending Balance</span>
+                                                      <p>UGX {{ number_format($installment->ending_balance, 2) }}</p>
+                                                </div>
+                                          </div>
+
+                                          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+                                                <div>
+                                                      <span class="font-semibold">Status</span>
+                                                      <p>{{ ucfirst($installment->status) }}</p>
+                                                </div>
+                                                <div>
+                                                      <span class="font-semibold">Paid At</span>
+                                                      <p>{{ $installment->paid_at ? $installment->paid_at->format('Y-m-d H:i:s') : 'N/A' }}</p>
+                                                </div>
+                                          </div>
+
+                                          <div class="pt-4 border-t border-gray-200 text-xs text-gray-500">
+                                                <p><strong>Created:</strong> {{ $installment->created_at->format('Y-m-d H:i:s') }}</p>
+                                                <p><strong>Last updated:</strong> {{ $installment->updated_at->format('Y-m-d H:i:s') }}</p>
+                                          </div>
+                                    </div>
+                              </x-slide-form>
+                        </x-table.cell>
                   </x-table.row>
                   @empty
                   <x-table.row>
-                        <x-table.cell colspan="9" class="text-center">No installment schedule found.</x-table.cell>
+                        <x-table.cell colspan="10" class="text-center">No installment schedule found.</x-table.cell>
                   </x-table.row>
                   @endforelse
             </x-table>
