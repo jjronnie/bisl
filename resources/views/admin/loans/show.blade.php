@@ -128,7 +128,7 @@
                         </span>
                     </x-table.cell>
                     <x-table.cell>
-                        <x-slide-form button-icon="eye" button-text="View"
+                        <x-slide-form button-icon="eye"
                             title="Installment #{{ $installment->installment_number }} Details">
                             <div class="space-y-4 text-sm text-gray-700">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
