@@ -29,11 +29,6 @@ class PaymentReceived extends Mailable implements ShouldQueue
     public $amountPaid;
 
     /**
-     * Ensure the mailable is queued after DB commit when used inside transactions.
-     */
-    public bool $afterCommit = true;
-
-    /**
      * Create a new message instance.
      */
     public function __construct(Loan $loan, float $amountPaid)
@@ -42,6 +37,7 @@ class PaymentReceived extends Mailable implements ShouldQueue
         $loan->loadMissing('member.user');
         $this->loan = $loan;
         $this->amountPaid = $amountPaid;
+        $this->afterCommit();
     }
 
     /**

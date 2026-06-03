@@ -16,16 +16,12 @@ class TransactionAlert extends Mailable implements ShouldQueue
 
     public $transaction;
 
-    /**
-     * Ensure the mailable is queued after DB commit when used inside transactions.
-     */
-    public bool $afterCommit = true;
-
     public function __construct(Transaction $transaction)
     {
         // We assume the transaction has a 'member' relationship loaded
         // or we will load it in the view.
         $this->transaction = $transaction;
+        $this->afterCommit();
     }
 
     public function envelope(): Envelope
