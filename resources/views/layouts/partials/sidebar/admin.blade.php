@@ -2,7 +2,7 @@
     id="sidebar">
     <!-- Sidebar Header -->
 
-    <div class="sidebar-header p-4 border-b border-blue-900">
+    <div class="sidebar-header p-4 ">
 
 
         <div class="flex items-center space-x-3">
@@ -32,6 +32,11 @@
     <div class="flex-1 overflow-y-auto no-scrollbar">
         <nav class="p-4 space-y-1">
             {{-- Dashboard --}}
+
+             <div class="flex items-center gap-3 my-4">
+                        <span class="text-xs uppercase tracking-wider text-blue-300 font-semibold whitespace-nowrap">Sacco MGT</span>
+                        <hr class="border-blue-800 flex-1">
+                    </div>
 
             {{-- Dashboard --}}
             <a href="{{ route('admin.dashboard') }}"
@@ -102,6 +107,93 @@
                 </a>
 
                 @role('superadmin')
+                    <div class="flex items-center gap-3 my-4">
+                        <span
+                            class="text-xs uppercase tracking-wider text-blue-300 font-semibold whitespace-nowrap">Payroll</span>
+                        <hr class="border-blue-800 flex-1">
+                    </div>
+
+                    <a href="{{ route('admin.payroll.dashboard') }}"
+                        class="sidebar-link {{ request()->routeIs('admin.payroll.dashboard') ? 'sidebar-link-active' : '' }}">
+                        <i data-lucide="wallet" class="w-4 h-4"></i>
+                        <span>Payroll Dashboard</span>
+                    </a>
+                    <a href="{{ route('admin.payroll.profiles.index') }}"
+                        class="sidebar-link {{ request()->routeIs('admin.payroll.profiles.*') ? 'sidebar-link-active' : '' }}">
+                        <i data-lucide="id-card" class="w-4 h-4"></i>
+                        <span>Employee Profiles</span>
+                    </a>
+                    <a href="{{ route('admin.payroll.periods.index') }}"
+                        class="sidebar-link {{ request()->routeIs('admin.payroll.periods.*') ? 'sidebar-link-active' : '' }}">
+                        <i data-lucide="calendar" class="w-4 h-4"></i>
+                        <span>Salary Processing</span>
+                    </a>
+                    <a href="{{ route('admin.payroll.runs.index') }}"
+                        class="sidebar-link {{ request()->routeIs('admin.payroll.runs.*') ? 'sidebar-link-active' : '' }}">
+                        <i data-lucide="clock" class="w-4 h-4"></i>
+                        <span>Salary History</span>
+                    </a>
+
+                    <div x-data="{ open: {{ request()->routeIs('admin.payroll.ledgers.*') ? 'true' : 'false' }} }" class="space-y-1">
+                        <button @click="open = !open"
+                            class="sidebar-link w-full text-left flex items-center justify-between">
+                            <span class="flex items-center gap-2">
+                                <i data-lucide="book-open" class="w-4 h-4"></i>
+                                <span>Ledgers</span>
+                            </span>
+                            <i data-lucide="chevron-down" class="w-3 h-3 transition-transform"
+                                :class="open ? 'rotate-0' : '-rotate-90'"></i>
+                        </button>
+                        <div x-show="open" class="ml-4 space-y-1">
+                            <a href="{{ route('admin.payroll.ledgers.tax') }}"
+                                class="sidebar-link {{ request()->routeIs('admin.payroll.ledgers.tax*') ? 'sidebar-link-active' : '' }}">
+                                <span>Tax Ledger</span>
+                            </a>
+                            <a href="{{ route('admin.payroll.ledgers.nssf') }}"
+                                class="sidebar-link {{ request()->routeIs('admin.payroll.ledgers.nssf*') ? 'sidebar-link-active' : '' }}">
+                                <span>NSSF Ledger</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div x-data="{ open: {{ request()->routeIs('admin.payroll.settings.*') ? 'true' : 'false' }} }" class="space-y-1">
+                        <button @click="open = !open"
+                            class="sidebar-link w-full text-left flex items-center justify-between">
+                            <span class="flex items-center gap-2">
+                                <i data-lucide="settings" class="w-4 h-4"></i>
+                                <span>Settings</span>
+                            </span>
+                            <i data-lucide="chevron-down" class="w-3 h-3 transition-transform"
+                                :class="open ? 'rotate-0' : '-rotate-90'"></i>
+                        </button>
+                        <div x-show="open" class="ml-4 space-y-1">
+                            <a href="{{ route('admin.payroll.settings.index') }}"
+                                class="sidebar-link {{ request()->routeIs('admin.payroll.settings.index') ? 'sidebar-link-active' : '' }}">
+                                <span>General Settings</span>
+                            </a>
+                            <a href="{{ route('admin.payroll.grades.index') }}"
+                                class="sidebar-link {{ request()->routeIs('admin.payroll.grades.*') ? 'sidebar-link-active' : '' }}">
+                                <span>Salary Grades</span>
+                            </a>
+                            <a href="{{ route('admin.payroll.settings.tax-brackets') }}"
+                                class="sidebar-link {{ request()->routeIs('admin.payroll.settings.tax-brackets*') ? 'sidebar-link-active' : '' }}">
+                                <span>Tax Brackets</span>
+                            </a>
+                            <a href="{{ route('admin.payroll.settings.allowance-types') }}"
+                                class="sidebar-link {{ request()->routeIs('admin.payroll.settings.allowance-types*') ? 'sidebar-link-active' : '' }}">
+                                <span>Allowance Types</span>
+                            </a>
+                        </div>
+                    </div>
+                @endrole
+
+                @role('superadmin')
+                    <div class="flex items-center gap-3 my-4">
+                        <span
+                            class="text-xs uppercase tracking-wider text-blue-300 font-semibold whitespace-nowrap">SMS</span>
+                        <hr class="border-blue-800 flex-1">
+                    </div>
+
                     <a href="{{ route('admin.sms-settings.index') }}"
                         class="sidebar-link {{ request()->routeIs('admin.sms-settings.*') ? 'sidebar-link-active' : '' }}">
 
@@ -124,6 +216,11 @@
                     </a>
                 @endrole
 
+                 <div class="flex items-center gap-3 my-4">
+                        <span class="text-xs uppercase tracking-wider text-blue-300 font-semibold whitespace-nowrap">Admin</span>
+                        <hr class="border-blue-800 flex-1">
+                    </div>
+
                 <a href="{{ route('admin.admins.index') }}"
                     class="sidebar-link {{ request()->routeIs('admin.admins.*') ? 'sidebar-link-active' : '' }}">
 
@@ -138,7 +235,8 @@
                         @csrf
                     </form>
 
-                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                    <a href="#"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                         class="flex items-center space-x-3 bg-blue-700 hover:bg-blue-800 text-white rounded-lg px-3 py-2 transition-colors no-underline">
 
                         <i data-lucide="log-out" class="w-4 h-4 text-white"></i>

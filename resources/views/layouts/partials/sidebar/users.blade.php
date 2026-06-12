@@ -50,6 +50,14 @@
                 <span>Profile</span>
             </a>
 
+            @if (auth()->user()->member?->payrollProfile)
+                <a href="{{ route('member.payroll') }}"
+                    class="sidebar-link {{ request()->routeIs('member.payroll') ? 'sidebar-link-active' : '' }}">
+                    <i data-lucide="wallet" class="w-4 h-4 "></i>
+                    <span>Payroll</span>
+                </a>
+            @endif
+
         </nav>
 
         <!-- Sidebar Footer -->
@@ -95,6 +103,15 @@
             <span class="text-xs font-medium mt-1">Loans</span>
         </a>
 
+          @if (auth()->user()->member?->payrollProfile)
+            <a href="{{ route('member.payroll') }}"
+                class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
+       {{ request()->routeIs('member.payroll') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
+                <i data-lucide="wallet" class="w-5 h-5"></i>
+                <span class="text-xs font-medium mt-1">Payroll</span>
+            </a>
+        @endif
+
         <a href="{{ route('profile.edit') }}"
             class="flex flex-col items-center justify-center w-full p-2 transition-colors duration-200
    {{ request()->routeIs('profile.*') ? 'text-blue-800' : 'text-gray-500 hover:text-blue-700' }}">
@@ -102,9 +119,7 @@
             <span class="text-xs font-medium mt-1">Profile</span>
         </a>
 
-
-
-
+      
 
     </div>
 </nav>

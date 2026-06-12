@@ -152,4 +152,41 @@ class SmsService
             return null;
         }
     }
+
+    /**
+     * Send SMS when salary is dispatched to employee's salary account
+     */
+    public static function sendSalaryDispatchSms(User $user, string $periodLabel, string $phoneNumber): ?SmsLog
+    {
+        if (! SmsSetting::isEnabled('salary')) {
+            return null;
+        }
+
+        try {
+            $firstName = explode(' ', $user->name)[0] ?? 'Member';
+            $message = "Dear {$firstName}, your {$periodLabel} salary is ready. Please login to your account to see your balances.";
+
+            $log = SmsLog::create([
+                'phone_number' => PhoneHelper::normalize($phoneNumber),
+                'message' => $message,
+                'notification_type' => 'salary_dispatched',
+                'recipient_id' => $user->id,
+                'status' => 'pending',
+            ]);
+
+            dispatch(new SendSmsJob(
+                $phoneNumber,
+                $message,
+                'salary_dispatched',
+                (string) $user->id,
+                $log->id
+            ));
+
+            return $log;
+        } catch (\Exception $e) {
+            Log::error('Failed to send salary dispatch SMS', ['error' => $e->getMessage()]);
+
+            return null;
+        }
+    }
 }

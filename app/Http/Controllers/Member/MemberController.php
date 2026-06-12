@@ -61,6 +61,28 @@ class MemberController extends Controller
         ));
     }
 
+    public function payroll()
+    {
+        $member = auth()->user()->member;
+
+        if (! $member) {
+            abort(404, 'Member account not found');
+        }
+
+        $profile = $member->payrollProfile;
+
+        if (! $profile) {
+            abort(404, 'Payroll profile not found');
+        }
+
+        $runs = $profile->payrollRuns()
+            ->with('payrollPeriod')
+            ->latest()
+            ->paginate(20);
+
+        return view('members.payroll', compact('runs', 'profile'));
+    }
+
     /**
      * Store a newly created resource in storage.
      */

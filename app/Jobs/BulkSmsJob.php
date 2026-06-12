@@ -18,7 +18,9 @@ class BulkSmsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 1;
+    public $tries = 3;
+
+    public $backoff = [60, 120, 300];
 
     public $timeout = 300;
 
@@ -64,12 +66,15 @@ class BulkSmsJob implements ShouldQueue
             return;
         }
 
+        $smsIndex = 0;
+
         foreach ($validRecipients as $member) {
             if ($campaign->status === 'cancelled') {
                 break;
             }
 
-            $this->sendIndividualSms($campaign, $member);
+            $this->sendIndividualSms($campaign, $member, $smsIndex);
+            $smsIndex++;
         }
 
         $this->updateCampaignStatus($campaign);
@@ -98,7 +103,7 @@ class BulkSmsJob implements ShouldQueue
         return $recipients;
     }
 
-    protected function sendIndividualSms(BulkSmsCampaign $campaign, Member $member): void
+    protected function sendIndividualSms(BulkSmsCampaign $campaign, Member $member, int $index): void
     {
         $phoneNumber = PhoneHelper::normalize($member->phone1);
         $recipientId = $member->user_id ?? $member->id;
@@ -122,7 +127,7 @@ class BulkSmsJob implements ShouldQueue
                 $log->id
             );
 
-            dispatch($sendSmsJob);
+            dispatch($sendSmsJob)->delay(now()->addSeconds($index * 6));
 
             Log::info('Bulk SMS dispatched for recipient', [
                 'campaign_id' => $campaign->id,
@@ -132,7 +137,7 @@ class BulkSmsJob implements ShouldQueue
         } catch (\Exception $e) {
             $log->update([
                 'status' => 'failed',
-                'error_message' => $e->getMessage(),
+                'error_message' => mb_substr($e->getMessage(), 0, 500),
             ]);
 
             Log::error('Failed to dispatch bulk SMS', [

@@ -27,6 +27,7 @@ class SmsSettingController extends Controller
             'payment_notifications_enabled' => 'nullable|boolean',
             'loan_status_notifications_enabled' => 'nullable|boolean',
             'transaction_alerts_enabled' => 'nullable|boolean',
+            'send_salary_sms' => 'nullable|boolean',
         ]);
 
         // Convert null to false for checkboxes
@@ -34,6 +35,7 @@ class SmsSettingController extends Controller
             'payment_notifications_enabled' => $request->has('payment_notifications_enabled'),
             'loan_status_notifications_enabled' => $request->has('loan_status_notifications_enabled'),
             'transaction_alerts_enabled' => $request->has('transaction_alerts_enabled'),
+            'send_salary_sms' => $request->has('send_salary_sms'),
         ];
 
         SmsSetting::getInstance()->update($data);

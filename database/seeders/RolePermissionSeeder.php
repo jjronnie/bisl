@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -20,6 +21,14 @@ class RolePermissionSeeder extends Seeder
         $superadminRole = Role::firstOrCreate(['name' => 'superadmin']);
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $userRole = Role::firstOrCreate(['name' => 'user']);
+
+        $payrollView = Permission::firstOrCreate(['name' => 'payroll.view']);
+        $payrollManage = Permission::firstOrCreate(['name' => 'payroll.manage']);
+
+        $superadminRole->givePermissionTo($payrollView);
+        $superadminRole->givePermissionTo($payrollManage);
+        $adminRole->givePermissionTo($payrollView);
+        $adminRole->givePermissionTo($payrollManage);
 
         $superAdmin = User::updateOrCreate(
             ['email' => 'ronaldjjuuko7@gmail.com'],

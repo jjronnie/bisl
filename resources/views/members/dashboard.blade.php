@@ -5,13 +5,14 @@
 
 
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <!-- card -->
         <x-stat-card title="Loan Protection Fund" value="UGX {{ number_format($loanProtection) }}" icon="shield" />
         <x-stat-card title=" Accessible Balance" value="UGX {{ number_format($accessible) }}" icon="dollar-sign" />
         <x-stat-card title="Interest Earned" value="{{ number_format($member->savingsAccount->interest_earned) }}" icon="percent" />
-        {{-- <x-stat-card title="Outstanding Loan" value="" icon="clipboard-clock" /> --}}
-
+        @if ($member->payrollProfile)
+            <x-stat-card title="Salary Account" value="UGX {{ number_format($salaryBalance) }}" icon="wallet" />
+        @endif
     </div>
 
 

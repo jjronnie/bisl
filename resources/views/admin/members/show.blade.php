@@ -38,15 +38,14 @@
         </div>
 
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-            <!-- card -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
             <x-stat-card title="Savings Account" value="UGX {{ number_format($balance) }}" icon="coins" />
             <x-stat-card title="Loan Protection Fund" value="UGX {{ number_format($loanProtection) }}" icon="shield" />
             <x-stat-card title="Accessible Balance" value="UGX {{ number_format($accessible) }}" icon="dollar-sign" />
-            <x-stat-card title="Accumulated Interest "
-                value="{{ number_format( $member->savingsAccount->interest_earned) }}" icon="percent" />
-
-
+            <x-stat-card title="Accumulated Interest" value="{{ number_format($member->savingsAccount->interest_earned) }}" icon="percent" />
+            @if ($member->payrollProfile)
+                <x-stat-card title="Salary Account" value="UGX {{ number_format($salaryBalance) }}" icon="wallet" />
+            @endif
         </div>
 
 
@@ -137,12 +136,16 @@
                             number_format($accessible ?? 'N/A') }}</dd>
                     </div>
 
-
-
-
-
-
-
+                    @if ($member->payrollProfile)
+                        <div class="flex justify-between py-2 border-b border-gray-100">
+                            <dt class="text-sm font-medium text-gray-600">Monthly Salary</dt>
+                            <dd class="text-sm text-gray-900 font-mono">UGX {{ number_format($monthlySalary) }}</dd>
+                        </div>
+                        <div class="flex justify-between py-2 border-b border-gray-100">
+                            <dt class="text-sm font-medium text-gray-600">Salary Balance</dt>
+                            <dd class="text-sm text-gray-900 font-mono">UGX {{ number_format($salaryBalance) }}</dd>
+                        </div>
+                    @endif
                 </dl>
             </div>
 
@@ -182,6 +185,45 @@
                 </dl>
             </div>
         </div>
+
+        {{-- Salary Transaction History --}}
+        @if ($member->payrollProfile && $salaryTransactions->isNotEmpty())
+            <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <i data-lucide="wallet" class="w-5 h-5 text-blue-500"></i>
+                        Salary Account Activity
+                    </h2>
+                    <a href="{{ route('admin.transactions.index', ['account' => 'salary', 'member_id' => $member->id]) }}" class="text-sm text-indigo-600 hover:text-indigo-800">
+                        View all →
+                    </a>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-gray-200 text-left text-gray-500">
+                                <th class="pb-2 pr-4 font-medium">Date</th>
+                                <th class="pb-2 pr-4 font-medium">Type</th>
+                                <th class="pb-2 pr-4 font-medium text-right">Amount</th>
+                                <th class="pb-2 font-medium">Method</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($salaryTransactions as $txn)
+                                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                    <td class="py-2 pr-4 whitespace-nowrap">{{ $txn->created_at->format('d M Y H:i') }}</td>
+                                    <td class="py-2 pr-4">
+                                        <x-status-badge :status="ucfirst($txn->transaction_type)" />
+                                    </td>
+                                    <td class="py-2 pr-4 text-right font-mono">UGX {{ number_format($txn->amount) }}</td>
+                                    <td class="py-2 capitalize">{{ $txn->method ?? 'N/A' }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
 
         {{-- Action Buttons --}}
         <div class="flex flex-col sm:flex-row gap-3 justify-between bg-white rounded-xl shadow-md mb-6 p-6">

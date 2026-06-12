@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Member;
+use App\Models\SavingsAccount;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -28,5 +29,16 @@ class MemberFactory extends Factory
             'marital_status' => fake()->randomElement(['single', 'married', 'divorced', 'widowed']),
             'date_of_birth' => fake()->dateTimeBetween('-60 years', '-18 years'),
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Member $member) {
+            if (! $member->relationLoaded('savingsAccount') || ! $member->savingsAccount) {
+                SavingsAccount::factory()->create([
+                    'member_id' => $member->id,
+                ]);
+            }
+        });
     }
 }

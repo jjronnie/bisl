@@ -62,4 +62,14 @@ class Member extends Model
     {
         return $this->hasMany(Loan::class);
     }
+
+    public function payrollProfile()
+    {
+        return $this->hasOne(PayrollProfile::class);
+    }
+
+    public function salaryAccount()
+    {
+        return $this->hasOne(SalaryAccount::class);
+    }
 }

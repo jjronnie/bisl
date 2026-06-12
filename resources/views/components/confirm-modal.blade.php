@@ -4,7 +4,7 @@
     'warning' => 'Are you sure you want to proceed?',
     'triggerText' => '',
     'triggerIcon' => '',
-    'triggerClass' => 'btn-danger',
+    'triggerClass' => 'btn',
     'method' => 'DELETE',
     'title' => '',
     'buttonClass' => 'bg-green-600 hover:bg-green-700 focus:ring-green-500',

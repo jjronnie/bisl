@@ -4,11 +4,11 @@ namespace App\Mail;
 
 use App\Models\Loan; // Assuming your model is App\Models\Loan
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class PaymentReceived extends Mailable implements ShouldQueue
 {

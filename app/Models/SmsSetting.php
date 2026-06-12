@@ -10,12 +10,14 @@ class SmsSetting extends Model
         'payment_notifications_enabled',
         'loan_status_notifications_enabled',
         'transaction_alerts_enabled',
+        'send_salary_sms',
     ];
 
     protected $casts = [
         'payment_notifications_enabled' => 'boolean',
         'loan_status_notifications_enabled' => 'boolean',
         'transaction_alerts_enabled' => 'boolean',
+        'send_salary_sms' => 'boolean',
     ];
 
     /**
@@ -37,6 +39,7 @@ class SmsSetting extends Model
             'payment' => $settings->payment_notifications_enabled,
             'loan_status' => $settings->loan_status_notifications_enabled,
             'transaction' => $settings->transaction_alerts_enabled,
+            'salary' => $settings->send_salary_sms,
             default => false,
         };
     }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\ApplyOverduePenaltiesJob;
 use App\Jobs\CalculateMonthlyInterestJob;
 use App\Jobs\SendLoanRemindersJob;
 use Illuminate\Foundation\Inspiring;
@@ -22,5 +23,13 @@ Schedule::job(new SendLoanRemindersJob)
     ->dailyAt('10:00')
     ->timezone('Africa/Kampala')
     ->name('send-loan-reminders')
+    ->onOneServer()
+    ->withoutOverlapping();
+
+// Apply penalties on overdue installments every day at 1 AM Kampala time
+Schedule::job(new ApplyOverduePenaltiesJob)
+    ->dailyAt('01:00')
+    ->timezone('Africa/Kampala')
+    ->name('apply-overdue-penalties')
     ->onOneServer()
     ->withoutOverlapping();

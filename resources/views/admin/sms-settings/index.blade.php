@@ -47,6 +47,17 @@
                                 withdrawals, etc.)</p>
                         </div>
                     </label>
+
+                    <label
+                        class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" name="send_salary_sms" value="1"
+                            {{ $smsSettings->send_salary_sms ? 'checked' : '' }}
+                            class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200" />
+                        <div class="ml-3">
+                            <span class="font-medium text-gray-900">Salary Dispatch SMS</span>
+                            <p class="text-xs text-gray-500 mt-1">Send SMS to employees when salary is successfully dispatched</p>
+                        </div>
+                    </label>
                 </div>
 
                 <div class="mt-6 flex gap-3">

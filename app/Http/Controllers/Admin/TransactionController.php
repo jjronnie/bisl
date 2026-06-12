@@ -18,9 +18,6 @@ class TransactionController extends Controller
         $this->transactionService = $transactionService;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $query = Transaction::with(['member.savingsAccount', 'createdBy', 'reversals', 'documents']);
@@ -46,10 +43,45 @@ class TransactionController extends Controller
 
     public function create()
     {
-        $members = Member::with('savingsAccount')
+        $members = Member::with('savingsAccount', 'salaryAccount')
             ->whereNull('deleted_at')
             ->orderBy('name')
-            ->get();
+            ->get()
+            ->map(function ($member) {
+                return [
+                    'id' => $member->id,
+                    'name' => $member->name,
+                    'account_number' => $member->savingsAccount?->account_number,
+                    'accounts' => collect([
+                        [
+                            'key' => 'savings',
+                            'label' => 'Savings',
+                            'balance' => (float) ($member->savingsAccount?->balance ?? 0),
+                            'allowed_types' => ['deposit', 'withdrawal'],
+                            'icon' => 'coins',
+                            'description' => 'Deposit or withdraw savings',
+                        ],
+                        [
+                            'key' => 'loan_protection_fund',
+                            'label' => 'Loan Protection Fund',
+                            'balance' => (float) ($member->savingsAccount?->loan_protection_fund ?? 0),
+                            'allowed_types' => ['deposit'],
+                            'icon' => 'shield',
+                            'description' => 'Deposit only',
+                        ],
+                        ...($member->salaryAccount ? [
+                            [
+                                'key' => 'salary',
+                                'label' => 'Salary Account',
+                                'balance' => (float) $member->salaryAccount->balance,
+                                'allowed_types' => ['withdrawal'],
+                                'icon' => 'wallet',
+                                'description' => 'Withdraw earned salary',
+                            ],
+                        ] : []),
+                    ]),
+                ];
+            });
 
         return view('admin.transactions.create', compact('members'));
     }
@@ -61,13 +93,35 @@ class TransactionController extends Controller
         ]);
 
         $validated = $request->validate([
-            'member_id' => 'required|exists:members,id',
-            'transaction_type' => 'required|in:deposit,withdrawal',
-            'account' => 'required',
-            'amount' => 'required|numeric|min:1',
-            'method' => 'nullable|string',
-            'remarks' => 'nullable|string',
+            'member_id' => ['required', 'exists:members,id'],
+            'account' => ['required', 'in:savings,loan_protection_fund,salary'],
+            'transaction_type' => ['required', 'in:deposit,withdrawal'],
+            'amount' => ['required', 'numeric', 'min:1'],
+            'method' => ['nullable', 'string'],
+            'remarks' => ['nullable', 'string'],
         ]);
+
+        $member = Member::with('savingsAccount', 'salaryAccount')->find($validated['member_id']);
+
+        if (! $member) {
+            return back()->withInput()->withErrors(['member_id' => 'Member not found.']);
+        }
+
+        if ($validated['account'] === 'salary' && ! $member->salaryAccount) {
+            return back()->withInput()->withErrors(['account' => 'This member does not have a salary account.']);
+        }
+
+        if ($validated['account'] === 'loan_protection_fund' && $validated['transaction_type'] === 'withdrawal') {
+            return back()->withInput()->withErrors([
+                'transaction_type' => 'Withdrawals are not allowed from Loan Protection Fund.',
+            ]);
+        }
+
+        if ($validated['account'] === 'salary' && $validated['transaction_type'] === 'deposit') {
+            return back()->withInput()->withErrors([
+                'transaction_type' => 'Deposits are not allowed to Salary Account. Salary is deposited automatically via payroll.',
+            ]);
+        }
 
         try {
             $transaction = $service->create($validated);
@@ -99,7 +153,7 @@ class TransactionController extends Controller
             return redirect()
                 ->back()
                 ->withInput()
-                ->withErrors($e->getMessage());
+                ->withErrors([$e->getMessage()]);
         }
     }
 
@@ -108,9 +162,6 @@ class TransactionController extends Controller
         return redirect()->route('admin.transactions.index');
     }
 
-    /**
-     * Reverse a deposit transaction.
-     */
     public function reverse(Request $request, Transaction $transaction, TransactionService $service)
     {
         $validated = $request->validate([
@@ -126,7 +177,7 @@ class TransactionController extends Controller
         } catch (\Exception $e) {
             return redirect()
                 ->back()
-                ->withErrors($e->getMessage());
+                ->withErrors([$e->getMessage()]);
         }
     }
 }

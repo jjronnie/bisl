@@ -40,6 +40,8 @@ class DashboardController extends Controller
             abort(404, 'Member account not found');
         }
 
+        $member->loadMissing('salaryAccount', 'payrollProfile.payrollGrade');
+
         $savingsAccount = $member->savingsAccount;
 
         // balance from savings account
@@ -49,11 +51,13 @@ class DashboardController extends Controller
         // accessible amount
         $accessible = $savingsAccount?->balance ?? 0;
 
+        $salaryBalance = $member->salaryAccount?->balance ?? 0;
+
         $transactions = $member->transactions()->latest()
             ->take(5)
             ->get();
 
-        return view('members.dashboard', compact('balance', 'transactions', 'member', 'accessible', 'loanProtection'));
+        return view('members.dashboard', compact('balance', 'transactions', 'member', 'accessible', 'loanProtection', 'salaryBalance'));
     }
 
     public function adminDashboard()

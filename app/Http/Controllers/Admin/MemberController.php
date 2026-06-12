@@ -175,17 +175,27 @@ class MemberController extends Controller
      */
     public function show(Member $member)
     {
+        $member->loadMissing('savingsAccount', 'salaryAccount', 'payrollProfile.payrollGrade');
 
         $savingsAccount = $member->savingsAccount;
 
-        // balance from savings account
         $balance = $savingsAccount?->balance ?? 0;
         $loanProtection = $savingsAccount?->loan_protection_fund ?? 0;
 
-        // accessible amount
         $accessible = $balance;
 
-        return view('admin.members.show', compact('member', 'balance', 'loanProtection', 'accessible'));
+        $salaryBalance = $member->salaryAccount?->balance ?? 0;
+        $monthlySalary = $member->payrollProfile?->payrollGrade?->monthly_basic_salary ?? 0;
+
+        $salaryTransactions = $member->transactions()
+            ->where('account', 'salary')
+            ->latest()
+            ->take(10)
+            ->get();
+
+        return view('admin.members.show', compact(
+            'member', 'balance', 'loanProtection', 'accessible', 'salaryBalance', 'monthlySalary', 'salaryTransactions',
+        ));
     }
 
     public function transactions(Member $member)

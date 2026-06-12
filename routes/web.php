@@ -1,10 +1,20 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AllowanceTypeController;
 use App\Http\Controllers\Admin\BulkSmsController;
 use App\Http\Controllers\Admin\LoanController;
 use App\Http\Controllers\Admin\MemberController;
+use App\Http\Controllers\Admin\PayableAccountController;
 use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\PayrollAttendanceController;
+use App\Http\Controllers\Admin\PayrollDashboardController;
+use App\Http\Controllers\Admin\PayrollGradeController;
+use App\Http\Controllers\Admin\PayrollPeriodController;
+use App\Http\Controllers\Admin\PayrollProfileController;
+use App\Http\Controllers\Admin\PayrollRunController;
+use App\Http\Controllers\Admin\PayrollSettingController;
+use App\Http\Controllers\Admin\PayrollTaxBracketController;
 use App\Http\Controllers\Admin\SmsLogController;
 use App\Http\Controllers\Admin\SmsSettingController;
 use App\Http\Controllers\Admin\TransactionController;
@@ -122,6 +132,44 @@ Route::middleware(['auth', 'verified', 'pwc', 'role:admin|superadmin'])
 
         Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
 
+        // Payroll Module
+        Route::middleware('role:superadmin')->prefix('payroll')->name('payroll.')->group(function () {
+            Route::resource('grades', PayrollGradeController::class);
+            Route::resource('profiles', PayrollProfileController::class);
+            Route::resource('periods', PayrollPeriodController::class);
+            Route::post('/periods/{period}/generate', [PayrollPeriodController::class, 'generate'])->name('periods.generate');
+            Route::post('/periods/{period}/regenerate', [PayrollPeriodController::class, 'regenerate'])->name('periods.regenerate');
+            Route::post('/periods/{period}/dispatch', [PayrollPeriodController::class, 'dispatch'])->name('periods.dispatch');
+
+            // Route::post('/periods/{period}/cancel', [PayrollPeriodController::class, 'cancel'])->name('periods.cancel');
+            Route::resource('attendance', PayrollAttendanceController::class)->only(['index', 'store']);
+            Route::resource('salary-history', PayrollRunController::class)->parameters(['salary-history' => 'run'])->only(['index', 'show'])->names('runs');
+
+            // Payroll Dashboard
+            Route::get('/dashboard', [PayrollDashboardController::class, 'index'])->name('dashboard');
+
+            // Payroll Settings
+            Route::prefix('settings')->name('settings.')->group(function () {
+                Route::get('/', [PayrollSettingController::class, 'index'])->name('index');
+                Route::put('/', [PayrollSettingController::class, 'update'])->name('update');
+                Route::get('/tax-brackets', [PayrollTaxBracketController::class, 'index'])->name('tax-brackets');
+                Route::post('/tax-brackets', [PayrollTaxBracketController::class, 'store'])->name('tax-brackets.store');
+                Route::put('/tax-brackets/{taxBracket}', [PayrollTaxBracketController::class, 'update'])->name('tax-brackets.update');
+                Route::delete('/tax-brackets/{taxBracket}', [PayrollTaxBracketController::class, 'destroy'])->name('tax-brackets.destroy');
+                Route::get('/allowance-types', [AllowanceTypeController::class, 'index'])->name('allowance-types');
+                Route::post('/allowance-types', [AllowanceTypeController::class, 'store'])->name('allowance-types.store');
+                Route::put('/allowance-types/{allowanceType}', [AllowanceTypeController::class, 'update'])->name('allowance-types.update');
+                Route::delete('/allowance-types/{allowanceType}', [AllowanceTypeController::class, 'destroy'])->name('allowance-types.destroy');
+            });
+
+            // Payroll Ledgers (aggregated payable accounts)
+            Route::prefix('ledgers')->name('ledgers.')->group(function () {
+                Route::get('/tax', [PayableAccountController::class, 'tax'])->name('tax');
+                Route::get('/nssf', [PayableAccountController::class, 'nssf'])->name('nssf');
+                Route::post('/{account}/withdraw', [PayableAccountController::class, 'withdraw'])->name('withdraw');
+            });
+        });
+
     });
 
 Route::middleware(['auth', 'verified', 'pwc', 'role:user'])->group(function () {
@@ -129,6 +177,7 @@ Route::middleware(['auth', 'verified', 'pwc', 'role:user'])->group(function () {
     Route::get('/transactions', [Member::class, 'index'])->name('member.transactions');
     Route::get('/notifications', [Member::class, 'notifications'])->name('member.notifications');
     Route::get('/loans', [Member::class, 'loans'])->name('member.loans');
+    Route::get('/payroll', [Member::class, 'payroll'])->name('member.payroll');
 
 });
 
