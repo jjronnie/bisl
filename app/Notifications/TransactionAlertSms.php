@@ -48,9 +48,11 @@ class TransactionAlertSms
         };
 
         // Get account name
-        $accountName = $this->transaction->account === 'loan_protection_fund'
-            ? 'Loan Protection Fund'
-            : 'Savings';
+        $accountName = match ($this->transaction->account) {
+            'loan_protection_fund' => 'Loan Protection Fund',
+            'salary' => 'Salary Account',
+            default => 'Savings',
+        };
 
         return sprintf(
             'Dear %s, a %s of UGX %s has been recorded on your %s account on %s. TID: %s. Available Bal: UGX %s. Thank you for saving with %s',
