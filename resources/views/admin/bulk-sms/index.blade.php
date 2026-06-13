@@ -73,7 +73,7 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-sm">
-                                <a href="{{ route('admin.bulk-sms.show', $campaign->id) }}" class="text-blue-600 hover:text-blue-800">
+                                <a href="{{ route('admin.bulk-sms.show', $campaign->id) }}" class="btn">
                                     View
                                 </a>
                             </td>

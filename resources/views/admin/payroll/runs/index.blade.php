@@ -39,7 +39,7 @@
             @endif
         </form>
 
-        <x-table :headers="['Employee', 'Period', 'Days', 'Gross', 'Net', 'Take Home', 'Status', 'Actions']" :showActions="true">
+        <x-table :headers="['Employee', 'Period', 'Days', 'Gross', 'Net', 'Take Home', 'Status', ]" :showActions="true">
             @foreach ($runs as $run)
                 <x-table.row>
                     <x-table.cell>{{ $run->payrollProfile?->member?->name ?? 'N/A' }}</x-table.cell>
