@@ -15,13 +15,14 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            // RolePermissionSeeder::class,
-            // SaccoAccountSeeder::class,
-            // SmsSettingsSeeder::class,
-            // MemberSeeder::class,
+            RolePermissionSeeder::class,
+            SaccoAccountSeeder::class,
+            SmsSettingsSeeder::class,
+            MemberSeeder::class,
             PayrollGradeSeeder::class,
             AllowanceTypeSeeder::class,
             PayrollTaxBracketSeeder::class,
+            PayableAccountSeeder::class,
         ]);
     }
 }

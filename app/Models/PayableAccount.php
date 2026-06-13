@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PayableAccount extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'type',
         'balance',
@@ -30,12 +32,18 @@ class PayableAccount extends Model
 
     public static function tax(): self
     {
-        return static::where('type', 'tax')->firstOrFail();
+        return static::firstOrCreate(
+            ['type' => 'tax'],
+            ['balance' => 0, 'total_credited' => 0, 'total_withdrawn' => 0],
+        );
     }
 
     public static function nssf(): self
     {
-        return static::where('type', 'nssf')->firstOrFail();
+        return static::firstOrCreate(
+            ['type' => 'nssf'],
+            ['balance' => 0, 'total_credited' => 0, 'total_withdrawn' => 0],
+        );
     }
 
     public function credit(float $amount): void
