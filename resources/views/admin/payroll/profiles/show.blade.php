@@ -57,18 +57,7 @@
                             <h3 class="text-sm font-medium text-gray-600 mb-1">Phone</h3>
                             <p class="text-gray-800">{{ $profile->member?->phone1 }}</p>
                         </div>
-                        <div>
-                            <h3 class="text-sm font-medium text-gray-600 mb-1">Gender</h3>
-                            <p class="text-gray-800">{{ ucfirst($profile->member?->gender) }}</p>
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-medium text-gray-600 mb-1">Date of Birth</h3>
-                            <p class="text-gray-800">{{ $profile->member?->date_of_birth->format('M d, Y') }}</p>
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-medium text-gray-600 mb-1">Nationality</h3>
-                            <p class="text-gray-800">{{ $profile->member?->nationality }}</p>
-                        </div>
+                    
                     </div>
                 </div>
 
