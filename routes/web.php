@@ -45,6 +45,9 @@ Route::middleware(['auth', 'verified', 'pwc', 'role:admin|superadmin'])
         Route::patch('/members/{member}/suspend', [MemberController::class, 'suspend'])->name('members.suspend');
         Route::patch('/members/{member}/unsuspend', [MemberController::class, 'unsuspend'])->name('members.unsuspend');
         Route::get('/members/{member}/transactions', [MemberController::class, 'transactions'])->name('members.transactions.index');
+        Route::get('/members/{member}/penalties', [MemberController::class, 'penalties'])->name('members.penalties');
+
+        Route::post('/members/{member}/apply-penalty', [MemberController::class, 'applyPenalty'])->name('members.apply-penalty');
 
         Route::post('/interest/update', [MemberController::class, 'updateMonthlyInterest'])->name('interest.update');
         Route::get('/interest/ledger', [MemberController::class, 'interest'])->name('interest.ledger');

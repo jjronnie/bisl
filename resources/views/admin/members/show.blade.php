@@ -239,6 +239,10 @@
                 View Transactions
             </a>
 
+            <a href="{{ route('admin.members.penalties', $member) }}" class="btn">
+                Penalties
+            </a>
+
 @role('superadmin')
             @if($member->user->status === 'suspended')
                 <x-confirm-modal :action="route('admin.members.unsuspend', $member)"

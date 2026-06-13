@@ -5,12 +5,14 @@ namespace App\Services;
 use App\Helpers\PhoneHelper;
 use App\Jobs\SendSmsJob;
 use App\Models\Loan;
+use App\Models\Penalty;
 use App\Models\SmsLog;
 use App\Models\SmsSetting;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Notifications\LoanDisbursementSms;
 use App\Notifications\PaymentReceivedSms;
+use App\Notifications\PenaltyAppliedSms;
 use App\Notifications\TransactionAlertSms;
 use Illuminate\Support\Facades\Log;
 
@@ -156,6 +158,48 @@ class SmsService
     /**
      * Send SMS when salary is dispatched to employee's salary account
      */
+    public static function sendPenaltyAppliedSms(Penalty $penalty, User $user): ?SmsLog
+    {
+        if (! SmsSetting::isEnabled('transaction')) {
+            return null;
+        }
+
+        try {
+            $phoneNumber = $user->member?->phone1;
+            if (! $phoneNumber) {
+                Log::warning('No phone number found for user', ['user_id' => $user->id]);
+
+                return null;
+            }
+
+            $firstName = explode(' ', $user->name)[0] ?? $user->first_name ?? 'Member';
+            $notification = new PenaltyAppliedSms($penalty, $phoneNumber, $firstName);
+            $message = $notification->getMessage();
+
+            $log = SmsLog::create([
+                'phone_number' => PhoneHelper::normalize($phoneNumber),
+                'message' => $message,
+                'notification_type' => 'penalty_applied',
+                'recipient_id' => $user->id,
+                'status' => 'pending',
+            ]);
+
+            dispatch(new SendSmsJob(
+                $phoneNumber,
+                $message,
+                'penalty_applied',
+                (string) $user->id,
+                $log->id
+            ));
+
+            return $log;
+        } catch (\Exception $e) {
+            Log::error('Failed to send penalty applied SMS', ['error' => $e->getMessage()]);
+
+            return null;
+        }
+    }
+
     public static function sendSalaryDispatchSms(User $user, string $periodLabel, string $phoneNumber): ?SmsLog
     {
         if (! SmsSetting::isEnabled('salary')) {

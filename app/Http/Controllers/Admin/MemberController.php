@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Helpers\TierHelper;
 use App\Http\Controllers\Controller;
+use App\Mail\PenaltyApplied;
 use App\Mail\TemporaryPasswordMail;
 use App\Models\InterestLedger;
 use App\Models\Member;
+use App\Models\Penalty;
 use App\Models\SaccoAccount;
 use App\Models\SavingsAccount;
+use App\Models\Transaction;
 use App\Models\User;
+use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -44,7 +48,10 @@ class MemberController extends Controller
             $query->where('tier', $request->tier);
         }
 
-        $members = $query->latest()->paginate(50);
+        $members = $query->join('savings_accounts', 'members.id', '=', 'savings_accounts.member_id')
+            ->orderBy('savings_accounts.balance', 'desc')
+            ->select('members.*')
+            ->paginate(50);
 
         return view('admin.members.index', compact('members'));
     }
@@ -207,6 +214,16 @@ class MemberController extends Controller
         return view('admin.members.transactions', compact('transactions', 'member'));
     }
 
+    public function penalties(Member $member)
+    {
+        $penalties = $member->penalties()
+            ->with('appliedBy')
+            ->latest()
+            ->paginate(20);
+
+        return view('admin.members.penalties', compact('penalties', 'member'));
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -328,6 +345,96 @@ class MemberController extends Controller
         }
 
         return redirect()->route('admin.members.index')->with('success', 'Member deleted successfully.');
+    }
+
+    public function applyPenalty(Request $request, Member $member)
+    {
+        $validated = $request->validate([
+            'type' => 'required|in:late_meeting,loss_identity_card',
+            'meeting_date' => 'nullable|date',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        $amounts = [
+            'late_meeting' => 5000,
+            'loss_identity_card' => 35000,
+        ];
+
+        $labels = [
+            'late_meeting' => 'Late Meeting Penalty',
+            'loss_identity_card' => 'Loss of BGG Identity Card Penalty',
+        ];
+
+        $amount = $amounts[$validated['type']];
+
+        try {
+            DB::transaction(function () use ($member, $amount, $validated, $labels) {
+                $savings = SavingsAccount::where('member_id', $member->id)
+                    ->lockForUpdate()
+                    ->firstOrFail();
+
+                if ($savings->balance < $amount) {
+                    throw new \Exception(
+                        'Insufficient savings balance. Available: UGX '.number_format($savings->balance, 0)
+                    );
+                }
+
+                $balanceBefore = $savings->balance;
+                $balanceAfter = $balanceBefore - $amount;
+
+                $savings->update(['balance' => $balanceAfter]);
+
+                $saccoAccount = SaccoAccount::first();
+                if (! $saccoAccount) {
+                    throw new \Exception('SACCO operational account not found.');
+                }
+                $saccoAccount->increment('operational', $amount);
+
+                Transaction::create([
+                    'member_id' => $member->id,
+                    'reference_number' => generateTransactionId(),
+                    'creator' => auth()->id(),
+                    'account' => 'savings',
+                    'transaction_type' => 'withdrawal',
+                    'side' => 'debit',
+                    'amount' => $amount,
+                    'balance_before' => $balanceBefore,
+                    'balance_after' => $balanceAfter,
+                    'method' => 'penalty',
+                    'remarks' => $labels[$validated['type']],
+                ]);
+
+                $penalty = Penalty::create([
+                    'member_id' => $member->id,
+                    'amount' => $amount,
+                    'type' => $validated['type'],
+                    'meeting_date' => $validated['meeting_date'] ?? null,
+                    'notes' => $validated['notes'] ?? null,
+                    'balance_before' => $balanceBefore,
+                    'balance_after' => $balanceAfter,
+                    'applied_by' => auth()->id(),
+                ]);
+
+                TierHelper::updateTier($member);
+
+                $member->loadMissing('user');
+
+                if ($member->user?->email) {
+                    Mail::to($member->user->email)
+                        ->queue(new PenaltyApplied($penalty));
+                }
+
+                if ($member->user) {
+                    SmsService::sendPenaltyAppliedSms($penalty, $member->user);
+                }
+            });
+        } catch (\Exception $e) {
+            Log::error('Penalty application failed: '.$e->getMessage());
+
+            return back()->with('error', 'Penalty failed: '.$e->getMessage());
+        }
+
+        return back()->with('success', 'Penalty applied successfully. UGX '.number_format($amount).' deducted from savings.');
     }
 
     public function suspend(Member $member)

@@ -72,4 +72,9 @@ class Member extends Model
     {
         return $this->hasOne(SalaryAccount::class);
     }
+
+    public function penalties()
+    {
+        return $this->hasMany(Penalty::class);
+    }
 }
